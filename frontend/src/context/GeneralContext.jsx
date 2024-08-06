@@ -20,7 +20,7 @@ const GeneralProvider = ({ children }) => {
   }, [handleThemeSettings]);
 
   const api = axios.create({
-    baseURL: "https://praisemedia.pythonanywhere.com/api/",
+    baseURL: "https://praisemedia.pythonanywhere.com/api",
     timeout: 10000,
     headers: {
       "Content-Type": "application/json",
