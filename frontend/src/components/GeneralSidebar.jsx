@@ -164,7 +164,7 @@ const GeneralSidebar = ({ generalMenuToggle, handleGeneralMenuToggle }) => {
                       <Link
                         to={`/user/dashboard/services/${item.category.toLowerCase()}`}
                       >
-                        {item.category}
+                        {item.category.toLowerCase()}
                       </Link>
                     </li>
                   ))}

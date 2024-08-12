@@ -1,5 +1,4 @@
 import React, { useContext, useEffect, useState } from "react";
-import axios from "axios";
 import { AuthContext } from "../context/AuthenticationContext";
 import { useWallet } from "../context/WalletContext";
 import { GeneralContext } from "../context/GeneralContext";
@@ -10,7 +9,7 @@ const inputStyle =
 const Transfer = ({ setTransferForm }) => {
   const {api} = useContext(GeneralContext)
 
-  const [phoneNumber, setPhoneNumber] = useState("");
+  const [username, setUsername] = useState("");
   const [amount, setAmount] = useState("");
   const [pin, setPin] = useState("");
   const [message, setMessage] = useState("");
@@ -20,8 +19,8 @@ const Transfer = ({ setTransferForm }) => {
   const { walletData, updateWalletBalance } = useWallet();
 
   const validateInputs = () => {
-    if (!phoneNumber) {
-      setMessage("Please enter the recipient's phone number");
+    if (!username) {
+      setMessage("Please enter the recipient's username");
       return false;
     }
     if (!amount) {
@@ -73,8 +72,7 @@ const Transfer = ({ setTransferForm }) => {
         setTimeout(() => setShowMessage(false), 3000);
         return;
       }
-
-      if (walletData.wallet_name.phone_number === phoneNumber) {
+      if (walletData.wallet_name.username === username) {
         setMessage("Cannot Transfer to self");
         setShowMessage(true);
         setTimeout(() => setShowMessage(false), 3000);
@@ -85,7 +83,7 @@ const Transfer = ({ setTransferForm }) => {
       const response = await api.post(
         "transfer/",
         {
-          phone_number: phoneNumber,
+          username: username.toLowerCase(),
           amount: amount,
           transaction_pin: pin,
         },
@@ -106,7 +104,7 @@ const Transfer = ({ setTransferForm }) => {
       updateWalletBalance(walletData.balance - parseFloat(amount));
 
       // Reset form fields
-      setPhoneNumber("");
+      setUsername("");
       setAmount("");
       setPin("");
     } catch (error) {
@@ -116,7 +114,6 @@ const Transfer = ({ setTransferForm }) => {
       setTimeout(() => setShowMessage(false), 3000);
     }
   };
-
   return (
     <div className="bg-primary bg-opacity-0 max-w-[208px]">
       <div className="flex flex-col justify-center border-[0.01rem] border-link dark:border-gray-700 p-5 rounded-[1.5rem] bg-opacity-15 shadow-lg shadow-indigo-950/10">
@@ -127,11 +124,11 @@ const Transfer = ({ setTransferForm }) => {
         )}
         <form onSubmit={transfer}>
           <input
-            value={phoneNumber}
-            onChange={(e) => setPhoneNumber(e.target.value)}
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
             type="text"
-            placeholder="Recipient Number"
-            aria-label="Recipient Number"
+            placeholder="Username"
+            aria-label="Username"
             className={`${inputStyle}`}
           />
 
