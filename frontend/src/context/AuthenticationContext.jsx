@@ -55,19 +55,10 @@ const AuthProvider = ({ children }) => {
 
         localStorage.setItem("authTokens", JSON.stringify(data));
         navigate("/user/dashboard");
-      } else {
-        alert("Something went wrong!");
-      }
-      if (response.status === 401) {
-        logoutUser();
       }
     } catch (error) {
-      setUserError(error.response.data.detail);
-
-      console.error(
-        "Error:",
-        error.response ? error.response.data.detail : error.message
-      );
+      setUserError(error.response?.data?.detail || error.message);
+      console.error("Error:", error.response ? error.response.data : error.message);
     }
   };
 
@@ -81,17 +72,11 @@ const AuthProvider = ({ children }) => {
 
       if (response.status === 201) {
         navigate("/authentication/login");
-      } else {
-        alert("Something went wrong!");
       }
     } catch (error) {
-      const newError = {};
-      const errors = error.response.data;
+      const errors = error.response?.data || {};
       setRegisterErrors(errors);
-      console.error(
-        "Error:",
-        error.response ? error.response.data : error.message
-      );
+      console.error("Error:", error.response ? error.response.data : error.message);
     }
   };
 
@@ -116,10 +101,7 @@ const AuthProvider = ({ children }) => {
         logoutUser();
       }
     } catch (error) {
-      console.error(
-        "Error refreshing token:",
-        error.response ? error.response.data : error.message
-      );
+      console.error("Error refreshing token:", error.response ? error.response.data : error.message);
       logoutUser();
     }
   };

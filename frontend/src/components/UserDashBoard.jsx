@@ -76,7 +76,7 @@ const UserDashBoard = () => {
             >
               <div className="service-card shadow-lg shadow-indigo-500/10 p-4 h-[5.5rem] w-[5.5rem] xs:h-[6rem] xs:w-[6rem] text-primary dark:text-white bg-white dark:bg-primary border border-gray-700 rounded-2xl flex flex-col justify-center items-center cursor-pointer">
                 <img
-                  src={`https://praisemedia.pythonanywhere.com${item.image}`}
+                  src={`http://127.0.0.1:8000${item.image}`}
                   alt={item.name}
                   className="h-10 w-10 object-contain"
                 />

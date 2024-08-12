@@ -1,4 +1,4 @@
-import { useContext, useState, useEffect, React } from "react";
+import { useContext, useState, useEffect } from "react";
 import { AuthContext } from "../context/AuthenticationContext";
 import { Link } from "react-router-dom";
 import { GeneralContext } from "../context/GeneralContext";
@@ -7,14 +7,14 @@ import SubmitButton from "../components/SubmitButton";
 
 const LeftSide = () => (
   <div className="left mt-4 leading-[3rem] relative hidden justify-center items-center sm:flex h-[364px] shadow-lg shadow-indigo-900/20 bg-opacity-50 rounded-2xl w-[20rem] bg-black text-white">
-    <img src={simag} alt="" className="h-[365px]" />
+    <img src={simag} alt="Background" className="h-[365px]" />
   </div>
 );
 
 const inputStyle =
   "transition duration-450 ease-in-out my-2 w-full text-white py-1 px-4 h-[3.5rem] bg-[#18202F] text-[1.2rem] rounded-2xl outline-0 border border-gray-700 hover:border-black focus:border-link bg-opacity-80";
 
-const RegisterationPage = () => {
+const RegistrationPage = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [errorMessage, setErrorMessage] = useState({});
 
@@ -97,8 +97,6 @@ const RegisterationPage = () => {
     setErrorMessage(newError);
     return Object.keys(newError).length === 0;
   };
-
-  console.log(errorMessage);
 
   return (
     <div className="min-w-[150px] bg-opacity-[95%] z-[-1] font-body_two bg-dark-custom-gradient w-full z-[-2] min-w-[150px] absolute top-0 left-0 min-h-screen">
@@ -300,4 +298,4 @@ const RegisterationPage = () => {
   );
 };
 
-export default RegisterationPage;
+export default RegistrationPage;
