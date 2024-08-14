@@ -1,13 +1,16 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import { AuthContext } from "../context/AuthenticationContext";
 import { useWallet } from "../context/WalletContext";
 import { GeneralContext } from "../context/GeneralContext";
+import SubmitButton from "../components/SubmitButton";
 
 const inputStyle =
   "transition duration-450 ease-in-out my-2 w-full text-primary dark:text-white py-1 px-3 h-[2.8rem] text-[1.2rem] rounded-2xl outline-0 dark:bg-[#18202F] bg-white border border-[#1CCEFF] dark:border-gray-700 dark:hover:border-gray-500 dark:hover:border-black dark:focus:border-[#1CCEFF]";
 
 const Transfer = ({ setTransferForm }) => {
-  const {api} = useContext(GeneralContext)
+  const { api, setLoading } = useContext(GeneralContext);
+  const { authTokens, user } = useContext(AuthContext);
+  const { walletData, updateWalletBalance } = useWallet();
 
   const [username, setUsername] = useState("");
   const [amount, setAmount] = useState("");
@@ -15,16 +18,13 @@ const Transfer = ({ setTransferForm }) => {
   const [message, setMessage] = useState("");
   const [showMessage, setShowMessage] = useState(false);
 
-  const { authTokens, user } = useContext(AuthContext);
-  const { walletData, updateWalletBalance } = useWallet();
-
   const validateInputs = () => {
     if (!username) {
       setMessage("Please enter the recipient's username");
       return false;
     }
-    if (!amount) {
-      setMessage("Please enter an amount");
+    if (!amount || isNaN(amount) || parseFloat(amount) <= 0) {
+      setMessage("Please enter a valid amount");
       return false;
     }
     if (!pin) {
@@ -44,16 +44,15 @@ const Transfer = ({ setTransferForm }) => {
     }
 
     try {
+      setLoading(true);
+
       // Fetch the wallet data
-      const walletResponse = await api.get(
-        `wallet/${user.username}/`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${authTokens.access}`,
-          },
-        }
-      );
+      const walletResponse = await api.get(`wallet/${user.username}/`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${authTokens.access}`,
+        },
+      });
 
       const walletData = walletResponse.data;
 
@@ -72,19 +71,20 @@ const Transfer = ({ setTransferForm }) => {
         setTimeout(() => setShowMessage(false), 3000);
         return;
       }
-      if (walletData.wallet_name.username === username) {
-        setMessage("Cannot Transfer to self");
+
+      if (walletData.wallet_name.username === username.toLowerCase()) {
+        setMessage("Cannot transfer to yourself");
         setShowMessage(true);
         setTimeout(() => setShowMessage(false), 3000);
         return;
       }
 
-      // Perform the transfer
-      const response = await api.post(
+      // Proceed with the transfer
+      await api.post(
         "transfer/",
         {
           username: username.toLowerCase(),
-          amount: amount,
+          amount: parseFloat(amount),
           transaction_pin: pin,
         },
         {
@@ -97,8 +97,13 @@ const Transfer = ({ setTransferForm }) => {
 
       setMessage("Transfer successful!");
       setShowMessage(true);
-      setTimeout(() => setShowMessage(false), 1500);
-      setTimeout(() => setTransferForm(false), 1500);
+      setTimeout(() => {
+        setShowMessage(false);
+        if (setTransferForm) {
+          setTransferForm(false);
+        }
+        // setTransferForm(false);
+      }, 1500);
 
       // Update wallet balance in context
       updateWalletBalance(walletData.balance - parseFloat(amount));
@@ -109,11 +114,16 @@ const Transfer = ({ setTransferForm }) => {
       setPin("");
     } catch (error) {
       console.error("Transfer Error:", error);
-      setMessage(error.response.data.error);
+      setMessage(
+        error.response?.data?.error || "An error occurred during the transfer"
+      );
       setShowMessage(true);
       setTimeout(() => setShowMessage(false), 3000);
+    } finally {
+      setLoading(false);
     }
   };
+
   return (
     <div className="bg-primary bg-opacity-0 max-w-[208px]">
       <div className="flex flex-col justify-center border-[0.01rem] border-link dark:border-gray-700 p-5 rounded-[1.5rem] bg-opacity-15 shadow-lg shadow-indigo-950/10">
@@ -150,13 +160,7 @@ const Transfer = ({ setTransferForm }) => {
             autoComplete="current-password"
             className={`${inputStyle}`}
           />
-
-          <button
-            className="text-[1rem] my-2 w-full outline-none text-white p-1 h-[2.8rem] bg-link text-black rounded-2xl bg-opacity-[90%] font-semibold hover:bg-sky-500 transition duration-450 ease-in-out"
-            type="submit"
-          >
-            Transfer
-          </button>
+          <SubmitButton label="Transfer" />
         </form>
       </div>
     </div>

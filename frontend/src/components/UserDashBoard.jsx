@@ -42,7 +42,9 @@ const UserDashBoard = () => {
           </div>
           <div className="flex justify-between items-center">
             <p className="text-[1.5rem] font-bold">
-              ₦ {walletData && walletData.balance.toLocaleString()}
+              ₦{" "}
+              {walletData &&
+                Number(walletData.balance).toFixed(2).toLocaleString()}
             </p>
             <div className="button flex items-center">
               <div
@@ -60,10 +62,10 @@ const UserDashBoard = () => {
             atom credit to other users with their phone number.
           </p>
           <div className="button flex items-center justify-between pt-4">
-            <div className="bg-link cursor-pointer hover:bg-sky-500 transiton duration-500 ease-in-out rounded-[2rem] pb-[.3rem] pt-[.4rem] px-[.9rem] font-bold">
+            <div className="bg-link cursor-pointer hover:bg-sky-500 transiton-all duration-400 ease-in-out rounded-[2rem] pb-[.3rem] pt-[.4rem] px-[.9rem] font-bold">
               Create Shortcut
             </div>
-            <div className="border border-green-500 hover:text-green-600 transiton duration-500 ease-in-out cursor-pointer rounded-[2rem] pb-[.3rem] pt-[.4rem] px-[.9rem] font-bold">
+            <div className="border border-green-500 hover:text-green-600 transiton-all duration-400 ease-in-out cursor-pointer rounded-[2rem] pb-[.3rem] pt-[.4rem] px-[.9rem] font-bold">
               Transfer Credit
             </div>
           </div>

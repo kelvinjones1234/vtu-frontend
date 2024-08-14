@@ -3,47 +3,42 @@ import GeneralLeft from "./GeneralLeft";
 import GeneralRight from "./GeneralRight";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../context/AuthenticationContext";
+import axios from "axios";
 import { GeneralContext } from "../context/GeneralContext";
 import { ProductContext } from "../context/ProductContext";
 
 const TransactionHistory = () => {
   const [transactionHistory, setTransactionHistory] = useState([]);
   const [filteredTransactions, setFilteredTransactions] = useState([]);
+  const [timeframe, setTimeframe] = useState("");
   const [category, setCategory] = useState("");
   const [status, setStatus] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
-
-  const { authTokens } = useContext(AuthContext);
+  const { user, authTokens } = useContext(AuthContext);
   const { api } = useContext(GeneralContext);
   const { productData } = useContext(ProductContext);
 
   useEffect(() => {
-    const fetchTransactionHistory = async () => {
-      try {
-        const response = await api.get("transactions/", {
+    try {
+      api
+        .get("transactions/", {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${authTokens.access}`,
           },
-        });
-        setTransactionHistory(response.data);
-      } catch (error) {
-        console.error(
-          "Error:",
-          error.response ? error.response.data : error.message
-        );
-      }
-    };
-
-    fetchTransactionHistory();
-  }, [api, authTokens.access]);
+        })
+        .then((response) => setTransactionHistory(response.data));
+    } catch (error) {
+      console.error(
+        "Error:",
+        error.response ? error.response.data : error.message
+      );
+    }
+  }, []);
 
   useEffect(() => {
     let filtered = transactionHistory;
 
-    // Filter by category
     if (category) {
       filtered = filtered.filter(
         (item) =>
@@ -51,14 +46,12 @@ const TransactionHistory = () => {
       );
     }
 
-    // Filter by status
     if (status) {
       filtered = filtered.filter(
         (item) => item.status.toLowerCase() === status.toLowerCase()
       );
     }
 
-    // Filter by search term
     if (searchTerm) {
       filtered = filtered.filter(
         (item) =>
@@ -69,25 +62,8 @@ const TransactionHistory = () => {
       );
     }
 
-    // Filter by date range
-    if (startDate) {
-      filtered = filtered.filter((item) => {
-        const itemDate = new Date(item.date_create).getTime();
-        const start = new Date(startDate).getTime();
-        return itemDate >= start;
-      });
-    }
-
-    if (endDate) {
-      filtered = filtered.filter((item) => {
-        const itemDate = new Date(item.date_create).getTime();
-        const end = new Date(endDate).getTime();
-        return itemDate <= end;
-      });
-    }
-
     setFilteredTransactions(filtered);
-  }, [category, status, searchTerm, startDate, endDate, transactionHistory]);
+  }, [category, status, searchTerm, transactionHistory]);
 
   return (
     <div className="bg-bg_on h-auto bg-contain bg-no-repeat justify-center mt-[20vh] sm:bg-cover bg-center px-4 ss:px-[5rem] sm:px-[1rem] sm:flex gap-5 lg:mx-[5rem]">
@@ -97,26 +73,18 @@ const TransactionHistory = () => {
           <h2 className="font-bold font-heading_two text-primary dark:text-white text-[1.5rem]">
             Transaction History
           </h2>
-          <div className="flex items-center text-primary dark:text-gray-100 py-4 font-semibold">
-            <Link to={"/user/dashboard"}>Dashboard</Link>
+          <div className="flex items-center text-primay dark:text-gray-100 py-4 font-semibold">
+            <Link to={"/user/dashboard"}>Dashboard</Link>{" "}
             <div className="h-1 w-1 mx-5 bg-primary dark:bg-white rounded-full"></div>
             <span className="text-gray-500">History</span>
           </div>
         </div>
-        <div className="py-2 mt-[1rem]">
-          <input
-            type="search"
-            placeholder="Search for transaction"
-            className="outline-0 text-primary hover:border-gray-400 focus:border-link dark:focus:border-link dark:hover:border-black dark:focus:border-link dark:text-white text-[.9rem] py-[0.05rem] px-2 bg-white dark:bg-[#18202F] rounded-[.5rem] border border-gray-700"
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </div>
-        <div className="flex pb-1 gap-2 text-[.8rem] md:text-[1rem]">
+        <div className="flex gap-2 text-[.8rem] mt-[2rem] md:text-[1rem]">
           <div className="time-interval">
             <select
               name="category"
               id="category"
-              className="outline-0 text-primary hover:border-gray-400 focus:border-link dark:focus:border-link dark:hover:border-black dark:focus:border-link dark:text-white text-[.9rem] py-[0.05rem] px-2 bg-white dark:bg-[#18202F] rounded-[.5rem] border border-gray-700"
+              className="custom-select transition duration-450 ease-in-out mb-2 w-full text-primary dark:text-white py-[0.05rem] px-2 bg-white dark:bg-[#18202F] rounded-[.5rem] outline-0 border border-gray-700 hover:border-black focus:border-link bg-opacity-80"
               onChange={(e) => setCategory(e.target.value)}
             >
               <option value="">All category</option>
@@ -132,7 +100,7 @@ const TransactionHistory = () => {
             <select
               name="status"
               id="status"
-              className="outline-0 text-primary hover:border-gray-400 focus:border-link dark:focus:border-link dark:hover:border-black dark:focus:border-link dark:text-white text-[.9rem] py-[0.05rem] px-2 bg-white dark:bg-[#18202F] rounded-[.5rem] border border-gray-700"
+              className="custom-select transition duration-450 ease-in-out mb-2 w-full text-primary dark:text-white py-[0.05rem] px-2 bg-white dark:bg-[#18202F] rounded-[.5rem] outline-0 border border-gray-700 hover:border-black focus:border-link bg-opacity-80"
               onChange={(e) => setStatus(e.target.value)}
             >
               <option value="">All Status</option>
@@ -141,16 +109,12 @@ const TransactionHistory = () => {
             </select>
           </div>
         </div>
-        <div className="flex gap-2 pt-1 pb-5">
+        <div className="py-2">
           <input
-            type="date"
-            className="outline-0 text-primary hover:border-gray-400 focus:border-link dark:focus:border-link dark:hover:border-black dark:focus:border-link dark:text-white text-[.9rem] py-[0.05rem] px-2 bg-white dark:bg-[#18202F] rounded-[.5rem] border border-gray-700"
-            onChange={(e) => setStartDate(e.target.value)}
-          />
-          <input
-            type="date"
-            className="outline-0 text-primary hover:border-gray-400 focus:border-link dark:focus:border-link dark:hover:border-black dark:focus:border-link dark:text-white text-[.9rem] py-[0.05rem] px-2 bg-white dark:bg-[#18202F] rounded-[.5rem] border border-gray-700"
-            onChange={(e) => setEndDate(e.target.value)}
+            type="search"
+            placeholder="Search for transaction"
+            className="outline-0 text-primary focus:border-link dark:text-white py-[0.05rem] px-2 bg-white dark:bg-[#18202F] rounded-[.5rem] border border-gray-700"
+            onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
         <div className="flex flex-col justify-center border-[0.01rem] border-gray-900 rounded-[.5rem] bg-opacity-15 shadow-lg shadow-indigo-950/10">
@@ -178,7 +142,7 @@ const TransactionHistory = () => {
                 {filteredTransactions.map((item, index) => (
                   <tr
                     className={`transition-all duration-400 ease-in-out ${
-                      index % 2 === 0
+                      index % 2 == 0
                         ? "hover:opacity-85"
                         : "bg-gray-100 dark:bg-gray-500 hover:opacity-85"
                     }`}

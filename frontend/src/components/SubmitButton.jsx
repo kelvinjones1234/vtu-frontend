@@ -2,7 +2,7 @@ import { useContext, React } from "react";
 import { GeneralContext } from "../context/GeneralContext";
 
 const SubmitButton = ({ label }) => {
-  const { loading, setLoading } = useContext(GeneralContext);
+  const { loading } = useContext(GeneralContext);
 
   return (
     <button

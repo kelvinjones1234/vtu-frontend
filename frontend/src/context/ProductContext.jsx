@@ -38,7 +38,7 @@ const ProductProvider = ({ children }) => {
     cableCategories,
   };
 
-
+console.log(productData)
   return (
     <ProductContext.Provider value={contextData}>
       {children}

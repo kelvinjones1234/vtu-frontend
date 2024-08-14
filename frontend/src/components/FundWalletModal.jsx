@@ -89,7 +89,7 @@ const FundWalletModal = ({ onClose }) => {
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50">
       <div className="absolute inset-0 bg-transparent"></div>
-      <div className="bg-gray-200 dark:bg-gray-600 rounded-2xl p-8 z-10 mx-[4vw] max-w-[500px] relative">
+      <div className="bg-gray-200 dark:bg-gray-600 rounded-2xl p-8 z-10 mx-[4vw] w-[95vw] max-w-[400px] relative">
         <button
           className="h-10 w-10 bg-red-600 hover:bg-red-700 transition duration-400 ease-in-out right-[-12px] top-[-12px] cursor-pointer rounded-full absolute flex items-center justify-center"
           onClick={onClose}
