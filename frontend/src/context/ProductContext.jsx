@@ -9,12 +9,44 @@ const ProductProvider = ({ children }) => {
   const [productData, setProductData] = useState([]);
   const [airtimeNetworks, setAirtimeNetworks] = useState([]);
   const [cableCategories, setCableCategories] = useState([]);
+  const [notifications, setNotifications] = useState([]);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [allRead, setAllRead] = useState(true);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
   const { api } = useContext(GeneralContext);
-  const { user, loginUser } = useContext(AuthContext);
+  const { authTokens, loginUser } = useContext(AuthContext);
+
+  const fetchNotifications = async () => {
+    if (!authTokens) return; // Exit if authTokens is null
+
+    setIsLoading(true);
+    try {
+      const response = await api.get("notifications/", {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${authTokens.access}`,
+        },
+      });
+      const notifications = response.data;
+      setNotifications(notifications);
+      setUnreadCount(notifications.filter((n) => !n.is_read).length);
+      setAllRead(notifications.every((n) => n.is_read));
+      setErrorMessage("");
+    } catch (error) {
+      console.error("Error fetching notifications:", error);
+      setErrorMessage("Failed to load notifications.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
+      if (!authTokens) return; // Exit if authTokens is null
+
       try {
         const response = await api.get("combined-data/");
         const data = response.data;
@@ -28,17 +60,100 @@ const ProductProvider = ({ children }) => {
     };
 
     fetchData();
-  }, [loginUser]);
+    fetchNotifications();
+  }, [loginUser, authTokens]); // Now it checks both loginUser and authTokens
 
+  const handleMarkAsRead = async (id) => {
+    if (!authTokens) return; // Exit if authTokens is null
+
+    try {
+      await api.patch(
+        `notifications/${id}/`,
+        { is_read: true },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${authTokens.access}`,
+          },
+        }
+      );
+      setNotifications((prevNotifications) =>
+        prevNotifications.map((notification) =>
+          notification.id === id
+            ? { ...notification, is_read: true }
+            : notification
+        )
+      );
+      setUnreadCount((prevCount) => prevCount - 1);
+      setAllRead(unreadCount - 1 === 0);
+      setSuccessMessage("Notification marked as read.");
+      clearMessageAfterTimeout(setSuccessMessage);
+    } catch (error) {
+      console.error("Error marking notification as read:", error);
+      setErrorMessage("Failed to mark notification as read.");
+      clearMessageAfterTimeout(setErrorMessage);
+    }
+  };
+
+  const handleMarkAllAsRead = async () => {
+    if (!authTokens) return; // Exit if authTokens is null
+
+    try {
+      const unreadNotifications = notifications.filter(
+        (notification) => !notification.is_read
+      );
+      const markAllReadPromises = unreadNotifications.map((notification) =>
+        api.patch(
+          `notifications/${notification.id}/`,
+          { is_read: true },
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${authTokens.access}`,
+            },
+          }
+        )
+      );
+
+      await Promise.all(markAllReadPromises);
+
+      setNotifications((prevNotifications) =>
+        prevNotifications.map((notification) => ({
+          ...notification,
+          is_read: true,
+        }))
+      );
+      setUnreadCount(0);
+      setAllRead(true);
+      setSuccessMessage("All notifications marked as read.");
+      clearMessageAfterTimeout(setSuccessMessage);
+    } catch (error) {
+      console.error("Error marking all notifications as read:", error);
+      setErrorMessage("Failed to mark all notifications as read.");
+      clearMessageAfterTimeout(setErrorMessage);
+    }
+  };
+
+  const clearMessageAfterTimeout = (setMessage) => {
+    setTimeout(() => setMessage(""), 3000); // Clear message after 3 seconds
+  };
 
   const contextData = {
+    fetchNotifications,
+    handleMarkAsRead,
+    handleMarkAllAsRead,
+    notifications,
+    unreadCount,
+    allRead,
+    isLoading,
+    errorMessage,
+    successMessage,
     dataNetworks,
     productData,
     airtimeNetworks,
     cableCategories,
   };
 
-console.log(productData)
   return (
     <ProductContext.Provider value={contextData}>
       {children}

@@ -16,7 +16,7 @@ const HomePageNavbar = ({ homeMenuToggle, setHomeMenuToggle }) => {
   const handleSideBarAuthToggle = () => {
     setSideBarAuthToggle((previous) => !previous);
   };
-
+ 
   const handleHomeMenuToggle = () => {
     setHomeMenuToggle((previous) => !previous);
   };
@@ -39,11 +39,11 @@ const HomePageNavbar = ({ homeMenuToggle, setHomeMenuToggle }) => {
   return (
     <>
       <div
-        className={`p-4 lg:px-0 flex justify-between lg:px-[6rem] fixed top-0 w-full transition-colors duration-200 ${
-          isScrolled ? "bg-primary" : "bg-transparent"
+        className={`p-4 lg:px-0 flex justify-between py-5 lg:px-[6rem] fixed top-0 w-full transition-colors duration-200 ${
+          isScrolled ? "bg-gray-900 bg-opacity-95 z-[100]" : "bg-transparent"
         }`}
       >
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-1 ">
           <Link to={"/"}>
             <div className="logo font-heading_one text-green-500 border border-green-500 px-2 text-[.7rem] px-2 border-white rounded-[.5rem] font-bold">
               Atom

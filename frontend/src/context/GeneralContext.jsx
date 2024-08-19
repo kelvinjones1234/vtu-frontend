@@ -1,4 +1,4 @@
-import { createContext, useEffect, react, useState } from "react";
+import { createContext, useEffect, useContext, react, useState } from "react";
 import axios from "axios";
 
 export const GeneralContext = createContext();
@@ -7,6 +7,8 @@ const GeneralProvider = ({ children }) => {
   const [darkMode, setDarkMode] = useState(false);
   const [theme, setTheme] = useState("dark");
   const [loading, setLoading] = useState(false);
+
+
 
   const handleThemeSettings = () => {
     const newTheme = theme === "dark" ? "light" : "dark";
@@ -47,6 +49,7 @@ const GeneralProvider = ({ children }) => {
     "0803": "MTN",
     "0806": "MTN",
     "0703": "MTN",
+    "0704": "MTN",
     "0706": "MTN",
     "0813": "MTN",
     "0816": "MTN",
@@ -91,12 +94,15 @@ const GeneralProvider = ({ children }) => {
     return networkPrefixes[prefix] || "Unknown Network";
   };
 
+  
+
   const contextData = {
     darkMode: darkMode,
     theme: theme,
     api: api,
     loading: loading,
     networkPrefixes: networkPrefixes,
+    
     detectNetwork: detectNetwork,
     setLoading: setLoading,
     setTheme: setTheme,

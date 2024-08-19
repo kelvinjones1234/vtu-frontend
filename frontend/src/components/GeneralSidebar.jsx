@@ -191,12 +191,12 @@ const GeneralSidebar = ({ generalMenuToggle, handleGeneralMenuToggle }) => {
             </li>
             <li
               className={`mt-4 items-center py-3 px-2 rounded-xl ${
-                activePath === "/user/dashboard/transactions" &&
+                activePath === "/user/dashboard/price" &&
                 "bg-white bg-opacity-20"
               }`}
             >
               <Link
-                to={"/user/dashboard/transactions"}
+                to={"/user/dashboard/price"}
                 className="flex items-center"
               >
                 <img

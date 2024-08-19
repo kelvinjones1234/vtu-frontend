@@ -1,21 +1,17 @@
-import React, {
-  useEffect,
-  useState,
-  useCallback,
-  useMemo,
-  useContext,
-} from "react";
-import close from "../assets/close.svg";
+import React, { useEffect, useState, useCallback, useMemo, useContext } from "react";
 import { useWallet } from "../context/WalletContext";
 import { AuthContext } from "../context/AuthenticationContext";
 import { GeneralContext } from "../context/GeneralContext";
+import close from "../assets/close.svg";
+
+const MIN_AMOUNT = 500;
 
 const FundWalletModal = ({ onClose }) => {
   const { authTokens, user } = useContext(AuthContext);
   const { walletData, updateWalletBalance } = useWallet();
+  const { api } = useContext(GeneralContext);
   const [amount, setAmount] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const { api } = useContext(GeneralContext);
 
   const handleUpdateBalance = useCallback(() => {
     const numAmount = Number(amount);
@@ -23,12 +19,12 @@ const FundWalletModal = ({ onClose }) => {
       setErrorMessage("Please enter a positive amount.");
       return;
     }
-    if (numAmount < 500) {
-      setErrorMessage("Amount is below minimum fund amount.");
+    if (numAmount < MIN_AMOUNT) {
+      setErrorMessage(`Amount is below minimum fund amount (${MIN_AMOUNT}).`);
       return;
     }
     const newBalance = Number(walletData.balance) + numAmount;
-    updateWalletBalance(newBalance);
+    updateWalletBalance(newBalance, amount);
     setErrorMessage("");
   }, [amount, walletData.balance, updateWalletBalance]);
 
@@ -42,9 +38,7 @@ const FundWalletModal = ({ onClose }) => {
     script.onerror = () => console.error("Failed to load Monnify SDK");
 
     return () => {
-      if (script.parentNode) {
-        script.parentNode.removeChild(script);
-      }
+      document.body.removeChild(script);
     };
   }, []);
 
@@ -64,67 +58,75 @@ const FundWalletModal = ({ onClose }) => {
       paymentDescription: "Fund Wallet",
       onLoadStart: () => console.log("Loading has started"),
       onLoadComplete: () => console.log("SDK is UP"),
-      onComplete: (response) => {
-        handleUpdateBalance();
-        api
-          .put(
-            `fund-wallet/${user.username}/`,
-            { balance: amount },
-            {
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${authTokens.access}`,
-              },
-            }
-          )
-          .catch((error) => console.error("Error updating user data:", error));
-        console.log("Transaction complete:", response);
-      },
+      onComplete: handleUpdateBalance,
       onClose: (data) => console.log("Modal closed:", data),
     });
-  }, [amount, walletData, user, authTokens, api, handleUpdateBalance]);
+  }, [amount, walletData, handleUpdateBalance]);
 
-  const buttonDisabled = useMemo(() => Number(amount) < 500, [amount]);
+  const isButtonDisabled = useMemo(() => Number(amount) < MIN_AMOUNT, [amount]);
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center z-50">
-      <div className="absolute inset-0 bg-transparent"></div>
-      <div className="bg-gray-200 dark:bg-gray-600 rounded-2xl p-8 z-10 mx-[4vw] w-[95vw] max-w-[400px] relative">
-        <button
-          className="h-10 w-10 bg-red-600 hover:bg-red-700 transition duration-400 ease-in-out right-[-12px] top-[-12px] cursor-pointer rounded-full absolute flex items-center justify-center"
-          onClick={onClose}
-          aria-label="Close"
-        >
-          <img src={close} alt="" className="h-[1.5rem] w-[1.5rem]" />
-        </button>
-        <h2 className="text-2xl text-primary mb-4 font-bold">Fund Wallet</h2>
-        <div>
-          {errorMessage && <p className="text-red-500 mt-2">{errorMessage}</p>}
-          <input
-            type="number"
-            placeholder="Enter Amount (min. 500)"
-            aria-label="Enter Amount"
-            onChange={(e) => setAmount(e.target.value)}
-            value={amount}
-            min="500"
-            className="transition duration-450 max-w-[428.40px] mx-auto w-full ease-in-out my-2 text-primary py-1 px-4 h-[3.5rem] text-[1.2rem] rounded-2xl outline-0 border border-gray-700 hover:border-black focus:border-link"
+    <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
+      <div className="bg-white dark:bg-gray-800 rounded-lg p-8 w-full max-w-md relative mx-5">
+        <CloseButton onClose={onClose} />
+        <h2 className="text-2xl text-primary dark:text-white mb-6 font-bold">Fund Wallet</h2>
+        <form onSubmit={(e) => e.preventDefault()}>
+          {errorMessage && <ErrorMessage message={errorMessage} />}
+          <AmountInput
+            amount={amount}
+            setAmount={setAmount}
+            minAmount={MIN_AMOUNT}
           />
-          <button
+          <SubmitButton
             onClick={payWithMonnify}
-            disabled={buttonDisabled}
-            className={`text-[1rem] my-2 max-w-[428.40px] mx-auto w-full outline-none text-white p-1 h-[3.2rem] ${
-              buttonDisabled
-                ? "bg-gray-400 cursor-not-allowed"
-                : "bg-link hover:bg-sky-400 cursor-pointer"
-            } text-black rounded-2xl bg-opacity-[90%] font-semibold transition duration-450 ease-in-out`}
-            type="button"
-          >
-            {buttonDisabled ? "Enter valid amount" : "Proceed"}
-          </button>
-        </div>
+            disabled={isButtonDisabled}
+            minAmount={MIN_AMOUNT}
+          />
+        </form>
       </div>
     </div>
   );
 };
+
+const CloseButton = ({ onClose }) => (
+  <button
+    className="absolute right-3 top-3 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+    onClick={onClose}
+    aria-label="Close"
+  >
+    <img src={close} alt="Close" className="h-6 w-6" />
+  </button>
+);
+
+const ErrorMessage = ({ message }) => (
+  <p className="text-red-500 mb-4">{message}</p>
+);
+
+const AmountInput = ({ amount, setAmount, minAmount }) => (
+  <input
+    type="number"
+    placeholder={`Enter Amount (min. ${minAmount})`}
+    aria-label="Enter Amount"
+    onChange={(e) => setAmount(e.target.value)}
+    value={amount}
+    min={minAmount}
+    className="w-full p-3 mb-4 border border-gray-300 dark:border-gray-600 outline-0 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
+  />
+);
+
+const SubmitButton = ({ onClick, disabled, minAmount }) => (
+  <button
+    onClick={onClick}
+    disabled={disabled}
+    className={`w-full p-3 rounded-lg font-semibold transition duration-300 ${
+      disabled
+        ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+        : "bg-blue-500 text-white hover:bg-blue-600"
+    }`}
+    type="submit"
+  >
+    {disabled ? `Enter valid amount (min. ${minAmount})` : "Proceed"}
+  </button>
+);
 
 export default FundWalletModal;

@@ -37,13 +37,26 @@ export const WalletProvider = ({ children }) => {
     fetchWalletData();
   }, [fetchWalletData]);
 
-  const updateWalletBalance = useCallback((newBalance) => {
+  const updateWalletBalance = useCallback((newBalance, amount) => {
+    api
+      .put(
+        `fund-wallet/${user.username}/`,
+        { balance: amount },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${authTokens.access}`,
+          },
+        }
+      )
+      .catch((error) => console.error("Error updating user data:", error));
     setWalletData((prevData) => ({ ...prevData, balance: newBalance }));
   }, []);
 
   const value = useMemo(
     () => ({
       walletData,
+      setWalletData,
       updateWalletBalance,
       refreshWallet: fetchWalletData,
     }),

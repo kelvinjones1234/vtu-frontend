@@ -10,11 +10,14 @@ import { AuthContext } from "../context/AuthenticationContext";
 import { GeneralContext } from "../context/GeneralContext";
 import { RiMenu4Line } from "react-icons/ri";
 import { RiCloseLargeLine } from "react-icons/ri";
+import { ProductContext } from "../context/ProductContext";
 
 const GeneralNavbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const { user } = useContext(AuthContext);
   const { darkMode, handleThemeSettings } = useContext(GeneralContext);
+
+  const { allRead, unreadCount } = useContext(ProductContext);
 
   const [generalMenuToggle, setGeneralMenuToggle] = useState(false);
 
@@ -52,8 +55,10 @@ const GeneralNavbar = () => {
   return (
     <>
       <div
-        className={`p-4 lg:px-0 flex justify-between z-[10] fixed top-0 w-full transition-colors duration-200 ${
-          isScrolled ? "dark:bg-primary bg-gray-50 shadow" : "bg-transparent"
+        className={`p-4 lg:px-0 flex justify-between py-4 z-[10] fixed top-0 w-full transition-colors duration-200 ${
+          isScrolled
+            ? "dark:bg-gray-900 dark:bg-opacity-95 bg-opacity-95 py- bg-gray-50 shadow"
+            : "bg-transparent"
         }`}
       >
         <div className="flex justify-between lg:px-[6rem] w-[2000px] mx-auto">
@@ -83,9 +88,15 @@ const GeneralNavbar = () => {
         </div>
         <div className="right mt-1">
           <div className="small-screen flex items-center sm:hidden relative">
-            <div className="notification h-10 w-10 mr-9 grid relative items-center">
-              <img src={notification} alt="" className="w-6" />
-              <div className="red-point h-3 w-3 bg-red-600 absolute bottom-3 rounded-full left-3 bottom-6"></div>
+            <div className="notification h-10 w-10 mr-9 grid relative items-center rounded-full bg-gray-200 hover:bg-gray-300 dark:bg-white dark:bg-opacity-20 grid relative justify-center items-center dark:hover:bg-opacity-10 transition duration-300 ease-in-out cursor-pointer">
+              <Link to={"/user/notifications"}>
+                <img src={notification} alt="" className="w-6" />
+              </Link>
+              {!allRead && (
+                <div className="flex items-center justify-center h-3 w-3 bg-red-600 absolute rounded-full left-3 bottom-6 text-white text-[10px]">
+                  {unreadCount}
+                </div>
+              )}
             </div>
             <div className="hamburger ">
               <div

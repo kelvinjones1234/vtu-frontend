@@ -5,7 +5,7 @@ import { GeneralContext } from "../context/GeneralContext";
 import SubmitButton from "../components/SubmitButton";
 
 const inputStyle =
-  "transition duration-450 ease-in-out my-2 w-full text-primary dark:text-white py-1 px-3 h-[2.8rem] text-[1.2rem] rounded-2xl outline-0 dark:bg-[#18202F] bg-white border border-[#1CCEFF] dark:border-gray-700 dark:hover:border-gray-500 dark:hover:border-black dark:focus:border-[#1CCEFF]";
+  "transition duration-450 font-normal ease-in-out my-2 w-full text-primary dark:text-white py-1 px-3 h-[2.8rem] text-[1.2rem] rounded-2xl outline-0 dark:bg-[#18202F] bg-white border border-[#1CCEFF] dark:border-gray-700 dark:hover:border-gray-500 dark:hover:border-black dark:focus:border-[#1CCEFF]";
 
 const Transfer = ({ setTransferForm }) => {
   const { api, setLoading } = useContext(GeneralContext);

@@ -10,11 +10,14 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@heroicons/react": "^1.0.6",
     "@tanstack/react-query": "^5.51.15",
     "@tsparticles/all": "^3.5.0",
     "@tsparticles/react": "^3.0.0",
     "axios": "^1.7.2",
+    "framer-motion": "^11.3.28",
     "jwt-decode": "^4.0.0",
+    "prop-types": "^15.8.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icon": "^1.0.0",

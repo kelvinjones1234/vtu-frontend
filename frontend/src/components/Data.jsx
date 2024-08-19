@@ -1,15 +1,16 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useCallback, useEffect, useState } from "react";
 import GeneralLeft from "./GeneralLeft";
 import GeneralRight from "./GeneralRight";
 import { ProductContext } from "../context/ProductContext";
 import { Link } from "react-router-dom";
 import { GeneralContext } from "../context/GeneralContext";
-import axios from "axios"; // Import Axios
+import { useWallet } from "../context/WalletContext";
 import { AuthContext } from "../context/AuthenticationContext";
 import SubmitButton from "./SubmitButton";
 import ConfirmationPopup from "./ConfirmationPopup"; // Import ConfirmationPopup
 import ErrorPopup from "./ErrorPopup";
 import SuccessPopup from "./SuccessPopup";
+import axios from "axios";
 
 const selectStyle =
   "custom-select dark:bg-[#18202F] bg-white sm:w-[40vw] transition duration-450 ease-in-out mb-3 w-full text-primary dark:text-white py-1 px-4 h-[3.5rem] text-[1.2rem] rounded-2xl outline-0 border border-[#1CCEFF] dark:border-gray-700 dark:hover:border-black dark:focus:border-[#1CCEFF]";
@@ -40,6 +41,7 @@ const Data = () => {
   const [isSuccessOpen, setIsSuccessOpen] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const [errorPopupMessage, setErrorPopupMessage] = useState("");
+  const { walletData, setWalletData } = useWallet();
 
   useEffect(() => {
     if (selectedNetwork) {
@@ -149,21 +151,37 @@ const Data = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (validInputs()) {
-      setIsConfirmOpen(true); // Open confirmation popup
+      setIsConfirmOpen(true);
     }
   };
 
   const handleConfirm = async () => {
     setIsConfirmOpen(false);
+    setLoading(true);
+
     function generateUniqueId(length = 16) {
-      const array = new Uint8Array(length / 2); // length / 2 because each byte converts to 2 hex characters
+      const array = new Uint8Array(length / 2);
       window.crypto.getRandomValues(array);
       return Array.from(array, (byte) =>
         byte.toString(16).padStart(2, "0")
       ).join("");
     }
+
     try {
-      setLoading(true);
+      // Refresh wallet and check balance
+      const walletResponse = await api.get(`wallet/${user.username}/`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${authTokens.access}`,
+        },
+      });
+
+      if (walletResponse.data.balance < price) {
+        setErrorPopupMessage("Insufficient Funds");
+        setIsErrorOpen(true);
+        setLoading(false);
+        return; // Exit the function early if there are insufficient funds
+      }
       const payload = {
         network: networkId,
         phone: phone,
@@ -171,6 +189,18 @@ const Data = () => {
         bypass: bypassPhoneNumber,
         "request-id": `Data_${generateUniqueId()}`,
       };
+
+      // const mockResponse = {
+      //   data: {
+      //     transid: `TRANS_${generateUniqueId()}`,
+      //     status: "SUCCESS",
+      //   },
+      // };
+      // const response = mockResponse;
+
+      // Simulate the delay of a real API request
+      // await new Promise((resolve) => setTimeout(resolve, 1000));
+
       const response = await axios.post(
         "https://kusosub.com/api/data",
         payload,
@@ -182,33 +212,49 @@ const Data = () => {
           },
         }
       );
-      console.log("Response:", response.data);
-      setSuccessMessage("Transaction successful!");
-      setIsSuccessOpen(true);
-      axios
-        .api(
-          "transactions/",
-          {
-            transaction_ref_no: response.data.transid,
-            wallet: user.user_id,
-            transaction_type: "DATA",
-            product: planName,
-            price: amount,
-            status: response.data.status,
-          },
+
+      const newBalance = Number(walletData.balance) - price;
+      const deduct = -price;
+      console.log(deduct);
+
+      // Update wallet balance
+      api
+        .put(
+          `fund-wallet/${user.username}/`,
+          { balance: deduct },
           {
             headers: {
               "Content-Type": "application/json",
-              Authorization: "Bearer " + String(authTokens.access),
+              Authorization: `Bearer ${authTokens.access}`,
             },
           }
         )
-        .then((response) => {
-          console.log("POST request successful:", response.data);
-        })
-        .catch((error) => {
-          console.error("Error making POST request:", error);
-        });
+        .catch((error) => console.error("Error updating user data:", error));
+      setWalletData((prevData) => ({ ...prevData, balance: newBalance }));
+
+      await api.post(
+        "transactions/",
+        {
+          transaction_ref_no: response.data.transid,
+          wallet: user.user_id,
+          transaction_type: "DATA",
+          product: planName,
+          price: price,
+          status: response.data.status,
+          new_bal: newBalance,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + String(authTokens.access),
+          },
+        }
+      );
+
+      console.log("Transaction complete:", response);
+
+      setSuccessMessage("Transaction successful!");
+      setIsSuccessOpen(true);
     } catch (error) {
       const errorMsg = error.response
         ? error.response.data.message
@@ -246,7 +292,7 @@ const Data = () => {
             <span className="text-gray-500">Data</span>
           </div>
         </div>
-        <div className="flex flex-col justify-center border-[0.01rem] border-gray-200 dark:border-gray-900 p-5 rounded-[1.5rem] dark:bg-opacity-15 shadow-lg shadow-indigo-950/10">
+        <div className="flex flex-col justify-center border-[0.01rem] dark:border-gray-900 p-5 rounded-[1.5rem] shadow-lg shadow-indigo-950/10">
           <form onSubmit={handleSubmit}>
             <div>
               <select
@@ -371,15 +417,17 @@ const Data = () => {
               </p>
               <div className="flex items-center mr-3">
                 <div
-                  className={`h-4 w-9 rounded-2xl flex items-center relative ${
+                  className={`h-5 w-10 rounded-full flex items-center relative cursor-pointer transition-colors duration-300 ease-in-out ${
                     bypassPhoneNumber ? "bg-gray-600" : "bg-primary"
                   }`}
+                  onClick={handleBypass}
                 >
                   <div
-                    className={`button h-5 w-5 bg-white rounded-full absolute transition-all duration-500 ease-in-out ${
-                      bypassPhoneNumber ? "right-0" : "left-0"
+                    className={`h-6 w-6 bg-white bg-gray-400 rounded-full absolute transform transition-transform duration-300 ease-in-out ${
+                      bypassPhoneNumber
+                        ? "translate-x-5"
+                        : "translate-x-[-0.1rem]"
                     }`}
-                    onClick={handleBypass}
                   ></div>
                 </div>
               </div>

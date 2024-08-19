@@ -20,7 +20,8 @@ const LoginPage = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState({});
- 
+  const [showPassword, setShowPassword] = useState(false);
+
   const login = (e) => {
     e.preventDefault();
     if (validInputs()) {
@@ -59,12 +60,12 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-w-[150px] bg-opacity-[95%] z-[-1] font-body_two bg-dark-custom-gradient w-full z-[-2] min-w-[150px] absolute top-0 left-0 min-h-screen">
-      <div className="authentication bg-bg_one bg-contain md:bg-cover bg-center w-full min-h-screen bg-no-repeat">
-        <div className="authenticationnavbar flex justify-between p-4 lg:px-[6rem]">
-          <div className="left flex items-center gap-1">
+    <div className="min-h-screen bg-dark-custom-gradient font-body_two">
+      <div className="authentication bg-bg_one bg-contain md:bg-cover bg-center min-h-screen bg-no-repeat">
+        <nav className="flex justify-between px-4 lg:px-24 py-5">
+          <div className="flex items-center gap-1">
             <Link to={"/"}>
-              <div className="logo font-heading_one text-green-500 border border-green-500 px-2 text-[.7rem] px-2 border-white rounded-[.5rem] font-bold">
+              <div className="logo font-heading_one text-green-500 border border-green-500 px-2 text-[.7rem] px-2 rounded-[.5rem] font-bold">
                 Atom
               </div>
             </Link>
@@ -72,85 +73,106 @@ const LoginPage = () => {
             <div className="h-3 w-3 bg-green-500 rounded-full"></div>
             <div className="h-3 w-3 bg-green-500 rounded-full"></div>
           </div>
-          <div className="hidden ss:block text-gray-300">
+          <div className="hidden sm:block text-gray-300">
             Don't have an account?
-            <span className="text-link font-bold cursor-pointer hover:text-sky-400 transition duration-450 ease-in-out">
-              <Link to="/authentication/register"> Get started</Link>
-            </span>
+            <Link
+              to="/authentication/register"
+              className="ml-1 text-link font-bold hover:text-sky-400 transition duration-300 ease-in-out"
+            >
+              Get started
+            </Link>
           </div>
-        </div>
-        <form
-          onSubmit={login}
-          className="font-poppins mt-[15vh] sm:flex justify-between login mx-auto px-4 w-full md:px-[4rem] lg:px-[8rem]"
-        >
-          <LeftSide />
-          <div className="right sm:w-[50%] max-w-[550px] mx-auto sm:mx-0">
-            <div className="top-text pb-6">
-              <h5 className="font-bold font-heading_two text-[2rem] text-gray-300">
-                Signin to <span className="text-gradient">Atom</span>
-              </h5>
-              <p className="text-gray-300 text-[1.2rem]">
-                Enter your details below
-              </p>
-            </div>
-            {errorMessage.anonymousError && (
-              <div className="text-white ">
-                <p>Incorrect login details.</p>
+        </nav>
+
+        <div className="mt-24 px-4 md:px-16 lg:px-32">
+          <form
+            onSubmit={login}
+            className="font-poppins sm:flex justify-between max-w-6xl mx-auto"
+          >
+            <LeftSide />
+            <div className="sm:w-1/2 max-w-md mx-auto sm:mx-0">
+              <div className="mb-8">
+                <h1 className="font-bold font-heading_two text-4xl text-gray-300 mb-2">
+                  Sign in to <span className="text-gradient">Atom</span>
+                </h1>
+                <p className="text-gray-300 text-lg">
+                  Enter your credentials below
+                </p>
               </div>
-            )}
-            <div className=""> 
-              {errorMessage.usernameError && (
-                <div className="text-white">
-                  {errorMessage.usernameError}
+
+              {Object.values(errorMessage).some((error) => error) && (
+                <div className="mb-4 p-3 bg-red-500 bg-opacity-10 border border-red-500 rounded-md text-red-500">
+                  {errorMessage.anonymousError && (
+                    <p>Invalid login credentials. Please try again.</p>
+                  )}
+                  {errorMessage.usernameError && (
+                    <p>{errorMessage.usernameError}</p>
+                  )}
+                  {errorMessage.passwordError && (
+                    <p>{errorMessage.passwordError}</p>
+                  )}
                 </div>
               )}
-              <input
-                type="text"
-                value={username}
-                placeholder="Username"
-                aria-label="Username"
-                onChange={(e) => setUsername(e.target.value)}
-                className="transition duration-450 ease-in-out my-2 w-full text-white py-1 px-4 h-[3.5rem] bg-[#18202F] text-[1.2rem] rounded-2xl outline-0 border border-gray-700 hover:border-black focus:border-link bg-opacity-80"
-              />
-            </div>
-            <div className="my-4">
-              {errorMessage.passwordError && (
-                <div className="text-white">{errorMessage.passwordError}</div>
-              )}
-              <input
-                type="password"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                aria-label="Password"
-                autoComplete="current-password"
-                className="transition duration-450 ease-in-out my-2 w-full text-white py-1 px-4 h-[3.5rem] bg-[#18202F] text-[1.2rem] rounded-2xl outline-0 border border-gray-700 hover:border-black focus:border-link bg-opacity-80"
-              />
-            </div>
-            <div className="flex flex-wrap w-full text-white justify-between text-[1rem] text-gray-300 py-5">
-              <div className="flex items-center">
-                <input type="checkbox" className="h-4 w-4 md:h-5 md:w-5 mr-3" />
-                <label>Remember me</label>
+
+              <div className="space-y-4">
+                <div>
+                  <input
+                    type="text"
+                    value={username}
+                    placeholder="Username"
+                    aria-label="Username"
+                    onChange={(e) => setUsername(e.target.value)}
+                    className="w-full text-white py-3 px-4 bg-[#18202F] text-lg rounded-xl outline-none border border-gray-700 hover:border-gray-500 focus:border-link transition duration-300 ease-in-out"
+                  />
+                </div>
+
+                <div className="relative w-full">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    aria-label="Password"
+                    autoComplete="current-password"
+                    className="w-full text-white py-3 px-4 bg-[#18202F] text-lg rounded-xl outline-none border border-gray-700 hover:border-gray-500 focus:border-link transition duration-300 ease-in-out"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-white focus:outline-none"
+                  >
+                    {showPassword ? "Hide" : "Show"}
+                  </button>
+                </div>
               </div>
-              <Link to={"/user/get-password-reset-link"}>
-                <p className="text-link hover:text-sky-400 font-semibold cursor-pointer">
+
+              <div className="flex flex-wrap justify-between text-gray-300 py-5">
+                <label className="flex items-center space-x-2 cursor-pointer">
+                  <input type="checkbox" className="h-5 w-5" />
+                  <span>Remember me</span>
+                </label>
+                <Link
+                  to="/user/get-password-reset-link"
+                  className="text-link hover:text-sky-400 font-semibold"
+                >
                   Forgot password?
-                </p>
-              </Link>
-            </div>
-            <div>
-              <SubmitButton label="Login" />
-            </div>
-            <div className="text-center text-[1rem] text-gray-300 py-4 ss:hidden">
-              <p>
+                </Link>
+              </div>
+
+              <SubmitButton label="Sign In" />
+
+              <p className="text-center text-gray-300 mt-6 sm:hidden">
                 Don't have an account?{" "}
-                <span className="text-link font-semibold cursor-pointer">
-                  <Link to={"/authentication/register"}>Get started</Link>
-                </span>
+                <Link
+                  to="/authentication/register"
+                  className="text-link font-semibold"
+                >
+                  Get started
+                </Link>
               </p>
             </div>
-          </div>
-        </form>
+          </form>
+        </div>
       </div>
     </div>
   );

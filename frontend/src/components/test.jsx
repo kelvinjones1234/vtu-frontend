@@ -1,183 +1,364 @@
-import React, { useContext, useEffect, useState } from "react";
+import axios from "axios";
+import { ProductContext } from "../context/ProductContext";
 import GeneralLeft from "./GeneralLeft";
 import GeneralRight from "./GeneralRight";
+import { useState, React, useContext, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { AuthContext } from "../context/AuthenticationContext";
-import axios from "axios";
 import { GeneralContext } from "../context/GeneralContext";
-import { ProductContext } from "../context/ProductContext";
+import { AuthContext } from "../context/AuthenticationContext";
+import SubmitButton from "./SubmitButton";
+import ConfirmationPopup from "./ConfirmationPopup";
+import ErrorPopup from "./ErrorPopup";
+import SuccessPopup from "./SuccessPopup";
 
-const TransactionHistory = () => {
-  const [transactionHistory, setTransactionHistory] = useState([]);
-  const [filteredTransactions, setFilteredTransactions] = useState([]);
-  const [timeframe, setTimeframe] = useState("");
-  const [category, setCategory] = useState("");
-  const [status, setStatus] = useState("");
-  const [searchTerm, setSearchTerm] = useState("");
+const selectStyle =
+  "custom-select dark:bg-[#18202F] bg-white sm:w-[40vw] transition duration-450 ease-in-out mb-3 w-full text-primary dark:text-white py-1 px-4 h-[3.5rem] text-[1.2rem] rounded-2xl outline-0 border border-[#1CCEFF] dark:border-gray-700 dark:hover:border-black dark:focus:border-[#1CCEFF]";
+
+const inputStyle =
+  "dark:bg-[#18202F] bg-white sm:w-[40vw] transition duration-450 ease-in-out mb-3 w-full text-primary dark:text-white py-1 px-4 h-[3.5rem] text-[1.2rem] rounded-2xl outline-0 border border-[#1CCEFF] dark:border-gray-700 dark:hover:border-gray-500 dark:hover:border-black dark:focus:border-[#1CCEFF]";
+
+const Airtime = () => {
+  const { api, detectNetwork, setLoading } = useContext(GeneralContext);
+  const { airtimeNetworks } = useContext(ProductContext);
+  const [selectedNetwork, setSelectedNetwork] = useState("");
+  const [airtimeTypes, setAirtimeTypes] = useState([]);
+  const [selectedAirtimeType, setSelecedAirtimeType] = useState("");
+  const [phone, setPhone] = useState("");
+  const [pin, setPin] = useState("");
+  const [amount, setAmount] = useState("");
+  const [networkId, setNetworkId] = useState("");
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [isErrorOpen, setIsErrorOpen] = useState(false);
+  const [errorPopupMessage, setErrorPopupMessage] = useState("");
+  const [isSuccessOpen, setIsSuccessOpen] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState({});
+  const [bypassPhoneNumber, setBypassPhoneNumber] = useState(false);
+  const [networkMessage, setNetworkMessage] = useState(""); // State for the network message
   const { user, authTokens } = useContext(AuthContext);
-  const { api } = useContext(GeneralContext);
-  const { productData } = useContext(ProductContext);
+  const { walletData, updateWalletBalance } = useWallet();
+
+  const handleNetworkChange = (e) => {
+    const selectedNetworkName = e.target.value;
+    const selectedNetworkObj = airtimeNetworks.find(
+      (network) => network.network === selectedNetworkName
+    );
+
+    if (selectedNetworkObj) {
+      setSelectedNetwork(selectedNetworkName);
+      setNetworkId(selectedNetworkObj.network_id); // Set the network_id
+    }
+  };
+
+  const handleSelectedAirtimeTypeChange = (e) => {
+    setSelecedAirtimeType(e.target.value);
+  };
 
   useEffect(() => {
-    try {
+    if (selectedNetwork) {
       api
-        .get("transactions/", {
+        .get(`airtime/airtime-type/${selectedNetwork}/`)
+        .then((response) => setAirtimeTypes(response.data))
+        .catch((error) => console.error("Error fetching plan types:", error));
+    }
+  }, [selectedNetwork]);
+
+  const handlePhoneChange = (e) => {
+    const inputPhone = e.target.value;
+    setPhone(inputPhone);
+
+    // Only detect the network and update the message if the phone number is not empty
+    if (inputPhone) {
+      // Detect the network based on the phone number
+      const detectedNetwork = detectNetwork(inputPhone);
+
+      // Update the network message based on the detected network
+      if (detectedNetwork !== "Unknown Network") {
+        setNetworkMessage(
+          `Detected Network: ${detectedNetwork} <br /> NB: Ignore this for Ported Numbers`
+        );
+      } else {
+        setNetworkMessage(
+          `Unable to identify network <br /> NB: Ignore this for Ported Numbers`
+        );
+      }
+    } else {
+      // If the phone number is empty, clear the network message
+      setNetworkMessage("");
+    }
+  };
+
+  const validInputs = () => {
+    const newError = {};
+
+    // Validate phone number
+    if (!phone) {
+      newError.phone = "A phone number is required";
+    } else if (phone.length !== 11) {
+      newError.phone = "Enter a valid 11-digit phone number";
+    }
+
+    // Validate PIN
+    if (pin !== user.transaction_pin) {
+      newError.pin = "Incorrect pin";
+    }
+
+    setErrorMessage(newError);
+    return Object.keys(newError).length === 0;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (validInputs()) {
+      setIsConfirmOpen(true); // Open confirmation popup
+    }
+  };
+
+  const handleConfirm = async () => {
+    setIsConfirmOpen(false);
+    function generateUniqueId(length = 16) {
+      const array = new Uint8Array(length / 2); // length / 2 because each byte converts to 2 hex characters
+      window.crypto.getRandomValues(array);
+      return Array.from(array, (byte) =>
+        byte.toString(16).padStart(2, "0")
+      ).join("");
+    }
+    try {
+      setLoading(true);
+      const payload = {
+        network: networkId,
+        phone: phone,
+        amount: amount,
+        plan_type: selectedAirtimeType.toUpperCase(),
+        bypass: bypassPhoneNumber,
+        "request-id": `Airtime_${generateUniqueId()}`,
+      };
+      const response = await axios.post(
+        "https://kusosub.com/api/topup/",
+        payload,
+        {
           headers: {
+            Authorization:
+              "Token 3379df5f760eb207eb83201fdadc6ec81652e5934a37f0ac83c1c9de4c18",
             "Content-Type": "application/json",
-            Authorization: `Bearer ${authTokens.access}`,
           },
+        }
+      );
+      console.log("Response:", response.data);
+      const newBalance = Number(walletData.balance) - amount;
+      updateWalletBalance(newBalance);
+
+      axios
+        .api(
+          "transactions/",
+          {
+            transaction_ref_no: response.data.transid,
+            wallet: user.user_id,
+            transaction_type: "AIRTIME",
+            product: `${amount} ${selectedNetwork} airtime`,
+            price: amount,
+            status: response.data.status,
+            new_bal: newBalance,
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: "Bearer " + String(authTokens.access),
+            },
+          }
+        )
+        .then((response) => {
+          console.log("POST request successful:", response.data);
         })
-        .then((response) => setTransactionHistory(response.data));
+        .catch((error) => {
+          console.error("Error making POST request:", error);
+        });
+
+      setSuccessMessage("Transaction successful!");
+      setIsSuccessOpen(true);
     } catch (error) {
-      console.error(
-        "Error:",
-        error.response ? error.response.data : error.message
-      );
+      const errorMsg = error.response
+        ? error.response.data.message
+        : error.message;
+      setErrorPopupMessage(errorMsg);
+      setIsErrorOpen(true);
+    } finally {
+      setLoading(false);
     }
-  }, []);
+  };
+  const handleCancel = () => {
+    setIsConfirmOpen(false);
+  };
 
-  useEffect(() => {
-    let filtered = transactionHistory;
+  const handleErrorClose = () => {
+    setIsErrorOpen(false);
+  };
 
-    if (category) {
-      filtered = filtered.filter(
-        (item) =>
-          item.transaction_type?.toLowerCase() === category.toLowerCase()
-      );
-    }
-
-    if (status) {
-      filtered = filtered.filter(
-        (item) => item.status.toLowerCase() === status.toLowerCase()
-      );
-    }
-
-    if (searchTerm) {
-      filtered = filtered.filter(
-        (item) =>
-          item.transaction_ref_no
-            ?.toLowerCase()
-            .includes(searchTerm.toLowerCase()) ||
-          item.product?.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    }
-
-    setFilteredTransactions(filtered);
-  }, [category, status, searchTerm, transactionHistory]);
+  const handleBypass = () => {
+    setBypassPhoneNumber(!bypassPhoneNumber);
+  };
 
   return (
-    <div className="bg-bg_on h-auto bg-contain bg-no-repeat justify-center mt-[20vh] sm:bg-cover bg-center px-4 ss:px-[5rem] sm:px-[1rem] sm:flex gap-5 lg:mx-[5rem]">
+    <div className="bg-bg_on h-auto bg-contain bg-no-repeat mt-[20vh] justify-center sm:bg-cover bg-center px-4 ss:px-[5rem] sm:px-[1rem] sm:flex gap-5 md:gap-12 lg:mx-[5rem] font-body_two">
       <GeneralLeft />
-      <div className="min-w-[349.20px] pr-2 mx-auto">
+      <div>
         <div>
           <h2 className="font-bold font-heading_two text-primary dark:text-white text-[1.5rem]">
-            Transaction History
+            Buy Airtime
           </h2>
-          <div className="flex items-center text-primay dark:text-gray-100 py-4 font-semibold">
+          <div className="flex items-center text-primary dark:text-gray-100 py-4 font-semibold">
             <Link to={"/user/dashboard"}>Dashboard</Link>{" "}
             <div className="h-1 w-1 mx-5 bg-primary dark:bg-white rounded-full"></div>
-            <span className="text-gray-500">History</span>
+            <span className="text-gray-500">Airtime</span>
           </div>
         </div>
-        <div className="flex gap-2 text-[.8rem] mt-[2rem] md:text-[1rem]">
-          <div className="time-interval">
-            <select
-              name="category"
-              id="category"
-              className="custom-select transition duration-450 ease-in-out mb-2 w-full text-primary dark:text-white py-[0.05rem] px-2 bg-white dark:bg-[#18202F] rounded-[.5rem] outline-0 border border-gray-700 hover:border-black focus:border-link bg-opacity-80"
-              onChange={(e) => setCategory(e.target.value)}
-            >
-              <option value="">All category</option>
-              {productData.map((product, index) => (
-                <option key={index} value={product.category.toLowerCase()}>
-                  {product.category.toLowerCase()}
+        <div className="flex flex-col justify-center border-[0.01rem] border-gray-200 dark:border-gray-900 p-5 rounded-[1.5rem] dark:bg-opacity-15 shadow-lg shadow-indigo-950/10">
+          <form onSubmit={handleSubmit}>
+            <div>
+              <select
+                name="network"
+                aria-label="Network"
+                className={`${selectStyle}`}
+                value={selectedNetwork}
+                onChange={handleNetworkChange}
+              >
+                <option value="" disabled>
+                  Network
                 </option>
-              ))}
-            </select>
-          </div>
-
-          <div className="status">
-            <select
-              name="status"
-              id="status"
-              className="custom-select transition duration-450 ease-in-out mb-2 w-full text-primary dark:text-white py-[0.05rem] px-2 bg-white dark:bg-[#18202F] rounded-[.5rem] outline-0 border border-gray-700 hover:border-black focus:border-link bg-opacity-80"
-              onChange={(e) => setStatus(e.target.value)}
-            >
-              <option value="">All Status</option>
-              <option value="Failed">Failed</option>
-              <option value="Success">Successful</option>
-            </select>
-          </div>
-        </div>
-        <div className="py-2">
-          <input
-            type="search"
-            placeholder="Search for transaction"
-            className="outline-0 text-primary focus:border-link dark:text-white py-[0.05rem] px-2 bg-white dark:bg-[#18202F] rounded-[.5rem] border border-gray-700"
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </div>
-        <div className="flex flex-col justify-center border-[0.01rem] border-gray-900 rounded-[.5rem] bg-opacity-15 shadow-lg shadow-indigo-950/10">
-          <div className="overflow-x-auto custom-scrollbar overflow-y-auto h-auto max-h-[500px]">
-            <table className="text-primary dark:text-white text-[.9rem] md:text-[1rem] mx-auto">
-              <thead>
-                <tr className="dark:bg-gray-600 bg-gray-200">
-                  <th className="px-2 py-1 text-start rounded-tl-[.5rem] w-[15rem]">
-                    Reference
-                  </th>
-                  <th className="px-2 py-1 text-start w-[15rem]">
-                    Description
-                  </th>
-                  <th className="px-2 py-1 text-start w-[15rem]">Amount</th>
-                  <th className="px-2 py-1 text-start w-[15rem]">Balance</th>
-                  <th className="px-2 py-1 text-start w-[15rem]">
-                    Purchase Date
-                  </th>
-                  <th className="px-2 py-1 text-start rounded-tr-[.5rem] w-[15rem]">
-                    Transaction Status
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredTransactions.map((item, index) => (
-                  <tr
-                    className={`transition-all duration-400 ease-in-out ${
-                      index % 2 == 0
-                        ? "hover:opacity-85"
-                        : "bg-gray-100 dark:bg-gray-500 hover:opacity-85"
-                    }`}
-                    key={item.transaction_ref_no}
-                  >
-                    <td className="px-2 py-[1rem]">
-                      {item.transaction_ref_no}
-                    </td>
-                    <td className="px-2 py-[1rem]">{item.product}</td>
-                    <td className="px-2 py-[1rem]">₦ {item.price}</td>
-                    <td className="px-2 py-[1rem]">₦ {item.wallet.balance}</td>
-                    <td className="px-2 py-[1rem]">
-                      {item.date_create.slice(0, 10)}
-                    </td>
-                    <td className={`px-2 py-[1rem]`}>
-                      <div
-                        className={`${
-                          item.status === "success"
-                            ? "text-green-400 bg-primary bg-opacity-80 font-bold dark:bg-white dark:bg-opacity-20"
-                            : "text-red-400 bg-primary bg-opacity-80 font-bold dark:bg-white dark:bg-opacity-20"
-                        } text-center rounded-[.5rem] font-bol`}
-                      >
-                        {item.status}
-                      </div>
-                    </td>
-                  </tr>
+                {airtimeNetworks.map((item) => (
+                  <option key={item.network_id} value={item.network}>
+                    {item.network.toUpperCase()}
+                  </option>
                 ))}
-              </tbody>
-            </table>
-          </div>
+              </select>
+            </div>
+            <div>
+              <select
+                name="planType"
+                aria-label="Plan Type"
+                className={`${selectStyle}`}
+                value={selectedAirtimeType}
+                onChange={handleSelectedAirtimeTypeChange}
+                disabled={
+                  !selectedNetwork ||
+                  !airtimeTypes.some((type) => type.is_active)
+                }
+              >
+                <option value="" disabled>
+                  Plan Type
+                </option>
+                {airtimeTypes.map((item) => (
+                  <option
+                    key={item.id}
+                    value={item.airtime_type}
+                    disabled={!item.is_active}
+                  >
+                    {item.airtime_type.toUpperCase()}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              {errorMessage.phone && (
+                <div className="text-gray-700 dark:text-white">
+                  {errorMessage.phone}
+                </div>
+              )}
+
+              <input
+                type="text"
+                name="phone"
+                placeholder="Phone Number"
+                aria-label="Phone number"
+                value={phone}
+                onChange={handlePhoneChange}
+                className={`${inputStyle}`}
+              />
+              {networkMessage && (
+                <p
+                  className="text-sm ml-2 mb-4 italic font-bold text-gray-600 dark:text-white"
+                  dangerouslySetInnerHTML={{ __html: networkMessage }}
+                />
+              )}
+            </div>
+            <div>
+              <input
+                type="text"
+                name="amount"
+                placeholder="Amount"
+                className={`${inputStyle}`}
+                onChange={(e) => setAmount(e.target.value)}
+              />
+            </div>
+            <div>
+              {errorMessage.pin && (
+                <div className="text-gray-700 dark:text-white">
+                  {errorMessage.pin}
+                </div>
+              )}
+              <input
+                type="password"
+                name="pin"
+                placeholder="Pin"
+                aria-label="Pin"
+                autoComplete="current-password"
+                value={pin}
+                onChange={(e) => setPin(e.target.value)}
+                className={`${inputStyle}`}
+              />
+            </div>
+            <div className="flex flex-wrap w-full text-white justify-between text-[1rem] py-3">
+              <p
+                className="dark:text-white text-primary opacity-80 font-semibold"
+                onClick={handleBypass}
+              >
+                Bypass Phone Number
+              </p>
+              <div className="flex items-center mr-3">
+                <div
+                  className={`h-4 w-9 rounded-2xl flex items-center relative ${
+                    bypassPhoneNumber ? "bg-gray-600" : "bg-primary"
+                  }`}
+                >
+                  <div
+                    className={`button h-5 w-5 bg-white rounded-full absolute transition-all duration-500 ease-in-out ${
+                      bypassPhoneNumber ? "right-0" : "left-0"
+                    }`}
+                    onClick={handleBypass}
+                  ></div>
+                </div>
+              </div>
+            </div>
+            <div>
+              <SubmitButton label="Purchase" />
+            </div>
+          </form>
         </div>
       </div>
       <GeneralRight />
+
+      {/* Render Confirmation Popup */}
+      <ConfirmationPopup
+        isOpen={isConfirmOpen}
+        onConfirm={handleConfirm}
+        onCancel={handleCancel}
+        message={`Are you sure you want to proceed with transfering ₦${amount} airtime to ${phone}?`}
+      />
+
+      {/* Render Error Popup */}
+      <ErrorPopup
+        isOpen={isErrorOpen}
+        message={errorPopupMessage}
+        onClose={handleErrorClose}
+      />
+      <SuccessPopup
+        isOpen={isSuccessOpen}
+        message={successMessage}
+        onClose={() => setIsSuccessOpen(false)}
+      />
     </div>
   );
 };
 
-export default TransactionHistory;
+export default Airtime;

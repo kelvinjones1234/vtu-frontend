@@ -90,128 +90,140 @@ const TransactionHistory = () => {
   }, [category, status, searchTerm, startDate, endDate, transactionHistory]);
 
   return (
-    <div className="bg-bg_on h-auto bg-contain bg-no-repeat justify-center mt-[20vh] sm:bg-cover bg-center px-4 ss:px-[5rem] sm:px-[1rem] sm:flex gap-5 lg:mx-[5rem]">
-      <GeneralLeft />
-      <div className="min-w-[349.20px] pr-2 mx-auto">
-        <div>
-          <h2 className="font-bold font-heading_two text-primary dark:text-white text-[1.5rem]">
-            Transaction History
-          </h2>
-          <div className="flex items-center text-primary dark:text-gray-100 py-4 font-semibold">
-            <Link to={"/user/dashboard"}>Dashboard</Link>
-            <div className="h-1 w-1 mx-5 bg-primary dark:bg-white rounded-full"></div>
-            <span className="text-gray-500">History</span>
-          </div>
-        </div>
-        <div className="py-2 mt-[1rem]">
-          <input
-            type="search"
-            placeholder="Search for transaction"
-            className="outline-0 text-primary hover:border-gray-400 focus:border-link dark:focus:border-link dark:hover:border-black dark:focus:border-link dark:text-white text-[.9rem] py-[0.05rem] px-2 bg-white dark:bg-[#18202F] rounded-[.5rem] border border-gray-700"
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </div>
-        <div className="flex pb-1 gap-2 text-[.8rem] md:text-[1rem]">
-          <div className="time-interval">
-            <select
-              name="category"
-              id="category"
-              className="outline-0 text-primary hover:border-gray-400 focus:border-link dark:focus:border-link dark:hover:border-black dark:focus:border-link dark:text-white text-[.9rem] py-[0.05rem] px-2 bg-white dark:bg-[#18202F] rounded-[.5rem] border border-gray-700"
-              onChange={(e) => setCategory(e.target.value)}
-            >
-              <option value="">All category</option>
-              {productData.map((product, index) => (
-                <option key={index} value={product.category.toLowerCase()}>
-                  {product.category.toLowerCase()}
-                </option>
-              ))}
-            </select>
+    <div className="bg-bg_on min-h-screen bg-contain bg-no-repeat justify-center pt-24 sm:bg-cover bg-center px-4 sm:px-6 lg:px-8 xl:px-16">
+      <div className="max-w-7xl mx-auto sm:flex gap-8">
+        <GeneralLeft />
+        <div className="min-w-[349.20px] pr-2 mx-auto">
+          <div className="mb-8">
+            <h2 className="font-bold font-heading_two text-primary dark:text-white text-3xl mb-4">
+              Transaction History
+            </h2>
+            <div className="flex items-center text-primary dark:text-gray-100 font-semibold">
+              <Link
+                to="/user/dashboard"
+                className="hover:text-link transition-colors"
+              >
+                Dashboard
+              </Link>
+              <span className="mx-3 text-gray-400">/</span>
+              <span className="text-gray-500">History</span>
+            </div>
           </div>
 
-          <div className="status">
-            <select
-              name="status"
-              id="status"
-              className="outline-0 text-primary hover:border-gray-400 focus:border-link dark:focus:border-link dark:hover:border-black dark:focus:border-link dark:text-white text-[.9rem] py-[0.05rem] px-2 bg-white dark:bg-[#18202F] rounded-[.5rem] border border-gray-700"
-              onChange={(e) => setStatus(e.target.value)}
-            >
-              <option value="">All Status</option>
-              <option value="Failed">Failed</option>
-              <option value="Success">Successful</option>
-            </select>
-          </div>
-        </div>
-        <div className="flex gap-2 pt-1 pb-5">
-          <input
-            type="date"
-            className="outline-0 text-primary hover:border-gray-400 focus:border-link dark:focus:border-link dark:hover:border-black dark:focus:border-link dark:text-white text-[.9rem] py-[0.05rem] px-2 bg-white dark:bg-[#18202F] rounded-[.5rem] border border-gray-700"
-            onChange={(e) => setStartDate(e.target.value)}
-          />
-          <input
-            type="date"
-            className="outline-0 text-primary hover:border-gray-400 focus:border-link dark:focus:border-link dark:hover:border-black dark:focus:border-link dark:text-white text-[.9rem] py-[0.05rem] px-2 bg-white dark:bg-[#18202F] rounded-[.5rem] border border-gray-700"
-            onChange={(e) => setEndDate(e.target.value)}
-          />
-        </div>
-        <div className="flex flex-col justify-center border-[0.01rem] border-gray-900 rounded-[.5rem] bg-opacity-15 shadow-lg shadow-indigo-950/10">
-          <div className="overflow-x-auto custom-scrollbar overflow-y-auto h-auto max-h-[500px]">
-            <table className="text-primary dark:text-white text-[.9rem] md:text-[1rem] mx-auto">
-              <thead>
-                <tr className="dark:bg-gray-600 bg-gray-200">
-                  <th className="px-2 py-1 text-start rounded-tl-[.5rem] w-[15rem]">
-                    Reference
-                  </th>
-                  <th className="px-2 py-1 text-start w-[15rem]">
-                    Description
-                  </th>
-                  <th className="px-2 py-1 text-start w-[15rem]">Amount</th>
-                  <th className="px-2 py-1 text-start w-[15rem]">Balance</th>
-                  <th className="px-2 py-1 text-start w-[15rem]">
-                    Purchase Date
-                  </th>
-                  <th className="px-2 py-1 text-start rounded-tr-[.5rem] w-[15rem]">
-                    Transaction Status
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredTransactions.map((item, index) => (
-                  <tr
-                    className={`transition-all duration-400 ease-in-out ${
-                      index % 2 === 0
-                        ? "hover:opacity-85"
-                        : "bg-gray-100 dark:bg-gray-500 hover:opacity-85"
-                    }`}
-                    key={item.transaction_ref_no}
-                  >
-                    <td className="px-2 py-[1rem]">
-                      {item.transaction_ref_no}
-                    </td>
-                    <td className="px-2 py-[1rem]">{item.product}</td>
-                    <td className="px-2 py-[1rem]">₦ {item.price}</td>
-                    <td className="px-2 py-[1rem]">₦ {item.wallet.balance}</td>
-                    <td className="px-2 py-[1rem]">
-                      {item.date_create.slice(0, 10)}
-                    </td>
-                    <td className={`px-2 py-[1rem]`}>
-                      <div
-                        className={`${
-                          item.status === "success"
-                            ? "text-green-400 bg-primary bg-opacity-80 font-bold dark:bg-white dark:bg-opacity-20"
-                            : "text-red-400 bg-primary bg-opacity-80 font-bold dark:bg-white dark:bg-opacity-20"
-                        } text-center rounded-[.5rem] font-bol`}
-                      >
-                        {item.status}
-                      </div>
-                    </td>
-                  </tr>
+          <div className="space-y-4 mb-8">
+            <input
+              type="search"
+              placeholder="Search for transaction"
+              className="w-full px-4 py-1 text-primary dark:text-white bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-transparent"
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            <div className="flex flex-wrap gap-4">
+              <select
+                name="category"
+                id="category"
+                className="custom-select flex-grow px-4 py-1 text-primary dark:text-white bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-transparent"
+                onChange={(e) => setCategory(e.target.value)}
+              >
+                <option value="">All categories</option>
+                {productData.map((product, index) => (
+                  <option key={index} value={product.category.toLowerCase()}>
+                    {product.category}
+                  </option>
                 ))}
-              </tbody>
-            </table>
+              </select>
+              <select
+                name="status"
+                id="status"
+                className="custom-select flex-grow px-4 py-1 text-primary dark:text-white bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-transparent"
+                onChange={(e) => setStatus(e.target.value)}
+              >
+                <option value="">All Status</option>
+                <option value="Failed">Failed</option>
+                <option value="Success">Successful</option>
+              </select>
+            </div>
+            <div className="flex gap-4">
+              <input
+                type="date"
+                className="flex-grow px-4 py-1 text-primary dark:text-white bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-transparent"
+                onChange={(e) => setStartDate(e.target.value)}
+              />
+              <input
+                type="date"
+                className="flex-grow px-4 py-1 text-primary dark:text-white bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-transparent"
+                onChange={(e) => setEndDate(e.target.value)}
+              />
+            </div>
+          </div>
+
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="bg-gray-100 dark:bg-gray-700">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Reference
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Description
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Amount
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Balance
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Purchase Date
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Status
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                  {filteredTransactions.map((item, index) => (
+                    <tr
+                      key={item.transaction_ref_no}
+                      className={`hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors ${
+                        index % 2 === 0 ? "bg-gray-50 dark:bg-gray-900" : ""
+                      }`}
+                    >
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                        {item.transaction_ref_no}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                        {item.product}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                        ₦ {item.price}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                        ₦ {item.new_bal}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                        {item.date_create.slice(0, 10)}
+                      </td>
+                      <td className="px-6 py-3 whitespace-nowrap">
+                        <span
+                          className={`px-2 py- inline-flex text-[.6rem] leading-5 font-semibold rounded-lg ${
+                            item.status.toLowerCase() === "success"
+                              ? "bg-green-100 text-green-800"
+                              : "bg-red-100 text-red-800"
+                          }`}
+                        >
+                          {item.status}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
+        <GeneralRight />
       </div>
-      <GeneralRight />
     </div>
   );
 };

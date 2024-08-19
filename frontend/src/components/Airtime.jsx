@@ -10,6 +10,7 @@ import SubmitButton from "./SubmitButton";
 import ConfirmationPopup from "./ConfirmationPopup";
 import ErrorPopup from "./ErrorPopup";
 import SuccessPopup from "./SuccessPopup";
+import { useWallet } from "../context/WalletContext";
 
 const selectStyle =
   "custom-select dark:bg-[#18202F] bg-white sm:w-[40vw] transition duration-450 ease-in-out mb-3 w-full text-primary dark:text-white py-1 px-4 h-[3.5rem] text-[1.2rem] rounded-2xl outline-0 border border-[#1CCEFF] dark:border-gray-700 dark:hover:border-black dark:focus:border-[#1CCEFF]";
@@ -28,7 +29,7 @@ const Airtime = () => {
   const [amount, setAmount] = useState("");
   const [networkId, setNetworkId] = useState("");
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
-  const [isErrorOpen, setIsErrorOpen] = useState(false); 
+  const [isErrorOpen, setIsErrorOpen] = useState(false);
   const [errorPopupMessage, setErrorPopupMessage] = useState("");
   const [isSuccessOpen, setIsSuccessOpen] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
@@ -36,6 +37,7 @@ const Airtime = () => {
   const [bypassPhoneNumber, setBypassPhoneNumber] = useState(false);
   const [networkMessage, setNetworkMessage] = useState(""); // State for the network message
   const { user, authTokens } = useContext(AuthContext);
+  const { walletData, setWalletData } = useWallet();
 
   const handleNetworkChange = (e) => {
     const selectedNetworkName = e.target.value;
@@ -115,6 +117,7 @@ const Airtime = () => {
 
   const handleConfirm = async () => {
     setIsConfirmOpen(false);
+    setLoading(true);
     function generateUniqueId(length = 16) {
       const array = new Uint8Array(length / 2); // length / 2 because each byte converts to 2 hex characters
       window.crypto.getRandomValues(array);
@@ -123,7 +126,20 @@ const Airtime = () => {
       ).join("");
     }
     try {
-      setLoading(true);
+      const walletResponse = await api.get(`wallet/${user.username}/`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${authTokens.access}`,
+        },
+      });
+
+      if (walletResponse.data.balance < amount) {
+        setErrorPopupMessage("Insufficient Funds");
+        setIsErrorOpen(true);
+        setLoading(false);
+        return; // Exit the function early if there are insufficient funds
+      }
+
       const payload = {
         network: networkId,
         phone: phone,
@@ -132,6 +148,19 @@ const Airtime = () => {
         bypass: bypassPhoneNumber,
         "request-id": `Airtime_${generateUniqueId()}`,
       };
+      // Proceed with the transaction only if there are sufficient funds
+      // const mockResponse = {
+      //   data: {
+      //     transid: `TRANS_${generateUniqueId()}`,
+      //     status: "SUCCESS",
+      //   },
+      // };
+
+      // Simulate the delay of a real API request
+      // await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      // const response = mockResponse;
+
       const response = await axios.post(
         "https://kusosub.com/api/topup/",
         payload,
@@ -143,17 +172,36 @@ const Airtime = () => {
           },
         }
       );
-      console.log("Response:", response.data);
-      axios
-        .api(
+
+      const newBalance = Number(walletData.balance) - amount;
+      const deduct = -amount;
+      console.log(deduct);
+
+      // Update wallet balance
+      api
+        .put(
+          `fund-wallet/${user.username}/`,
+          { balance: deduct },
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${authTokens.access}`,
+            },
+          }
+        )
+        .catch((error) => console.error("Error updating user data:", error));
+      setWalletData((prevData) => ({ ...prevData, balance: newBalance }));
+      api
+        .post(
           "transactions/",
           {
             transaction_ref_no: response.data.transid,
             wallet: user.user_id,
             transaction_type: "AIRTIME",
-            product: `${amount} ${selectedNetwork} airtime`,
+            product: `${amount} naira ${selectedNetwork} airtime`,
             price: amount,
             status: response.data.status,
+            new_bal: newBalance,
           },
           {
             headers: {
@@ -312,15 +360,17 @@ const Airtime = () => {
               </p>
               <div className="flex items-center mr-3">
                 <div
-                  className={`h-4 w-9 rounded-2xl flex items-center relative ${
+                  className={`h-5 w-10 rounded-full flex items-center relative cursor-pointer transition-colors duration-300 ease-in-out ${
                     bypassPhoneNumber ? "bg-gray-600" : "bg-primary"
                   }`}
+                  onClick={handleBypass}
                 >
                   <div
-                    className={`button h-5 w-5 bg-white rounded-full absolute transition-all duration-500 ease-in-out ${
-                      bypassPhoneNumber ? "right-0" : "left-0"
+                    className={`h-6 w-6 bg-white bg-gray-400 rounded-full absolute transform transition-transform duration-300 ease-in-out ${
+                      bypassPhoneNumber
+                        ? "translate-x-5"
+                        : "translate-x-[-0.1rem]"
                     }`}
-                    onClick={handleBypass}
                   ></div>
                 </div>
               </div>

@@ -123,7 +123,7 @@ const GeneralLeft = () => {
                   <Link
                     to={`/user/dashboard/services/${items.category.toLowerCase()}`}
                   >
-                    {items.category}
+                    {items.category.toLowerCase()}
                   </Link>
                 </li>
               ))}

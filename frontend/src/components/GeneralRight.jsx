@@ -2,8 +2,11 @@ import { useContext, React } from "react";
 import notification from "../assets/notification.svg";
 import edit from "../assets/edit.svg";
 import { Link } from "react-router-dom";
+import { ProductContext } from "../context/ProductContext";
 
 const GeneralRight = () => {
+  const { allRead, unreadCount } = useContext(ProductContext);
+
   return (
     <div className="w-[25rem] z-[] hidden sm:block sticky top-[15vh] self-start font-body_two">
       <div>
@@ -21,10 +24,16 @@ const GeneralRight = () => {
           <p className="pt-3 pb-5 text-primary dark:text-secondary font-bold">
             Godwin Praise
           </p>
-          <div className="flex gap-4">
+          <div className="flex gap-2">
             <div className="notification h-10 w-10 rounded-full bg-gray-200 hover:bg-gray-300 dark:bg-white dark:bg-opacity-20 grid relative justify-center items-center dark:hover:bg-opacity-10 transition duration-300 ease-in-out cursor-pointer">
-              <img src={notification} alt="" className="w-6" />
-              <div className="red-point h-3 w-3 bg-red-600 absolute bottom-3 rounded-full left-5 bottom-6"></div>
+              <Link to={"/user/notifications"}>
+                <img src={notification} alt="" className="w-6" />
+              </Link>
+              {!allRead && (
+                <div className="flex items-center justify-center h-3 w-3 bg-red-600 absolute rounded-full left-3 bottom-6 text-white text-[10px]">
+                  {unreadCount}
+                </div>
+              )}{" "}
             </div>
             <div className="notification h-10 w-10 rounded-full bg-gray-200 hover:bg-gray-300 dark:bg-white dark:bg-opacity-20 justify-center flex items-center dark:hover:bg-opacity-10 transition duration-300 ease-in-out cursor-pointer">
               <Link to={"/user/dashboard/profile"}>

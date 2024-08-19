@@ -11,13 +11,10 @@ const LeftSide = () => (
   </div>
 );
 
-const inputStyle =
-  "transition duration-450 ease-in-out my-2 w-full text-white py-1 px-4 h-[3.5rem] bg-[#18202F] text-[1.2rem] rounded-2xl outline-0 border border-gray-700 hover:border-black focus:border-link bg-opacity-80";
-
 const RegistrationPage = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [errorMessage, setErrorMessage] = useState({});
-
+  const [showPassword, setShowPassword] = useState(false);
   const { registerUser, registerErrors } = useContext(AuthContext);
   const { setLoading } = useContext(GeneralContext);
 
@@ -99,201 +96,170 @@ const RegistrationPage = () => {
   };
 
   return (
-    <div className="min-w-[150px] bg-opacity-[95%] z-[-1] font-body_two bg-dark-custom-gradient w-full z-[-2] min-w-[150px] absolute top-0 left-0 min-h-screen">
-      <div className="authentication bg-bg_one bg-contain md:bg-cover bg-center w-full min-h-screen bg-no-repeat fixed z-[-1]"></div>
-      <div>
-        <div
-          className={`authenticationnavbar flex justify-between p-4 md:px-[6rem] fixed top-0 w-full transition-colors duration-200 ${
-            isScrolled ? "bg-opacity-100 bg-gray-900" : "bg-transparent"
-          }`}
-        >
-          <div className="left flex items-center gap-1">
-            <Link to={"/"}>
-              <div className="logo font-heading_one text-green-500 border border-green-500 px-2 text-[.7rem] px-2 border-white rounded-[.5rem] font-bold">
-                Atom
-              </div>
-            </Link>
-            <div className="h-3 w-3 bg-green-500 rounded-full"></div>
-            <div className="h-3 w-3 bg-green-500 rounded-full"></div>
-            <div className="h-3 w-3 bg-green-500 rounded-full"></div>
-          </div>
-          <div className="right hidden ss:block text-gray-300">
-            Already have an account?
-            <span className="text-link font-bold cursor-pointer hover:text-sky-500 transition duration-450 ease-in-out">
-              <Link to="/authentication/login"> Login</Link>
-            </span>
-          </div>
-        </div>
+    <div className="min-h-screen bg-dark-custom-gradient font-body_two">
+      <div className="fixed inset-0 bg-bg_one bg-contain md:bg-cover bg-center bg-no-repeat"></div>
 
-        <div className="signin-form pt-[15vh] sm:flex justify-between login mx-auto px-4 w-full md:px-[4rem] lg:px-[8rem]">
+      <header
+        className={`fixed top-0 w-full px-4 py-5 md:px-24 flex justify-between items-center transition-colors duration-300 ${
+          isScrolled ? "bg-gray-900 bg-opacity-95 z-[100]" : "bg-transparent"
+        }`}
+      >
+        <div className="flex items-center gap-1">
+          <Link to={"/"}>
+            <div className="logo font-heading_one text-green-500 border border-green-500 px-2 text-[.7rem] px-2 rounded-[.5rem] font-bold">
+              Atom
+            </div>
+          </Link>
+          <div className="h-3 w-3 bg-green-500 rounded-full"></div>
+          <div className="h-3 w-3 bg-green-500 rounded-full"></div>
+          <div className="h-3 w-3 bg-green-500 rounded-full"></div>
+        </div>
+        <div className="hidden sm:block text-gray-300">
+          Already have an account?
+          <Link
+            to="/authentication/login"
+            className="ml-1 text-link font-bold hover:text-sky-500 transition duration-300 ease-in-out"
+          >
+            Log in
+          </Link>
+        </div>
+      </header>
+
+      <main className="pt-24 px-4 md:px-16 lg:px-32">
+        <div className="max-w-6xl mx-auto sm:flex justify-between items-start">
           <LeftSide />
-          <div className="left right sm:w-[50%] max-w-[550px] mx-auto sm:mx-0">
-            <div className="top-text pb-6">
-              <h5 className="font-bold text-[2rem] text-gray-300 font-heading_two">
-                Signup with <span className="text-gradient">Atom</span>
-              </h5>
-              <p className="text-gray-300 text-[1.2rem]">
-                Create an Atom account for free
+          <div className="sm:w-1/2 max-w-md mx-auto sm:mx-0">
+            <div className="mb-8">
+              <h1 className="font-bold text-4xl text-gray-300 font-heading_two mb-2">
+                Sign up with <span className="text-gradient">Atom</span>
+              </h1>
+              <p className="text-gray-300 text-lg">
+                Create your Atom account for free
               </p>
             </div>
-            <form onSubmit={handleSubmit}>
-              <div className="flex flex-wrap justify-between">
-                <div className="w-full sm:w-[48%]">
-                  {errorMessage.first_nameError && (
-                    <div className="text-white">
-                      {errorMessage.first_nameError}
-                    </div>
-                  )}
-                  <input
-                    type="text"
-                    placeholder="First Name"
-                    className={inputStyle}
-                    name="first_name"
-                    value={formData.first_name}
-                    onChange={handleChange}
-                  />
-                </div>
-                <div className="w-full sm:w-[48%]">
-                  {errorMessage.last_nameError && (
-                    <div className="text-white">
-                      {errorMessage.last_nameError}
-                    </div>
-                  )}
-                  <input
-                    type="text"
-                    placeholder="Last Name"
-                    className={inputStyle}
-                    name="last_name"
-                    value={formData.last_name}
-                    onChange={handleChange}
-                  />
-                </div>
-                <div className="w-full sm:w-[48%]">
-                  {errorMessage.usernameError ? (
-                    <div className="text-white">
-                      {errorMessage.usernameError}
-                    </div>
-                  ) : (
-                    registerErrors.username && (
-                      <div className="text-white">
-                        {registerErrors.username[0]}
-                      </div>
-                    )
-                  )}
-                  <input
-                    type="text"
-                    placeholder="Username"
-                    className={inputStyle}
-                    name="username"
-                    value={formData.username}
-                    onChange={handleChange}
-                  />
-                </div>
-                <div className="w-full sm:w-[48%]">
-                  {errorMessage.emailError && (
-                    <div className="text-white">{errorMessage.emailError}</div>
-                  )}
-                  <input
-                    type="text"
-                    placeholder="Email address"
-                    className={inputStyle}
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                  />
-                </div>
 
-                <div className="w-full sm:w-[48%]">
-                  {errorMessage.phone_numberError && (
-                    <div className="text-white">
-                      {errorMessage.phone_numberError}
-                    </div>
-                  )}
-                  <input
-                    type="text"
-                    placeholder="Phone Number"
-                    className={inputStyle}
-                    name="phone_number"
-                    value={formData.phone_number}
-                    onChange={handleChange}
-                  />
-                </div>
-
-                <div className="w-full sm:w-[48%]">
-                  {errorMessage.transaction_pinError ? (
-                    <div className="text-white">
-                      {errorMessage.transaction_pinError}
-                    </div>
-                  ) : (
-                    registerErrors.transaction_pin && (
-                      <div className="text-white">
-                        {registerErrors.transaction_pin[0]}
-                      </div>
-                    )
-                  )}
-                  <input
-                    type="password"
-                    placeholder="Enter a Four Digit Transaction Pin"
-                    className={inputStyle}
-                    name="transaction_pin"
-                    autoComplete="current-password"
-                    value={formData.transaction_pin}
-                    onChange={handleChange}
-                  />
-                </div>
-                <div className="w-full sm:w-[48%]">
-                  {errorMessage.passwordError && (
-                    <div className="text-white">
-                      {errorMessage.passwordError}
-                    </div>
-                  )}
-                  <input
-                    type="password"
-                    placeholder="Password"
-                    className={inputStyle}
-                    name="password"
-                    value={formData.password}
-                    autoComplete="current-password"
-                    onChange={handleChange}
-                  />
-                </div>
-                <div className="w-full sm:w-[48%]">
-                  {errorMessage.confirm_passwordError && (
-                    <div className="text-white">
-                      {errorMessage.confirm_passwordError}
-                    </div>
-                  )}
-                  <input
-                    type="password"
-                    placeholder="Confirm Password"
-                    className={inputStyle}
-                    name="confirm_password"
-                    autoComplete="current-password"
-                    value={formData.confirm_password}
-                    onChange={handleChange}
-                  />
-                </div>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {[
+                  {
+                    name: "first_name",
+                    placeholder: "First Name",
+                    error:
+                      errorMessage.first_nameError &&
+                      errorMessage.first_nameError,
+                  },
+                  {
+                    name: "last_name",
+                    placeholder: "Last Name",
+                    error:
+                      errorMessage.last_nameError &&
+                      errorMessage.last_nameError,
+                  },
+                  {
+                    name: "username",
+                    placeholder: "Username",
+                    error:
+                      errorMessage.usernameError ||
+                      (registerErrors.username && registerErrors.username[0]),
+                  },
+                  {
+                    name: "email",
+                    placeholder: "Email address",
+                    type: "email",
+                    error: errorMessage.emailError && errorMessage.emailError,
+                  },
+                  {
+                    name: "phone_number",
+                    placeholder: "Phone Number",
+                    type: "tel",
+                    error:
+                      errorMessage.phone_numberError &&
+                      errorMessage.phone_numberError,
+                  },
+                  {
+                    name: "transaction_pin",
+                    placeholder: "4-Digit Transaction PIN",
+                    error:
+                      errorMessage.transaction_pinError &&
+                      errorMessage.transaction_pinError,
+                  },
+                  {
+                    name: "password",
+                    placeholder: "Password",
+                    type: showPassword ? "text" : "password",
+                    toggleShow: () => setShowPassword(!showPassword),
+                    show: showPassword,
+                  },
+                  {
+                    name: "confirm_password",
+                    placeholder: "Confirm Password",
+                    type: showPassword ? "text" : "password",
+                    error:
+                      errorMessage.confirm_passwordError &&
+                      errorMessage.confirm_passwordError,
+                  },
+                ].map((field) => (
+                  <div key={field.name} className="relative">
+                    <input
+                      type={field.type || "text"}
+                      name={field.name}
+                      placeholder={field.placeholder}
+                      value={formData[field.name]}
+                      onChange={handleChange}
+                      className={`w-full text-white py-3 px-4 bg-[#18202F] text-lg rounded-xl outline-none border ${
+                        field.error
+                          ? "border-red-500"
+                          : "border-gray-700 hover:border-gray-500 focus:border-link"
+                      } transition duration-300 ease-in-out`}
+                    />
+                    {field.error && (
+                      <p className="mt-1 text-sm text-red-500">{field.error}</p>
+                    )}
+                    {field.toggleShow && (
+                      <button
+                        type="button"
+                        onClick={field.toggleShow}
+                        className="absolute inset-y-0 right-0 flex items-center px-4 text-gray-500"
+                      >
+                        {field.show ? "Hide" : "Show"}
+                      </button>
+                    )}
+                  </div>
+                ))}
               </div>
-              <p className="text-center text-white">
-                By signing in to Atom, you agree to our{" "}
-                <span className="underline text-link">terms</span> and{" "}
-                <span className="underline text-link">conditions</span>
+
+              <p className="text-center text-gray-300 text-sm">
+                By signing up, you agree to our{" "}
+                <Link
+                  to="/terms"
+                  className="underline text-link hover:text-sky-500"
+                >
+                  terms
+                </Link>{" "}
+                and{" "}
+                <Link
+                  to="/privacy"
+                  className="underline text-link hover:text-sky-500"
+                >
+                  privacy policy
+                </Link>
               </p>
-              <div className="ss:pb-16 my-4">
-                <SubmitButton label="Register" />
-              </div>
+
+              <SubmitButton label="Create Account" />
             </form>
-            <div className="text-center text-[1rem] text-gray-300 pt-4 pb-[6rem] ss:hidden">
-              <p>
-                Already have an account?{" "}
-                <span className="text-link font-semibold cursor-pointer hover:text-sky-500 transition duration-450 ease-in-out">
-                  <Link to="/authentication/login">Login</Link>
-                </span>
-              </p>
-            </div>
+
+            <p className="text-center text-gray-300 mt-6 sm:hidden">
+              Already have an account?{" "}
+              <Link
+                to="/authentication/login"
+                className="text-link font-semibold hover:text-sky-500"
+              >
+                Log in
+              </Link>
+            </p>
           </div>
         </div>
-      </div>
+      </main>
     </div>
   );
 };

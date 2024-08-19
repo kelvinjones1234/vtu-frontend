@@ -17,6 +17,8 @@ import PasswordResetRequestPage from "./pages/PasswordResetRequestPage";
 import PasswordResetPage from "./pages/PasswordResetPage";
 import GeneralProvider from "./context/GeneralContext";
 import ParticleComponent from "./components/ParticleComponent";
+import NotificationPage from "./pages/NotificationPage";
+import ScrollToTop from "./components/ScrollTop";
 
 function App() {
   return (
@@ -27,7 +29,9 @@ function App() {
             <WalletProvider>
               <div>
                 <div className="bg-white dark:bg-dark-custom-gradient w-full z-[-2] min-w-[150px] fixed top-0 left-0 min-h-screen"></div>
-                <ParticleComponent className='particles'/>
+                <ParticleComponent className="particles" />
+                <ScrollToTop />
+
                 <Routes>
                   <Route path="/" element={<HomePage />} />
                   <Route
@@ -38,6 +42,10 @@ function App() {
                   <Route
                     path="/authentication/register"
                     element={<RegisterationPage />}
+                  />
+                  <Route
+                    path="/user/notifications"
+                    element={<NotificationPage />}
                   />
                   <Route
                     path="/user/reset-password/:uid/:token"
