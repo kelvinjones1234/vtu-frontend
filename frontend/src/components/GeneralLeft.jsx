@@ -117,7 +117,7 @@ const GeneralLeft = () => {
             <div className="sidebar-auth-dropdown text-primary dark:text-white">
               {productData.slice(0, 4).map((items) => (
                 <li
-                  className="mt-4 pl-11 bg-opacity-25 flex py-2 px-2 rounded-xl hover:bg-gray-100 dark:hover:bg-white max-w-[13rem] dark:hover:bg-opacity-5 transition duration-400 ease-in-out"
+                  className="mt-4 pl-11 bg-opacity-25 flex py-2 px-2 rounded-xl hover:bg-gray-100 dark:hover:bg-white max-w-[13rem] dark:hover:bg-opacity-5 transition duration-300 ease-in-out"
                   key={items.id}
                 >
                   <Link

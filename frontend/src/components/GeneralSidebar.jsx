@@ -82,21 +82,26 @@ const GeneralSidebar = ({ generalMenuToggle, handleGeneralMenuToggle }) => {
 
         <div className="h-full overflow-y-auto pr-[1rem]">
           <ul className="w-[13rem] font-bold">
-            <div className="h-[4rem] w-52 bg-gray-300 dark:bg-white dark:bg-opacity-20 my-12 rounded-xl flex items-center font-bold">
-              <div className="h-10 w-10 bg-sky-500 rounded-full flex justify-center items-center m-3">
-                <p>P</p>
+            <Link to={"/user/dashboard/profile"}>
+              <div className="h-[4rem] w-52 bg-gray-300 hover:bg-opacity-75 dark:hover:bg-opacity-25 transition-all duration-400 ease-in-out dark:bg-white dark:bg-opacity-20 my-12 rounded-xl flex items-center font-bold">
+                <div className="h-10 w-10 bg-sky-500 rounded-full flex justify-center items-center m-3">
+                  <p>P</p>
+                </div>
+                <p>
+                  {user.first_name.toUpperCase()} <br />
+                  <span className="text-[.7rem] font-light">
+                    {user.phone_number}
+                  </span>
+                </p>
               </div>
-              <p>
-                {user.first_name.toUpperCase()} <br />
-                <span className="text-[.7rem] font-light">
-                  {user.phone_number}
-                </span>
-              </p>
-            </div>
+            </Link>
+
             <ul>
               <li
-                className={`mt-4 items-center flex  py-3 px-2 rounded-xl ${
-                  activePath === "/user/dashboard" && "bg-white bg-opacity-20"
+                className={`mt-4 items-center flex py-3 px-2 rounded-xl ${
+                  activePath === "/user/dashboard"
+                    ? "dark:bg-white dark:bg-opacity-20 bg-gray-300"
+                    : "dark:hover:bg-white dark:hover:bg-opacity-5 transition duration-400 ease-in-out hover:bg-gray-100"
                 }`}
               >
                 <Link to={"/user/dashboard"} className="flex items-center">
@@ -109,7 +114,11 @@ const GeneralSidebar = ({ generalMenuToggle, handleGeneralMenuToggle }) => {
                 </Link>
               </li>
               <li
-                className="mt-4 items-center flex py-3 px-2 rounded-xl cursor-pointer"
+                className={`mt-4 items-center flex py-3 px-2 rounded-xl cursor-pointer ${
+                  activePath === "/user/transfer"
+                    ? "bg-white bg-opacity-20"
+                    : "dark:hover:bg-white dark:hover:bg-opacity-5 transition duration-400 ease-in-out hover:bg-gray-100"
+                }`}
                 onClick={handleTransferForm}
               >
                 <img
@@ -126,14 +135,12 @@ const GeneralSidebar = ({ generalMenuToggle, handleGeneralMenuToggle }) => {
               </div>
               <li
                 onClick={handleGeneralSideBarAuthToggle}
-                className={`flex py-3 mt-4 py-3 items-center px-2 rounded-xl ${
+                className={`flex py-3 mt-4 py-3 items-center px-2 rounded-xl cursor-pointer ${
                   activePath === "/user/dashboard/services/data" ||
                   activePath === "/user/dashboard/services/airtime" ||
-                  activePath ===
-                    "/user/dashboard/services/cable%20subscription" ||
-                  (activePath ===
-                    "/user/dashboard/services/electricity%20bill" &&
-                    "bg-white bg-opacity-20")
+                  activePath === "/user/dashboard/services/cable subscription"
+                    ? "bg-white bg-opacity-20"
+                    : "dark:hover:bg-white dark:hover:bg-opacity-5 hover:bg-gray-100 transition duration-400 ease-in-out"
                 }`}
               >
                 <img
@@ -158,7 +165,7 @@ const GeneralSidebar = ({ generalMenuToggle, handleGeneralMenuToggle }) => {
                 <div className="sidebar-auth-dropdown">
                   {productData.slice(0, 4).map((item) => (
                     <li
-                      className="mt-4 pl-11 bg-opacity-25 flex py-2 px-2 rounded-xl"
+                      className="mt-4 pl-11 bg-opacity-25 hover:bg-gray-100 dark:hover:bg-white dark:hover:bg-opacity-5 transition duration-300 ease-in-out flex py-2 px-2 rounded-xl"
                       key={item.id}
                     >
                       <Link
@@ -173,8 +180,9 @@ const GeneralSidebar = ({ generalMenuToggle, handleGeneralMenuToggle }) => {
             </ul>
             <li
               className={`mt-4 items-center py-3 px-2 rounded-xl ${
-                activePath === "/user/dashboard/transactions" &&
-                "bg-white bg-opacity-20"
+                activePath === "/user/dashboard/transactions"
+                  ? "dark:bg-white dark:bg-opacity-20 bg-gray-300"
+                  : "dark:hover:bg-white dark:hover:bg-opacity-5 transition duration-400 ease-in-out hover:bg-gray-100"
               }`}
             >
               <Link
@@ -195,10 +203,7 @@ const GeneralSidebar = ({ generalMenuToggle, handleGeneralMenuToggle }) => {
                 "bg-white bg-opacity-20"
               }`}
             >
-              <Link
-                to={"/user/dashboard/price"}
-                className="flex items-center"
-              >
+              <Link to={"/user/dashboard/price"} className="flex items-center">
                 <img
                   src={price_list}
                   alt=""
@@ -207,24 +212,7 @@ const GeneralSidebar = ({ generalMenuToggle, handleGeneralMenuToggle }) => {
                 <div>Price List</div>
               </Link>
             </li>
-            <li
-              className={`mt-4 items-center flex  py-3 px-2 rounded-xl ${
-                activePath === "/user/dashboard/profile" &&
-                "bg-white bg-opacity-20"
-              }`}
-            >
-              <Link
-                to={"/user/dashboard/profile"}
-                className="flex items-center"
-              >
-                <img
-                  src={dashboard}
-                  alt=""
-                  className="h-[1.2rem] w-[1.1rem] ml-[.2rem] mr-[1rem]"
-                />
-                <div>Profile</div>
-              </Link>
-            </li>
+
             <li className="mt-4 items-center flex  py-3 px-2 rounded-xl">
               <img
                 src={about}
