@@ -211,3 +211,30 @@ select:-moz-autofill {
 }
 
 
+.custom-checkbox {
+  appearance: none;
+  width: 12px;
+  height: 12px;
+  border: 2px solid #11a8d2;
+  border-radius: 2px;
+  background-color: white;
+  cursor: pointer;
+  position: relative;
+  flex-shrink: 0; /* Prevent resizing */
+}
+
+.custom-checkbox:checked {
+  border-color: #43bddf;
+}
+
+.custom-checkbox:checked::after {
+  content: '';
+  position: absolute;
+  top: px;
+  left: 2px;
+  width: 4px;
+  height: 7px;
+  border: solid #43bddf;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}

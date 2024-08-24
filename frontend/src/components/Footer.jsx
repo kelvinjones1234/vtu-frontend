@@ -19,10 +19,18 @@ const Footer = () => {
           <h3 className="text-primary dark:text-link font-heading_two pt-4 text-2xl font-bold">
             Legals
           </h3>
-          <p>Terms and Condition</p>
-          <p>Privacy Policy</p>
+          <Link to={"/terms-and-conditions"}>
+            <p className="underline hover:text-link duration-400 transition-all ease-in-out">
+              Terms and Condition
+            </p>
+          </Link>
+          <Link to={"/privacy-and-policy"}>
+            <p className="underline hover:text-link duration-400 transition-all ease-in-out">
+              Privacy Policy
+            </p>
+          </Link>
         </div>
-        <div className="contact mt-16">
+        <div className="contact mt-16 text-center">
           <h3 className="text-primary dark:text-link font-heading_two pt-4 text-2xl font-bold">
             Contact
           </h3>
@@ -45,7 +53,7 @@ const Footer = () => {
           </div>
         </div>
       </div>
-      <div className="copyright pt-8 pb-4">
+      <div className="copyright pt-8 pb-4 border-t border-gray-700">
         <div className="logo">
           <div className="flex justify-center items-center gap-1">
             <Link to={"/"}>

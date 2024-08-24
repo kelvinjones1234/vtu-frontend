@@ -15,30 +15,46 @@ export const WalletProvider = ({ children }) => {
   const [walletData, setWalletData] = useState({ balance: 0 });
   const { user, authTokens, logoutUser } = useContext(AuthContext);
   const { api } = useContext(GeneralContext);
+  const memoizedApi = useMemo(() => api, [api]);
 
-  const fetchWalletData = useCallback(async () => {
-    if (!user?.username || !authTokens?.access) return;
-
-    try {
-      const response = await api.get(`wallet/${user.username}/`, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${authTokens.access}`,
-        },
-      });
-      setWalletData(response.data);
-    } catch (error) {
-      error.response.statusText === "Unauthorized" && logoutUser();
+  const handleError = (error) => {
+    if (error.response?.status === 401) {
+      logoutUser();
+    } else {
       console.error("Error:", error.response?.data || error.message);
     }
-  }, [user, authTokens, api]);
+  };
+
+  const fetchWalletData = useCallback(
+    async ({ signal }) => {
+      if (!user?.username || !authTokens?.access) return;
+
+      try {
+        const response = await memoizedApi.get(`wallet/${user.username}/`, {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${authTokens.access}`,
+          },
+          signal,
+        });
+        setWalletData(response.data);
+      } catch (error) {
+        if (error.name !== "AbortError") {
+          handleError(error);
+        }
+      }
+    },
+    [user, authTokens, memoizedApi]
+  );
 
   useEffect(() => {
-    fetchWalletData();
+    const controller = new AbortController();
+    fetchWalletData({ signal: controller.signal });
+    return () => controller.abort();
   }, [fetchWalletData]);
 
   const updateWalletBalance = useCallback((newBalance, amount) => {
-    api
+    memoizedApi
       .put(
         `fund-wallet/${user.username}/`,
         { balance: amount },

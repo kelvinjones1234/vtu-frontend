@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import SubmitButton from "../components/SubmitButton";
+import axios from "axios";
+import { GeneralContext } from "../context/GeneralContext";
 
 const LeftSide = () => (
   <div className="left leading-[3rem] relative hidden justify-center items-center sm:flex h-[364px] shadow-lg shadow-indigo-900/20 bg-opacity-50 rounded-2xl w-[20rem] bg-black text-white">
@@ -11,13 +13,32 @@ const LeftSide = () => (
 );
 
 const PasswordResetRequestPage = () => {
-  const [loading, setLoading] = useState(false);
+  const { setLoading } = useContext(GeneralContext);
   const [email, setEmail] = useState("");
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
 
   const reset = (e) => {
     e.preventDefault();
     if (email) {
       setLoading(true);
+      setError("");
+      setMessage("");
+
+      axios
+        .post("http://127.0.0.1:8000/api/password-reset/", { email })
+        .then((response) => {
+          setLoading(false);
+          setMessage("Password reset link has been sent to your email.");
+        })
+        .catch((error) => {
+          setLoading(false);
+          if (error.response && error.response.data) {
+            setError(error.response.data.error || "Something went wrong.");
+          } else {
+            setError("An error occurred. Please try again.");
+          }
+        });
     }
   };
 
@@ -56,16 +77,60 @@ const PasswordResetRequestPage = () => {
                 Enter your registered email to reset your password
               </p>
             </div>
-            <div>
+            <div className="pb-3">
+              {(error || message) && (
+                <div
+                  className={`p-4 rounded-lg shadow-md flex items-center ${
+                    error
+                      ? "bg-red-50 text-red-800 border-l-4 border-red-500"
+                      : "bg-green-50 text-green-800 border-l-4 border-green-500"
+                  }`}
+                >
+                  <div className="flex-shrink-0 mr-3 mb-4">
+                    {error ? (
+                      <svg
+                        className="h-5 w-5 text-red-400"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                    ) : (
+                      <svg
+                        className="h-5 w-5 text-green-400"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                    )}
+                  </div>
+                  <div>
+                    <p className="font-medium">{error ? "Error" : "Success"}</p>
+                    <p className="text-sm">{error || message}</p>
+                  </div>
+                </div>
+              )}
+            </div>
+            <div className="relative w-full py-2">
               <input
-                type="text"
+                type="email"
+                placeholder="Email"
                 value={email}
-                placeholder="email"
-                aria-label="email"
                 onChange={(e) => setEmail(e.target.value)}
-                className="transition duration-450 ease-in-out my-2 w-full text-white py-1 px-4 h-[3.5rem] bg-[#18202F] text-[1.2rem] rounded-2xl outline-0 border border-gray-700 hover:border-black focus:border-link bg-opacity-80"
+                aria-label="Email"
+                className="w-full text-white py-3 px-4 bg-[#18202F] text-lg rounded-xl outline-none border border-gray-700 hover:border-gray-500 focus:border-link transition duration-300 ease-in-out"
               />
             </div>
+            <SubmitButton label="Get Password Reset Link" />
 
             <div className="text-center text-[1rem] text-gray-300 py-4 ss:hidden">
               <p>
@@ -74,9 +139,6 @@ const PasswordResetRequestPage = () => {
                   <Link to={"/authentication/login"}>Login</Link>
                 </span>
               </p>
-            </div>
-            <div>
-              <SubmitButton label="Get Password Reset Link" />
             </div>
             <div className="text-center text-[1rem] text-gray-300 py-4 ss:hidden">
               <p>

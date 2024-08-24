@@ -42,7 +42,10 @@ const UserDashBoard = () => {
             <p className="text-3xl font-bold">
               ₦{" "}
               {walletData &&
-                Number(walletData.balance).toFixed(2).toLocaleString()}
+                Number(walletData.balance).toLocaleString("en-US", {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}
             </p>
             <button
               onClick={handleOpenModal}

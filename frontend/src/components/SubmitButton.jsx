@@ -1,8 +1,18 @@
-import { useContext, React } from "react";
+import { useContext, useEffect, React } from "react";
 import { GeneralContext } from "../context/GeneralContext";
+import { AuthContext } from "../context/AuthenticationContext";
+
 
 const SubmitButton = ({ label }) => {
   const { loading } = useContext(GeneralContext);
+  const { authTokens, refreshToken } = useContext(AuthContext);
+
+
+  // useEffect(() => {
+  //   if (authTokens) {
+  //     refreshToken();
+  //   }
+  // }, []);
 
   return (
     <button

@@ -15,12 +15,14 @@ const LeftSide = () => (
 );
 
 const LoginPage = () => {
-  const { loginUser, userError, setUserError } = useContext(AuthContext);
+  const { loginUser, userError, setUserError, setRememberMe, rememberMe } =
+    useContext(AuthContext);
   const { setLoading } = useContext(GeneralContext);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState({});
   const [showPassword, setShowPassword] = useState(false);
+  // const [rememberMe, setRememberMe] = useState(false);
 
   const login = (e) => {
     e.preventDefault();
@@ -36,14 +38,14 @@ const LoginPage = () => {
     if (userError) {
       setErrorMessage((prev) => ({
         ...prev,
-        anonymousError: "Incorrect login details.",
+        anonymousError: userError,
       }));
     }
   }, [userError]);
 
   useEffect(() => {
     if (errorMessage.anonymousError) {
-      setUserError("");
+      setUserError(""); // Clear user error after displaying it
     }
   }, [errorMessage.anonymousError, setUserError]);
 
@@ -101,19 +103,30 @@ const LoginPage = () => {
               </div>
 
               {Object.values(errorMessage).some((error) => error) && (
-                <div className="mb-4 p-3 bg-red-500 bg-opacity-10 border border-red-500 rounded-md text-red-500">
-                  {errorMessage.anonymousError && (
-                    <p>Invalid login credentials. Please try again.</p>
-                  )}
-                  {errorMessage.usernameError && (
-                    <p>{errorMessage.usernameError}</p>
-                  )}
-                  {errorMessage.passwordError && (
-                    <p>{errorMessage.passwordError}</p>
-                  )}
+                <div className="mb-4 p-4 rounded-lg shadow-md flex items-start bg-red-50 border-l-4 border-red-500">
+                  <div className="flex-shrink-0 mr-3 mt-0.5">
+                    <svg
+                      className="h-5 w-5 text-red-400"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </div>
+                  <div className="flex-1">
+                    <p className="font-medium text-red-800">Error</p>
+                    <ul className="mt-1 text-sm text-red-700">
+                      {Object.values(errorMessage).map(
+                        (error, index) => error && <li key={index}>{error}</li>
+                      )}
+                    </ul>
+                  </div>
                 </div>
               )}
-
               <div className="space-y-4">
                 <div>
                   <input
@@ -147,8 +160,13 @@ const LoginPage = () => {
               </div>
 
               <div className="flex flex-wrap justify-between text-gray-300 py-5">
-                <label className="flex items-center space-x-2 cursor-pointer">
-                  <input type="checkbox" className="h-5 w-5" />
+                <label className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    className="h-5 w-5 custom-checkbox cursor-pointer"
+                    checked={rememberMe}
+                    onChange={(e) => setRememberMe(e.target.checked)}
+                  />
                   <span>Remember me</span>
                 </label>
                 <Link

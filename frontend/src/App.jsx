@@ -19,6 +19,8 @@ import GeneralProvider from "./context/GeneralContext";
 import ParticleComponent from "./components/ParticleComponent";
 import NotificationPage from "./pages/NotificationPage";
 import ScrollToTop from "./components/ScrollTop";
+import TermsAndConditionsPage from "./pages/TermsAndConditionsPage";
+import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
 
 function App() {
   return (
@@ -28,7 +30,7 @@ function App() {
           <ProductProvider>
             <WalletProvider>
               <div>
-                <div className="bg-white dark:bg-dark-custom-gradient w-full z-[-2] min-w-[150px] fixed top-0 left-0 min-h-screen"></div>
+                <div className="bg-white dark:bg-dark-custom-gradient w-full z-[-100] min-w-[150px] fixed top-0 left-0 min-h-screen"></div>
                 <ParticleComponent className="particles" />
                 <ScrollToTop />
 
@@ -44,11 +46,19 @@ function App() {
                     element={<RegisterationPage />}
                   />
                   <Route
+                    path="/privacy-and-policy"
+                    element={<PrivacyPolicyPage />}
+                  />
+                  <Route
+                    path="/terms-and-conditions"
+                    element={<TermsAndConditionsPage />}
+                  />
+                  <Route
                     path="/user/notifications"
                     element={<NotificationPage />}
                   />
                   <Route
-                    path="/user/reset-password/:uid/:token"
+                    path="/user/reset-password/:uidb64/:token"
                     element={<PasswordResetPage />}
                   />
                   <Route path="/" element={<PrivateRoute />}>

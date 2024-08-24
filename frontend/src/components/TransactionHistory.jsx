@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { AuthContext } from "../context/AuthenticationContext";
 import { GeneralContext } from "../context/GeneralContext";
 import { ProductContext } from "../context/ProductContext";
+import Pagination from "./Pagination";
 
 const TransactionHistory = () => {
   const [transactionHistory, setTransactionHistory] = useState([]);
@@ -14,10 +15,37 @@ const TransactionHistory = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [transactionsPerPage] = useState(10);
 
   const { authTokens } = useContext(AuthContext);
   const { api } = useContext(GeneralContext);
   const { productData } = useContext(ProductContext);
+
+  useEffect(() => {
+    const fetchTransactionHistory = async () => {
+      try {
+        const response = await api.get("transactions/", {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${authTokens.access}`,
+          },
+        });
+        // Sort transactions by date in descending order (latest first)
+        const sortedTransactions = response.data.sort(
+          (a, b) => new Date(b.date_create) - new Date(a.date_create)
+        );
+        setTransactionHistory(sortedTransactions);
+      } catch (error) {
+        console.error(
+          "Error:",
+          error.response ? error.response.data : error.message
+        );
+      }
+    };
+
+    fetchTransactionHistory();
+  }, [api, authTokens.access]);
 
   useEffect(() => {
     const fetchTransactionHistory = async () => {
@@ -89,6 +117,20 @@ const TransactionHistory = () => {
     setFilteredTransactions(filtered);
   }, [category, status, searchTerm, startDate, endDate, transactionHistory]);
 
+  // Pagination logic
+  const indexOfLastTransaction = currentPage * transactionsPerPage;
+  const indexOfFirstTransaction = indexOfLastTransaction - transactionsPerPage;
+  const currentTransactions = filteredTransactions.slice(
+    indexOfFirstTransaction,
+    indexOfLastTransaction
+  );
+  const totalPages = Math.ceil(
+    filteredTransactions.length / transactionsPerPage
+  );
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
   return (
     <div className="bg-bg_on min-h-screen bg-contain bg-no-repeat justify-center pt-24 sm:bg-cover bg-center px-4 sm:px-6 lg:px-8 xl:px-16">
       <div className="max-w-7xl mx-auto sm:flex gap-8">
@@ -98,18 +140,12 @@ const TransactionHistory = () => {
             <h2 className="font-bold font-heading_two text-primary dark:text-white text-3xl mb-4">
               Transaction History
             </h2>
-            <div className="flex items-center text-primary dark:text-gray-100 font-semibold">
-              <Link
-                to="/user/dashboard"
-                className="hover:text-link transition-colors"
-              >
-                Dashboard
-              </Link>
-              <span className="mx-3 text-gray-400">/</span>
-              <span className="text-gray-500">History</span>
+            <div className="flex items-center text-primary dark:text-gray-100 py-4 font-semibold">
+              <Link to={"/user/dashboard"}>Dashboard</Link>{" "}
+              <div className="h-1 w-1 mx-5 bg-primary dark:bg-white rounded-full"></div>
+              <span className="text-gray-500">Data</span>
             </div>
           </div>
-
           <div className="space-y-4 mb-8">
             <input
               type="search"
@@ -182,7 +218,7 @@ const TransactionHistory = () => {
                   </tr>
                 </thead>
                 <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                  {filteredTransactions.map((item, index) => (
+                  {currentTransactions.map((item, index) => (
                     <tr
                       key={item.transaction_ref_no}
                       className={`hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors ${
@@ -221,6 +257,13 @@ const TransactionHistory = () => {
               </table>
             </div>
           </div>
+
+          {/* Pagination */}
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+          />
         </div>
         <GeneralRight />
       </div>

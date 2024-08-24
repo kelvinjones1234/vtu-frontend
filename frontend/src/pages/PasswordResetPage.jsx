@@ -1,5 +1,8 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useContext, useState } from "react";
+import { Link, useParams, useNavigate } from "react-router-dom";
+import axios from "axios";
+import { GeneralContext } from "../context/GeneralContext";
+import SubmitButton from "../components/SubmitButton";
 
 const LeftSide = () => (
   <div className="left leading-[3rem] relative hidden justify-center items-center sm:flex h-[364px] shadow-lg shadow-indigo-900/20 bg-opacity-50 rounded-2xl w-[20rem] bg-black text-white">
@@ -10,14 +13,72 @@ const LeftSide = () => (
 );
 
 const PasswordResetPage = () => {
-  const [loading, setLoading] = useState(false);
+  const { uidb64, token } = useParams();
+  const navigate = useNavigate();
+  const { setLoading } = useContext(GeneralContext);
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [message, setMessage] = useState({ type: "", content: "" });
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const reset = (e) => {
+  const reset = async (e) => {
     e.preventDefault();
-    if (password & confirmPassword) {
-      setLoading(true);
+    setMessage({ type: "", content: "" });
+
+    // Validate inputs
+    if (!password || !confirmPassword) {
+      setMessage({ type: "error", content: "All fields are required." });
+      return;
+    }
+
+    if (password.length < 8) {
+      setMessage({
+        type: "error",
+        content: "Password must be at least 8 characters long.",
+      });
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setMessage({ type: "error", content: "Passwords do not match." });
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const response = await axios.post(
+        `http://localhost:8000/api/reset-password/${uidb64}/${token}/`,
+        {
+          password: password,
+          password_confirm: confirmPassword,
+        }
+      );
+
+      if (response.status === 200) {
+        setMessage({
+          type: "success",
+          content: "Password reset successful. Redirecting to login...",
+        });
+        setTimeout(() => {
+          navigate("/authentication/login");
+        }, 3000);
+      }
+    } catch (error) {
+      if (error.response && error.response.data) {
+        setMessage({
+          type: "error",
+          content: error.response.data.error || "Password reset failed.",
+        });
+      } else {
+        setMessage({
+          type: "error",
+          content: "An error occurred. Please try again.",
+        });
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -35,13 +96,7 @@ const PasswordResetPage = () => {
             <div className="h-3 w-3 bg-green-500 rounded-full"></div>
             <div className="h-3 w-3 bg-green-500 rounded-full"></div>
           </div>
-          {/* <div className="hidden ss:block text-gray-300">
-            Don't have an account?
-            <span className="text-link font-bold cursor-pointer hover:text-sky-400 transition duration-450 ease-in-out">
-              <Link to="/authentication/register"> Get started</Link>
-            </span>
-          </div> */}
-        </div>
+        </div>{" "}
         <form
           onSubmit={reset}
           className="font-poppins mt-[10vh] sm:flex justify-between login mx-auto px-4 w-full md:px-[4rem] lg:px-[8rem]"
@@ -56,72 +111,88 @@ const PasswordResetPage = () => {
                 Enter a strong password and retype it for confirmation.
               </p>
             </div>
-            {/* {errorMessage.anonymousError && (
-              <div className="text-white ">
-                <p>Incorrect login details.</p>
-              </div>
-            )} */}
-            <div>
-              <input
-                type="password"
-                value={password}
-                placeholder="Password"
-                aria-label="password"
-                onChange={(e) => setPassword(e.target.value)}
-                className="transition duration-450 ease-in-out my-2 w-full text-white py-1 px-4 h-[3.5rem] bg-[#18202F] text-[1.2rem] rounded-2xl outline-0 border border-gray-700 hover:border-black focus:border-link bg-opacity-80"
-              />
-              {/* {errorMessage.passwordError && (
-                <div className="text-white mb-3 ">
-                  {errorMessage.passwordError}
-                </div>
-              )} */}
-            </div>
-
-            <div>
-              <input
-                type="password"
-                value={password}
-                placeholder="Confirm Password"
-                aria-label="confirm_password"
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                className="transition duration-450 ease-in-out my-2 w-full text-white py-1 px-4 h-[3.5rem] bg-[#18202F] text-[1.2rem] rounded-2xl outline-0 border border-gray-700 hover:border-black focus:border-link bg-opacity-80"
-              />
-              {/* {errorMessage.passwordError && (
-                <div className="text-white mb-3 ">
-                  {errorMessage.passwordError}
-                </div>
-              )} */}
-            </div>
-            <div>
-              <button
-                className="text-[1rem] my-4 w-full outline-none text-white p-1 h-[3.2rem] bg-link text-black rounded-2xl bg-opacity-[90%] font-semibold hover:bg-sky-400 transition duration-450 ease-in-out"
-                type="submit"
-                disabled={loading} // Disable button while loading
+            {message.content && (
+              <div
+                className={`mb-4 p-4 rounded-lg shadow-md flex items-center ${
+                  message.type === "error"
+                    ? "bg-red-50 text-red-800 border-l-4 border-red-500"
+                    : "bg-green-50 text-green-800 border-l-4 border-green-500"
+                }`}
               >
-                {loading ? (
-                  <div role="status" className="grid justify-center">
+                <div className="flex-shrink-0 mr-3 mb-4">
+                  {message.type === "error" ? (
                     <svg
-                      aria-hidden="true"
-                      class="w-8 h-8 text-gray-200 animate-spin dark:text-gray-400 fill-blue-600"
-                      viewBox="0 0 100 101"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-5 w-5 text-red-400"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
                     >
                       <path
-                        d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
-                        fill="currentColor"
-                      />
-                      <path
-                        d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
-                        fill="currentFill"
+                        fillRule="evenodd"
+                        d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                        clipRule="evenodd"
                       />
                     </svg>
-                    <span class="sr-only">Loading...</span>
-                  </div>
-                ) : (
-                  "Reset password"
-                )}
+                  ) : (
+                    <svg
+                      className="h-5 w-5 text-green-400"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  )}
+                </div>
+                <div>
+                  <p className="font-medium">
+                    {message.type === "error" ? "Error" : "Success"}
+                  </p>
+                  <p className="text-sm">{message.content}</p>
+                </div>
+              </div>
+            )}
+            <div className="relative w-full py-2">
+              <input
+                type={showPassword ? "text" : "password"}
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                aria-label="Password"
+                autoComplete="current-password"
+                className="w-full text-white py-3 px-4 bg-[#18202F] text-lg rounded-xl outline-none border border-gray-700 hover:border-gray-500 focus:border-link transition duration-300 ease-in-out"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-white focus:outline-none"
+              >
+                {showPassword ? "Hide" : "Show"}
               </button>
+            </div>
+
+            <div className="relative w-full py-2">
+              <input
+                type={showConfirmPassword ? "text" : "password"}
+                placeholder="Confirm Password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                aria-label="Confirm Password"
+                autoComplete="current-password"
+                className="w-full text-white py-3 px-4 bg-[#18202F] text-lg rounded-xl outline-none border border-gray-700 hover:border-gray-500 focus:border-link transition duration-300 ease-in-out"
+              />
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                className="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-white focus:outline-none"
+              >
+                {showConfirmPassword ? "Hide" : "Show"}
+              </button>
+            </div>
+            <div>
+              <SubmitButton label="Reset Password" />
             </div>
           </div>
         </form>

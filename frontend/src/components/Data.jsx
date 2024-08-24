@@ -1,13 +1,19 @@
-import React, { useContext, useCallback, useEffect, useState } from "react";
+import React, {
+  useContext,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
+import { Link } from "react-router-dom";
 import GeneralLeft from "./GeneralLeft";
 import GeneralRight from "./GeneralRight";
 import { ProductContext } from "../context/ProductContext";
-import { Link } from "react-router-dom";
 import { GeneralContext } from "../context/GeneralContext";
 import { useWallet } from "../context/WalletContext";
 import { AuthContext } from "../context/AuthenticationContext";
 import SubmitButton from "./SubmitButton";
-import ConfirmationPopup from "./ConfirmationPopup"; // Import ConfirmationPopup
+import ConfirmationPopup from "./ConfirmationPopup";
 import ErrorPopup from "./ErrorPopup";
 import SuccessPopup from "./SuccessPopup";
 import axios from "axios";
@@ -18,265 +24,298 @@ const selectStyle =
 const inputStyle =
   "dark:bg-[#18202F] bg-white sm:w-[40vw] transition duration-450 ease-in-out mb-3 w-full text-primary dark:text-white py-1 px-4 h-[3.5rem] text-[1.2rem] rounded-2xl outline-0 border border-[#1CCEFF] dark:border-gray-700 dark:hover:border-gray-500 dark:hover:border-black dark:focus:border-[#1CCEFF]";
 
+const errorInputStyle = "border-red-500 dark:border-red-700";
+
 const Data = () => {
   const { dataNetworks } = useContext(ProductContext);
-  const [selectedNetwork, setSelectedNetwork] = useState("");
-  const [planTypes, setPlanTypes] = useState([]);
-  const [selectedPlanType, setSelectedPlanType] = useState("");
-  const [dataPlans, setDataPlans] = useState([]);
-  const [selectedDataPlan, setSelectedDataPlan] = useState("");
-  const [selectedDataPlanId, setSelectedDataPlanId] = useState("");
-  const [networkId, setNetworkId] = useState("");
-  const [planName, setPlanName] = useState("");
-  const [phone, setPhone] = useState("");
-  const [pin, setPin] = useState("");
-  const [errorMessage, setErrorMessage] = useState({});
-  const [price, setPrice] = useState("");
-  const [bypassPhoneNumber, setBypassPhoneNumber] = useState(false);
-  const [networkMessage, setNetworkMessage] = useState(""); // State for the network message
   const { api, detectNetwork, setLoading } = useContext(GeneralContext);
-  const { user, authTokens } = useContext(AuthContext);
-  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
-  const [isErrorOpen, setIsErrorOpen] = useState(false);
-  const [isSuccessOpen, setIsSuccessOpen] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
-  const [errorPopupMessage, setErrorPopupMessage] = useState("");
+  const { user, authTokens, logoutUser, rememberMe } = useContext(AuthContext);
   const { walletData, setWalletData } = useWallet();
 
-  useEffect(() => {
-    if (selectedNetwork) {
-      api
-        .get(`data/plan-type/${selectedNetwork}/`)
-        .then((response) => setPlanTypes(response.data))
-        .catch((error) => console.error("Error fetching plan types:", error));
+  const [formData, setFormData] = useState({
+    selectedNetwork: "",
+    selectedPlanType: "",
+    selectedDataPlan: "",
+    selectedDataPlanId: "",
+    networkId: "",
+    planName: "",
+    phone: "",
+    pin: "",
+    price: "",
+  });
+
+  const [planTypes, setPlanTypes] = useState([]);
+  const [dataPlans, setDataPlans] = useState([]);
+  const [errorMessage, setErrorMessage] = useState({});
+  const [bypassPhoneNumber, setBypassPhoneNumber] = useState(false);
+  const [networkMessage, setNetworkMessage] = useState("");
+  const [popupState, setPopupState] = useState({
+    isConfirmOpen: false,
+    isErrorOpen: false,
+    isSuccessOpen: false,
+    successMessage: "",
+    errorPopupMessage: "",
+  });
+
+  const memoizedApi = useMemo(() => api, [api]);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+
+    if (name === "phone") {
+      handlePhoneChange(value);
+    } else if (name === "selectedNetwork") {
+      handleNetworkChange(value);
+    } else if (name === "selectedPlanType") {
+      handlePlanTypeChange(value);
+    } else if (name === "selectedDataPlan") {
+      handleDataPlanChange(value);
     }
-  }, [selectedNetwork]);
+  };
 
-  useEffect(() => {
-    if (selectedPlanType && selectedNetwork) {
-      api
-        .get(`data/plans/${selectedNetwork}/${selectedPlanType}/`)
-        .then((response) => setDataPlans(response.data))
-        .catch((error) => console.error("Error fetching data plans:", error));
-    }
-  }, [selectedPlanType, selectedNetwork]);
-
-  const handlePhoneChange = (e) => {
-    const inputPhone = e.target.value;
-    setPhone(inputPhone);
-
-    // Only detect the network and update the message if the phone number is not empty
-    if (inputPhone) {
-      // Detect the network based on the phone number
+  const handlePhoneChange = (inputPhone) => {
+    if (inputPhone.length === 11) {
       const detectedNetwork = detectNetwork(inputPhone);
-
-      // Update the network message based on the detected network
-      if (detectedNetwork !== "Unknown Network") {
-        setNetworkMessage(
-          `Detected Network: ${detectedNetwork} <br /> NB: Ignore this for Ported Numbers`
-        );
-      } else {
-        setNetworkMessage(
-          `Unable to identify network <br /> NB: Ignore this for Ported Numbers`
-        );
-      }
+      setNetworkMessage(
+        detectedNetwork !== "Unknown Network"
+          ? `Detected Network: ${detectedNetwork} <br /> NB: Ignore this for Ported Numbers`
+          : `Unable to identify network <br /> NB: Ignore this for Ported Numbers`
+      );
     } else {
-      // If the phone number is empty, clear the network message
       setNetworkMessage("");
     }
   };
 
-  const handleNetworkChange = (e) => {
-    const selectedNetworkName = e.target.value;
+  const handleNetworkChange = (selectedNetworkName) => {
     const selectedNetworkObj = dataNetworks.find(
       (network) => network.network === selectedNetworkName
     );
-
     if (selectedNetworkObj) {
-      setSelectedNetwork(selectedNetworkName);
-      setNetworkId(selectedNetworkObj.network_id); // Set the network_id
+      setFormData((prev) => ({
+        ...prev,
+        selectedNetwork: selectedNetworkName,
+        networkId: selectedNetworkObj.network_id,
+        selectedPlanType: "",
+        selectedDataPlan: "",
+        price: "",
+      }));
       setPlanTypes([]);
-      setSelectedPlanType("");
       setDataPlans([]);
-      setSelectedDataPlan("");
-      setPrice("");
     }
   };
 
-  const handlePlanTypeChange = (e) => {
-    setSelectedPlanType(e.target.value);
+  const handlePlanTypeChange = (value) => {
+    setFormData((prev) => ({
+      ...prev,
+      selectedPlanType: value,
+      selectedDataPlan: "",
+      price: "",
+    }));
     setDataPlans([]);
-    setSelectedDataPlan("");
-    setPrice("");
   };
 
-  const handleDataPlanChange = (e) => {
-    const selected = parseInt(e.target.value, 10);
-
+  const handleDataPlanChange = (value) => {
+    const selected = parseInt(value, 10);
     const selectedPlan = dataPlans.find(
       (plan) => plan.id === selected || plan.plan_id === selected
     );
-
     if (selectedPlan) {
-      setSelectedDataPlanId(selectedPlan.plan_id);
-      setSelectedDataPlan(selectedPlan.id);
-      setPlanName(selectedPlan.data_plan);
-      setPrice(selectedPlan.price);
+      setFormData((prev) => ({
+        ...prev,
+        selectedDataPlanId: selectedPlan.plan_id,
+        selectedDataPlan: selectedPlan.id,
+        planName: selectedPlan.data_plan,
+        price: selectedPlan.price,
+      }));
     } else {
-      setSelectedDataPlanId("");
-      setSelectedDataPlan("");
-      setPrice("");
+      setFormData((prev) => ({
+        ...prev,
+        selectedDataPlanId: "",
+        selectedDataPlan: "",
+        price: "",
+      }));
     }
   };
 
+  useEffect(() => {
+    if (formData.selectedNetwork) {
+      api
+        .get(`data/plan-type/${formData.selectedNetwork}/`)
+        .then((response) => setPlanTypes(response.data))
+        .catch((error) => console.error("Error fetching plan types:", error));
+    }
+  }, [formData.selectedNetwork, api]);
+
+  useEffect(() => {
+    if (formData.selectedPlanType && formData.selectedNetwork) {
+      api
+        .get(
+          `data/plans/${formData.selectedNetwork}/${formData.selectedPlanType}/`
+        )
+        .then((response) => setDataPlans(response.data))
+        .catch((error) => console.error("Error fetching data plans:", error));
+    }
+  }, [formData.selectedPlanType, formData.selectedNetwork, api]);
+
   const validInputs = () => {
     const newError = {};
-
-    // Validate phone number
-    if (!phone) {
-      newError.phone = "A phone number is required";
-    } else if (phone.length !== 11) {
+    if (!formData.phone) newError.phone = "A phone number is required";
+    else if (formData.phone.length !== 11)
       newError.phone = "Enter a valid 11-digit phone number";
-    }
-
-    // Validate PIN
-    if (pin !== user.transaction_pin) {
-      newError.pin = "Incorrect pin";
-    }
-
+    if (formData.pin !== user.transaction_pin) newError.pin = "Incorrect pin";
     setErrorMessage(newError);
     return Object.keys(newError).length === 0;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (validInputs()) {
-      setIsConfirmOpen(true);
+      if (rememberMe) {
+        const token = localStorage.getItem("authTokens");
+        const parsedToken = token ? JSON.parse(token) : null;
+
+        if (parsedToken) {
+          const storedAccessToken = parsedToken.access;
+          if (storedAccessToken !== authTokens.access) {
+            console.log("Token altered or empty");
+            logoutUser();
+          } else {
+            setPopupState((prev) => ({ ...prev, isConfirmOpen: true }));
+          }
+        } else {
+          console.log("No parsed token found");
+          logoutUser();
+        }
+      } else {
+        // If rememberMe is false, proceed without checking local storage
+        setPopupState((prev) => ({ ...prev, isConfirmOpen: true }));
+      }
     }
   };
 
-  const handleConfirm = async () => {
-    setIsConfirmOpen(false);
+  const handleConfirm = useCallback(async () => {
+    setPopupState((prev) => ({ ...prev, isConfirmOpen: false }));
     setLoading(true);
 
-    function generateUniqueId(length = 16) {
+    const generateUniqueId = (length = 16) => {
       const array = new Uint8Array(length / 2);
       window.crypto.getRandomValues(array);
       return Array.from(array, (byte) =>
         byte.toString(16).padStart(2, "0")
       ).join("");
-    }
+    };
 
     try {
-      // Refresh wallet and check balance
-      const walletResponse = await api.get(`wallet/${user.username}/`, {
+      const walletResponse = await memoizedApi.get(`wallet/${user.username}/`, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${authTokens.access}`,
         },
       });
 
-      if (walletResponse.data.balance < price) {
-        setErrorPopupMessage("Insufficient Funds");
-        setIsErrorOpen(true);
-        setLoading(false);
-        return; // Exit the function early if there are insufficient funds
+      if (walletResponse.data.balance < formData.price) {
+        throw new Error("Insufficient Funds");
       }
+
       const payload = {
-        network: networkId,
-        phone: phone,
-        data_plan: selectedDataPlanId,
+        network: formData.networkId,
+        phone: formData.phone,
+        data_plan: formData.selectedDataPlanId,
         bypass: bypassPhoneNumber,
         "request-id": `Data_${generateUniqueId()}`,
       };
 
-      // const mockResponse = {
-      //   data: {
-      //     transid: `TRANS_${generateUniqueId()}`,
-      //     status: "SUCCESS",
-      //   },
-      // };
-      // const response = mockResponse;
+      const mockResponse = {
+        data: {
+          transid: `TRANS_${generateUniqueId()}`,
+          status: "SUCCESS",
+        },
+      };
+      const response = mockResponse;
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      // Simulate the delay of a real API request
-      // await new Promise((resolve) => setTimeout(resolve, 1000));
+      // const response = await axios.post(
+      //   "https://kusosub.com/api/data",
+      //   payload,
+      //   {
+      //     headers: {
+      //       Authorization:
+      //         "Token 3379df5f760eb207eb83201fdadc6ec81652e5934a37f0ac83c1c9de4c18",
+      //       "Content-Type": "application/json",
+      //     },
+      //   }
+      // );
 
-      const response = await axios.post(
-        "https://kusosub.com/api/data",
-        payload,
+      const newBalance = Number(walletData.balance) - formData.price;
+      const deduct = -formData.price;
+
+      await memoizedApi.put(
+        `fund-wallet/${user.username}/`,
+        { balance: deduct },
         {
           headers: {
-            Authorization:
-              "Token 3379df5f760eb207eb83201fdadc6ec81652e5934a37f0ac83c1c9de4c18",
             "Content-Type": "application/json",
+            Authorization: `Bearer ${authTokens.access}`,
           },
         }
       );
 
-      const newBalance = Number(walletData.balance) - price;
-      const deduct = -price;
-      console.log(deduct);
-
-      // Update wallet balance
-      api
-        .put(
-          `fund-wallet/${user.username}/`,
-          { balance: deduct },
-          {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${authTokens.access}`,
-            },
-          }
-        )
-        .catch((error) => console.error("Error updating user data:", error));
       setWalletData((prevData) => ({ ...prevData, balance: newBalance }));
 
-      await api.post(
+      await memoizedApi.post(
         "transactions/",
         {
           transaction_ref_no: response.data.transid,
           wallet: user.user_id,
           transaction_type: "DATA",
-          product: planName,
-          price: price,
+          product: formData.planName,
+          price: formData.price,
           status: response.data.status,
           new_bal: newBalance,
         },
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: "Bearer " + String(authTokens.access),
+            Authorization: `Bearer ${authTokens.access}`,
           },
         }
       );
 
-      console.log("Transaction complete:", response);
-
-      setSuccessMessage("Transaction successful!");
-      setIsSuccessOpen(true);
+      setPopupState((prev) => ({
+        ...prev,
+        successMessage: "Transaction successful!",
+        isSuccessOpen: true,
+      }));
     } catch (error) {
       const errorMsg = error.response
         ? error.response.data.message
         : error.message;
-      setErrorPopupMessage(errorMsg);
-      setIsErrorOpen(true);
+      setPopupState((prev) => ({
+        ...prev,
+        errorPopupMessage: errorMsg,
+        isErrorOpen: true,
+      }));
     } finally {
       setLoading(false);
     }
-  };
+  }, [
+    memoizedApi,
+    user.username,
+    authTokens.access,
+    walletData,
+    formData,
+    bypassPhoneNumber,
+    setWalletData,
+    setLoading,
+  ]);
 
-  const handleCancel = () => {
-    setIsConfirmOpen(false);
-  };
-
-  const handleErrorClose = () => {
-    setIsErrorOpen(false);
-  };
-
-  const handleBypass = () => {
-    setBypassPhoneNumber(!bypassPhoneNumber);
-  };
+  const handleCancel = () =>
+    setPopupState((prev) => ({ ...prev, isConfirmOpen: false }));
+  const handleErrorClose = () =>
+    setPopupState((prev) => ({ ...prev, isErrorOpen: false }));
+  const handleBypass = () => setBypassPhoneNumber((prev) => !prev);
 
   return (
     <div className="bg-bg_on h-auto bg-contain bg-no-repeat mt-[20vh] sm:bg-cover bg-center px-4 justify-center ss:px-[5rem] sm:px-[1rem] sm:flex gap-5 md:gap-12 lg:mx-[5rem]">
@@ -295,12 +334,19 @@ const Data = () => {
         <div className="flex flex-col justify-center border-[0.01rem] dark:border-gray-900 p-5 rounded-[1.5rem] shadow-lg shadow-indigo-950/10">
           <form onSubmit={handleSubmit}>
             <div>
+              {errorMessage.selectedNetwork && (
+                <div className="text-red-500 text-sm mb-1">
+                  {errorMessage.selectedNetwork}
+                </div>
+              )}
               <select
-                name="network"
+                name="selectedNetwork"
                 aria-label="Network"
-                value={selectedNetwork}
-                onChange={handleNetworkChange}
-                className={selectStyle}
+                value={formData.selectedNetwork}
+                onChange={handleInputChange}
+                className={`${selectStyle} ${
+                  errorMessage.selectedNetwork ? "border-red-500" : ""
+                }`}
               >
                 <option value="" disabled>
                   Network
@@ -312,15 +358,24 @@ const Data = () => {
                 ))}
               </select>
             </div>
+
             <div>
+              {errorMessage.selectedPlanType && (
+                <div className="text-red-500 text-sm mb-1">
+                  {errorMessage.selectedPlanType}
+                </div>
+              )}
               <select
-                name="planType"
+                name="selectedPlanType"
                 aria-label="Plan Type"
-                className={selectStyle}
-                value={selectedPlanType}
-                onChange={handlePlanTypeChange}
+                value={formData.selectedPlanType}
+                onChange={handleInputChange}
+                className={`${selectStyle} ${
+                  errorMessage.selectedPlanType ? "border-red-500" : ""
+                }`}
                 disabled={
-                  !selectedNetwork || !planTypes.some((type) => type.is_active)
+                  !formData.selectedNetwork ||
+                  !planTypes.some((type) => type.is_active)
                 }
               >
                 <option value="" disabled>
@@ -337,14 +392,22 @@ const Data = () => {
                 ))}
               </select>
             </div>
+
             <div>
+              {errorMessage.selectedDataPlan && (
+                <div className="text-red-500 text-sm mb-1">
+                  {errorMessage.selectedDataPlan}
+                </div>
+              )}
               <select
-                name="dataPlan"
+                name="selectedDataPlan"
                 aria-label="Data Plan"
-                className={selectStyle}
-                value={selectedDataPlan}
-                onChange={handleDataPlanChange}
-                disabled={!selectedPlanType}
+                value={formData.selectedDataPlan}
+                onChange={handleInputChange}
+                className={`${selectStyle} ${
+                  errorMessage.selectedDataPlan ? errorInputStyle : ""
+                }`}
+                disabled={!formData.selectedPlanType}
               >
                 <option value="" disabled>
                   Data Plan
@@ -355,11 +418,11 @@ const Data = () => {
                   </option>
                 ))}
               </select>
-              {console.log({ dataPlans })}
             </div>
+
             <div>
               {errorMessage.phone && (
-                <div className="text-gray-700 dark:text-white">
+                <div className="text-red-500 text-sm mb-1">
                   {errorMessage.phone}
                 </div>
               )}
@@ -368,9 +431,12 @@ const Data = () => {
                 name="phone"
                 placeholder="Phone Number"
                 aria-label="Phone number"
-                value={phone}
-                onChange={handlePhoneChange}
-                className={inputStyle}
+                disabled={!formData.selectedDataPlan}
+                value={formData.phone}
+                onChange={handleInputChange}
+                className={`${inputStyle} ${
+                  errorMessage.phone ? errorInputStyle : ""
+                }`}
               />
               {networkMessage && (
                 <p
@@ -379,9 +445,10 @@ const Data = () => {
                 />
               )}
             </div>
+
             <div>
               {errorMessage.pin && (
-                <div className="text-gray-700 dark:text-white">
+                <div className="text-red-500 text-sm mb-1">
                   {errorMessage.pin}
                 </div>
               )}
@@ -389,28 +456,31 @@ const Data = () => {
                 type="password"
                 name="pin"
                 placeholder="Pin"
+                disabled={!formData.phone}
                 aria-label="Pin"
                 autoComplete="current-password"
-                value={pin}
-                onChange={(e) => setPin(e.target.value)}
-                className={inputStyle}
+                value={formData.pin}
+                onChange={handleInputChange}
+                className={`${inputStyle} ${
+                  errorMessage.pin ? errorInputStyle : ""
+                }`}
               />
             </div>
-            {price && (
-              <div>
-                <input
-                  type="text"
-                  disabled
-                  name="price"
-                  placeholder="Price"
-                  value={`₦${price}`}
-                  className={inputStyle}
-                />
-              </div>
+
+            {formData.price && (
+              <input
+                type="text"
+                disabled
+                name="price"
+                placeholder="Price"
+                value={`₦${formData.price}`}
+                className={`${inputStyle}`}
+              />
             )}
+
             <div className="flex flex-wrap w-full text-white justify-between text-[1rem] py-3">
               <p
-                className="dark:text-white text-primary opacity-80 font-semibold"
+                className="dark:text-white text-primary opacity-80 font-semibold cursor-pointer"
                 onClick={handleBypass}
               >
                 Bypass Phone Number
@@ -432,6 +502,7 @@ const Data = () => {
                 </div>
               </div>
             </div>
+
             <div>
               <SubmitButton label="Purchase" />
             </div>
@@ -440,26 +511,25 @@ const Data = () => {
       </div>
       <GeneralRight />
 
-      {/* Render Confirmation Popup */}
       <ConfirmationPopup
-        isOpen={isConfirmOpen}
+        isOpen={popupState.isConfirmOpen}
         onConfirm={handleConfirm}
         onCancel={handleCancel}
-        message={`Are you sure you want to proceed with transfering ${planName} to ${phone}?`}
+        message={`Are you sure you want to proceed with transferring ${formData.planName} to ${formData.phone}?`}
       />
 
-      {/* Render Error Popup */}
       <ErrorPopup
-        isOpen={isErrorOpen}
-        message={errorPopupMessage}
+        isOpen={popupState.isErrorOpen}
+        message={popupState.errorPopupMessage}
         onClose={handleErrorClose}
       />
 
-      {/* Render Success Popup */}
       <SuccessPopup
-        isOpen={isSuccessOpen}
-        message={successMessage}
-        onClose={() => setIsSuccessOpen(false)}
+        isOpen={popupState.isSuccessOpen}
+        message={popupState.successMessage}
+        onClose={() =>
+          setPopupState((prev) => ({ ...prev, isSuccessOpen: false }))
+        }
       />
     </div>
   );

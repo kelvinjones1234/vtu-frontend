@@ -1608,3 +1608,909 @@ const Airtime = () => {
 };
 
 export default Airtime;
+
+
+
+
+import React, { useContext, useCallback, useEffect, useState } from "react";
+import GeneralLeft from "./GeneralLeft";
+import GeneralRight from "./GeneralRight";
+import { ProductContext } from "../context/ProductContext";
+import { Link } from "react-router-dom";
+import { GeneralContext } from "../context/GeneralContext";
+import { useWallet } from "../context/WalletContext";
+import { AuthContext } from "../context/AuthenticationContext";
+import SubmitButton from "./SubmitButton";
+import ConfirmationPopup from "./ConfirmationPopup"; // Import ConfirmationPopup
+import ErrorPopup from "./ErrorPopup";
+import SuccessPopup from "./SuccessPopup";
+import axios from "axios";
+
+const selectStyle =
+  "custom-select dark:bg-[#18202F] bg-white sm:w-[40vw] transition duration-450 ease-in-out mb-3 w-full text-primary dark:text-white py-1 px-4 h-[3.5rem] text-[1.2rem] rounded-2xl outline-0 border border-[#1CCEFF] dark:border-gray-700 dark:hover:border-black dark:focus:border-[#1CCEFF]";
+
+const inputStyle =
+  "dark:bg-[#18202F] bg-white sm:w-[40vw] transition duration-450 ease-in-out mb-3 w-full text-primary dark:text-white py-1 px-4 h-[3.5rem] text-[1.2rem] rounded-2xl outline-0 border border-[#1CCEFF] dark:border-gray-700 dark:hover:border-gray-500 dark:hover:border-black dark:focus:border-[#1CCEFF]";
+
+const Data = () => {
+  const { dataNetworks } = useContext(ProductContext);
+  const [selectedNetwork, setSelectedNetwork] = useState("");
+  const [planTypes, setPlanTypes] = useState([]);
+  const [selectedPlanType, setSelectedPlanType] = useState("");
+  const [dataPlans, setDataPlans] = useState([]);
+  const [selectedDataPlan, setSelectedDataPlan] = useState("");
+  const [selectedDataPlanId, setSelectedDataPlanId] = useState("");
+  const [networkId, setNetworkId] = useState("");
+  const [planName, setPlanName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [pin, setPin] = useState("");
+  const [errorMessage, setErrorMessage] = useState({});
+  const [price, setPrice] = useState("");
+  const [bypassPhoneNumber, setBypassPhoneNumber] = useState(false);
+  const [networkMessage, setNetworkMessage] = useState(""); // State for the network message
+  const { api, detectNetwork, setLoading } = useContext(GeneralContext);
+  const { user, authTokens } = useContext(AuthContext);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [isErrorOpen, setIsErrorOpen] = useState(false);
+  const [isSuccessOpen, setIsSuccessOpen] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorPopupMessage, setErrorPopupMessage] = useState("");
+  const { walletData, setWalletData } = useWallet();
+
+  useEffect(() => {
+    if (selectedNetwork) {
+      api
+        .get(`data/plan-type/${selectedNetwork}/`)
+        .then((response) => setPlanTypes(response.data))
+        .catch((error) => console.error("Error fetching plan types:", error));
+    }
+  }, [selectedNetwork]);
+
+  useEffect(() => {
+    if (selectedPlanType && selectedNetwork) {
+      api
+        .get(`data/plans/${selectedNetwork}/${selectedPlanType}/`)
+        .then((response) => setDataPlans(response.data))
+        .catch((error) => console.error("Error fetching data plans:", error));
+    }
+  }, [selectedPlanType, selectedNetwork]);
+
+  const handlePhoneChange = (e) => {
+    const inputPhone = e.target.value;
+    setPhone(inputPhone);
+
+    // Only detect the network and update the message if the phone number is not empty
+    if (inputPhone) {
+      // Detect the network based on the phone number
+      const detectedNetwork = detectNetwork(inputPhone);
+
+      // Update the network message based on the detected network
+      if (detectedNetwork !== "Unknown Network") {
+        setNetworkMessage(
+          `Detected Network: ${detectedNetwork} <br /> NB: Ignore this for Ported Numbers`
+        );
+      } else {
+        setNetworkMessage(
+          `Unable to identify network <br /> NB: Ignore this for Ported Numbers`
+        );
+      }
+    } else {
+      // If the phone number is empty, clear the network message
+      setNetworkMessage("");
+    }
+  };
+
+  const handleNetworkChange = (e) => {
+    const selectedNetworkName = e.target.value;
+    const selectedNetworkObj = dataNetworks.find(
+      (network) => network.network === selectedNetworkName
+    );
+
+    if (selectedNetworkObj) {
+      setSelectedNetwork(selectedNetworkName);
+      setNetworkId(selectedNetworkObj.network_id); // Set the network_id
+      setPlanTypes([]);
+      setSelectedPlanType("");
+      setDataPlans([]);
+      setSelectedDataPlan("");
+      setPrice("");
+    }
+  };
+
+  const handlePlanTypeChange = (e) => {
+    setSelectedPlanType(e.target.value);
+    setDataPlans([]);
+    setSelectedDataPlan("");
+    setPrice("");
+  };
+
+  const handleDataPlanChange = (e) => {
+    const selected = parseInt(e.target.value, 10);
+
+    const selectedPlan = dataPlans.find(
+      (plan) => plan.id === selected || plan.plan_id === selected
+    );
+
+    if (selectedPlan) {
+      setSelectedDataPlanId(selectedPlan.plan_id);
+      setSelectedDataPlan(selectedPlan.id);
+      setPlanName(selectedPlan.data_plan);
+      setPrice(selectedPlan.price);
+    } else {
+      setSelectedDataPlanId("");
+      setSelectedDataPlan("");
+      setPrice("");
+    }
+  };
+
+  const validInputs = () => {
+    const newError = {};
+
+    // Validate phone number
+    if (!phone) {
+      newError.phone = "A phone number is required";
+    } else if (phone.length !== 11) {
+      newError.phone = "Enter a valid 11-digit phone number";
+    }
+
+    // Validate PIN
+    if (pin !== user.transaction_pin) {
+      newError.pin = "Incorrect pin";
+    }
+
+    setErrorMessage(newError);
+    return Object.keys(newError).length === 0;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (validInputs()) {
+      setIsConfirmOpen(true);
+    }
+  };
+
+  const handleConfirm = async () => {
+    setIsConfirmOpen(false);
+    setLoading(true);
+
+    function generateUniqueId(length = 16) {
+      const array = new Uint8Array(length / 2);
+      window.crypto.getRandomValues(array);
+      return Array.from(array, (byte) =>
+        byte.toString(16).padStart(2, "0")
+      ).join("");
+    }
+
+    try {
+      // Refresh wallet and check balance
+      const walletResponse = await api.get(`wallet/${user.username}/`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${authTokens.access}`,
+        },
+      });
+
+      if (walletResponse.data.balance < price) {
+        setErrorPopupMessage("Insufficient Funds");
+        setIsErrorOpen(true);
+        setLoading(false);
+        return; // Exit the function early if there are insufficient funds
+      }
+      const payload = {
+        network: networkId,
+        phone: phone,
+        data_plan: selectedDataPlanId,
+        bypass: bypassPhoneNumber,
+        "request-id": `Data_${generateUniqueId()}`,
+      };
+
+      // const mockResponse = {
+      //   data: {
+      //     transid: `TRANS_${generateUniqueId()}`,
+      //     status: "SUCCESS",
+      //   },
+      // };
+      // const response = mockResponse;
+
+      // Simulate the delay of a real API request
+      // await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      const response = await axios.post(
+        "https://kusosub.com/api/data",
+        payload,
+        {
+          headers: {
+            Authorization:
+              "Token 3379df5f760eb207eb83201fdadc6ec81652e5934a37f0ac83c1c9de4c18",
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      const newBalance = Number(walletData.balance) - price;
+      const deduct = -price;
+      console.log(deduct);
+
+      // Update wallet balance
+      api
+        .put(
+          `fund-wallet/${user.username}/`,
+          { balance: deduct },
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${authTokens.access}`,
+            },
+          }
+        )
+        .catch((error) => console.error("Error updating user data:", error));
+      setWalletData((prevData) => ({ ...prevData, balance: newBalance }));
+
+      await api.post(
+        "transactions/",
+        {
+          transaction_ref_no: response.data.transid,
+          wallet: user.user_id,
+          transaction_type: "DATA",
+          product: planName,
+          price: price,
+          status: response.data.status,
+          new_bal: newBalance,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + String(authTokens.access),
+          },
+        }
+      );
+
+      console.log("Transaction complete:", response);
+
+      setSuccessMessage("Transaction successful!");
+      setIsSuccessOpen(true);
+    } catch (error) {
+      const errorMsg = error.response
+        ? error.response.data.message
+        : error.message;
+      setErrorPopupMessage(errorMsg);
+      setIsErrorOpen(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCancel = () => {
+    setIsConfirmOpen(false);
+  };
+
+  const handleErrorClose = () => {
+    setIsErrorOpen(false);
+  };
+
+  const handleBypass = () => {
+    setBypassPhoneNumber(!bypassPhoneNumber);
+  };
+
+  return (
+    <div className="bg-bg_on h-auto bg-contain bg-no-repeat mt-[20vh] sm:bg-cover bg-center px-4 justify-center ss:px-[5rem] sm:px-[1rem] sm:flex gap-5 md:gap-12 lg:mx-[5rem]">
+      <GeneralLeft />
+      <div>
+        <div>
+          <h2 className="font-bold font-heading_two text-primary dark:text-white text-[1.5rem]">
+            Buy Data
+          </h2>
+          <div className="flex items-center text-primary dark:text-gray-100 py-4 font-semibold">
+            <Link to={"/user/dashboard"}>Dashboard</Link>{" "}
+            <div className="h-1 w-1 mx-5 bg-primary dark:bg-white rounded-full"></div>
+            <span className="text-gray-500">Data</span>
+          </div>
+        </div>
+        <div className="flex flex-col justify-center border-[0.01rem] dark:border-gray-900 p-5 rounded-[1.5rem] shadow-lg shadow-indigo-950/10">
+          <form onSubmit={handleSubmit}>
+            <div>
+              <select
+                name="network"
+                aria-label="Network"
+                value={selectedNetwork}
+                onChange={handleNetworkChange}
+                className={selectStyle}
+              >
+                <option value="" disabled>
+                  Network
+                </option>
+                {dataNetworks.map((item) => (
+                  <option key={item.network_id} value={item.network}>
+                    {item.network.toUpperCase()}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <select
+                name="planType"
+                aria-label="Plan Type"
+                className={selectStyle}
+                value={selectedPlanType}
+                onChange={handlePlanTypeChange}
+                disabled={
+                  !selectedNetwork || !planTypes.some((type) => type.is_active)
+                }
+              >
+                <option value="" disabled>
+                  Plan Type
+                </option>
+                {planTypes.map((type) => (
+                  <option
+                    key={type.plan_type}
+                    value={type.id}
+                    disabled={!type.is_active}
+                  >
+                    {type.plan_type}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <select
+                name="dataPlan"
+                aria-label="Data Plan"
+                className={selectStyle}
+                value={selectedDataPlan}
+                onChange={handleDataPlanChange}
+                disabled={!selectedPlanType}
+              >
+                <option value="" disabled>
+                  Data Plan
+                </option>
+                {dataPlans.map((item) => (
+                  <option key={item.id} value={item.id}>
+                    {item.data_plan}
+                  </option>
+                ))}
+              </select>
+              {console.log({ dataPlans })}
+            </div>
+            <div>
+              {errorMessage.phone && (
+                <div className="text-gray-700 dark:text-white">
+                  {errorMessage.phone}
+                </div>
+              )}
+              <input
+                type="text"
+                name="phone"
+                placeholder="Phone Number"
+                aria-label="Phone number"
+                value={phone}
+                onChange={handlePhoneChange}
+                className={inputStyle}
+              />
+              {networkMessage && (
+                <p
+                  className="text-sm ml-2 mb-4 italic font-bold text-gray-600 dark:text-white"
+                  dangerouslySetInnerHTML={{ __html: networkMessage }}
+                />
+              )}
+            </div>
+            <div>
+              {errorMessage.pin && (
+                <div className="text-gray-700 dark:text-white">
+                  {errorMessage.pin}
+                </div>
+              )}
+              <input
+                type="password"
+                name="pin"
+                placeholder="Pin"
+                aria-label="Pin"
+                autoComplete="current-password"
+                value={pin}
+                onChange={(e) => setPin(e.target.value)}
+                className={inputStyle}
+              />
+            </div>
+            {price && (
+              <div>
+                <input
+                  type="text"
+                  disabled
+                  name="price"
+                  placeholder="Price"
+                  value={`₦${price}`}
+                  className={inputStyle}
+                />
+              </div>
+            )}
+            <div className="flex flex-wrap w-full text-white justify-between text-[1rem] py-3">
+              <p
+                className="dark:text-white text-primary opacity-80 font-semibold"
+                onClick={handleBypass}
+              >
+                Bypass Phone Number
+              </p>
+              <div className="flex items-center mr-3">
+                <div
+                  className={`h-5 w-10 rounded-full flex items-center relative cursor-pointer transition-colors duration-300 ease-in-out ${
+                    bypassPhoneNumber ? "bg-gray-600" : "bg-primary"
+                  }`}
+                  onClick={handleBypass}
+                >
+                  <div
+                    className={`h-6 w-6 bg-white bg-gray-400 rounded-full absolute transform transition-transform duration-300 ease-in-out ${
+                      bypassPhoneNumber
+                        ? "translate-x-5"
+                        : "translate-x-[-0.1rem]"
+                    }`}
+                  ></div>
+                </div>
+              </div>
+            </div>
+            <div>
+              <SubmitButton label="Purchase" />
+            </div>
+          </form>
+        </div>
+      </div>
+      <GeneralRight />
+
+      {/* Render Confirmation Popup */}
+      <ConfirmationPopup
+        isOpen={isConfirmOpen}
+        onConfirm={handleConfirm}
+        onCancel={handleCancel}
+        message={`Are you sure you want to proceed with transfering ${planName} to ${phone}?`}
+      />
+
+      {/* Render Error Popup */}
+      <ErrorPopup
+        isOpen={isErrorOpen}
+        message={errorPopupMessage}
+        onClose={handleErrorClose}
+      />
+
+      {/* Render Success Popup */}
+      <SuccessPopup
+        isOpen={isSuccessOpen}
+        message={successMessage}
+        onClose={() => setIsSuccessOpen(false)}
+      />
+    </div>
+  );
+};
+
+export default Data;
+
+
+
+
+
+
+import { createContext, useState, useEffect, useContext } from "react";
+import { jwtDecode } from "jwt-decode";
+import { useNavigate } from "react-router-dom";
+import { GeneralContext } from "./GeneralContext";
+
+export const AuthContext = createContext();
+
+const AuthProvider = ({ children }) => {
+  const [userError, setUserError] = useState("");
+  const [registerErrors, setRegisterErrors] = useState({});
+
+  const navigate = useNavigate();
+  const { api } = useContext(GeneralContext);
+
+  const [authTokens, setAuthTokens] = useState(
+    localStorage.getItem("authTokens")
+      ? JSON.parse(localStorage.getItem("authTokens"))
+      : null
+  );
+  const [user, setUser] = useState(
+    localStorage.getItem("authTokens")
+      ? jwtDecode(JSON.parse(localStorage.getItem("authTokens")).access)
+      : null
+  );
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (authTokens) {
+        refreshToken();
+      }
+    }, 17 * 60 * 1000);
+
+    return () => clearInterval(interval);
+  }, [authTokens]);
+
+  const loginUser = async (username, password) => {
+    try {
+      const response = await api.post(
+        "token/",
+        {
+          username: username.toLowerCase(),
+          password: password,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      const data = response.data;
+      if (response.status === 200) {
+        setAuthTokens(data);
+        setUser(jwtDecode(data.access));
+
+        localStorage.setItem("authTokens", JSON.stringify(data));
+        navigate("/user/dashboard");
+      }
+    } catch (error) {
+      setUserError(error.response?.data?.detail || error.message);
+      console.error("Error:", error.response ? error.response.data : error.message);
+    }
+  };
+
+  const registerUser = async (formData) => {
+    try {
+      const response = await api.post("authentication/register/", formData, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.status === 201) {
+        navigate("/authentication/login");
+      }
+    } catch (error) {
+      const errors = error.response?.data || {};
+      setRegisterErrors(errors);
+      console.error("Error:", error.response ? error.response.data : error.message);
+    }
+  };
+
+  const refreshToken = async () => {
+    try {
+      const response = await api.post(
+        "token/refresh/",
+        { refresh: authTokens.refresh },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        const data = response.data;
+        setAuthTokens(data);
+        setUser(jwtDecode(data.access));
+        localStorage.setItem("authTokens", JSON.stringify(data));
+      } else {
+        logoutUser();
+      }
+    } catch (error) {
+      console.error("Error refreshing token:", error.response ? error.response.data : error.message);
+      logoutUser();
+    }
+  };
+
+  const logoutUser = () => {
+    setUser(null);
+    setAuthTokens(null);
+    localStorage.removeItem("authTokens");
+    navigate("/authentication/login");
+  };
+
+  const contextData = {
+    loginUser,
+    logoutUser,
+    registerUser,
+    setUserError,
+    registerErrors,
+    user,
+    userError,
+    authTokens,
+  };
+
+  return (
+    <AuthContext.Provider value={contextData}>{children}</AuthContext.Provider>
+  );
+};
+
+export default AuthProvider;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import React, { useContext, useEffect, useState } from "react";
+import GeneralLeft from "./GeneralLeft";
+import GeneralRight from "./GeneralRight";
+import { Link } from "react-router-dom";
+import { AuthContext } from "../context/AuthenticationContext";
+import { GeneralContext } from "../context/GeneralContext";
+import { ProductContext } from "../context/ProductContext";
+import Pagination from "./Pagination";
+
+const TransactionHistory = () => {
+  const [transactionHistory, setTransactionHistory] = useState([]);
+  const [filteredTransactions, setFilteredTransactions] = useState([]);
+  const [category, setCategory] = useState("");
+  const [status, setStatus] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [transactionsPerPage] = useState(10);
+
+  const { authTokens } = useContext(AuthContext);
+  const { api } = useContext(GeneralContext);
+  const { productData } = useContext(ProductContext);
+
+  useEffect(() => {
+    const fetchTransactionHistory = async () => {
+      try {
+        const response = await api.get("transactions/", {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${authTokens.access}`,
+          },
+        });
+        // Sort transactions by date in descending order (latest first)
+        const sortedTransactions = response.data.sort(
+          (a, b) => new Date(b.date_create) - new Date(a.date_create)
+        );
+        setTransactionHistory(sortedTransactions);
+      } catch (error) {
+        console.error(
+          "Error:",
+          error.response ? error.response.data : error.message
+        );
+      }
+    };
+
+    fetchTransactionHistory();
+  }, [api, authTokens.access]);
+
+  useEffect(() => {
+    const fetchTransactionHistory = async () => {
+      try {
+        const response = await api.get("transactions/", {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${authTokens.access}`,
+          },
+        });
+        setTransactionHistory(response.data);
+      } catch (error) {
+        console.error(
+          "Error:",
+          error.response ? error.response.data : error.message
+        );
+      }
+    };
+
+    fetchTransactionHistory();
+  }, [api, authTokens.access]);
+
+  useEffect(() => {
+    let filtered = transactionHistory;
+
+    // Filter by category
+    if (category) {
+      filtered = filtered.filter(
+        (item) =>
+          item.transaction_type?.toLowerCase() === category.toLowerCase()
+      );
+    }
+
+    // Filter by status
+    if (status) {
+      filtered = filtered.filter(
+        (item) => item.status.toLowerCase() === status.toLowerCase()
+      );
+    }
+
+    // Filter by search term
+    if (searchTerm) {
+      filtered = filtered.filter(
+        (item) =>
+          item.transaction_ref_no
+            ?.toLowerCase()
+            .includes(searchTerm.toLowerCase()) ||
+          item.product?.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    // Filter by date range
+    if (startDate) {
+      filtered = filtered.filter((item) => {
+        const itemDate = new Date(item.date_create).getTime();
+        const start = new Date(startDate).getTime();
+        return itemDate >= start;
+      });
+    }
+
+    if (endDate) {
+      filtered = filtered.filter((item) => {
+        const itemDate = new Date(item.date_create).getTime();
+        const end = new Date(endDate).getTime();
+        return itemDate <= end;
+      });
+    }
+
+    setFilteredTransactions(filtered);
+  }, [category, status, searchTerm, startDate, endDate, transactionHistory]);
+
+  // Pagination logic
+  const indexOfLastTransaction = currentPage * transactionsPerPage;
+  const indexOfFirstTransaction = indexOfLastTransaction - transactionsPerPage;
+  const currentTransactions = filteredTransactions.slice(
+    indexOfFirstTransaction,
+    indexOfLastTransaction
+  );
+  const totalPages = Math.ceil(
+    filteredTransactions.length / transactionsPerPage
+  );
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+  return (
+    <div className="bg-bg_on min-h-screen bg-contain bg-no-repeat justify-center pt-24 sm:bg-cover bg-center px-4 sm:px-6 lg:px-8 xl:px-16">
+      <div className="max-w-7xl mx-auto sm:flex gap-8">
+        <GeneralLeft />
+        <div className="min-w-[349.20px] pr-2 mx-auto">
+          <div className="mb-8">
+            <h2 className="font-bold font-heading_two text-primary dark:text-white text-3xl mb-4">
+              Transaction History
+            </h2>
+            <div className="flex items-center text-primary dark:text-gray-100 py-4 font-semibold">
+              <Link to={"/user/dashboard"}>Dashboard</Link>{" "}
+              <div className="h-1 w-1 mx-5 bg-primary dark:bg-white rounded-full"></div>
+              <span className="text-gray-500">Data</span>
+            </div>
+          </div>
+          <div className="space-y-4 mb-8">
+            <input
+              type="search"
+              placeholder="Search for transaction"
+              className="w-full px-4 py-1 text-primary dark:text-white bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-transparent"
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            <div className="flex flex-wrap gap-4">
+              <select
+                name="category"
+                id="category"
+                className="custom-select flex-grow px-4 py-1 text-primary dark:text-white bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-transparent"
+                onChange={(e) => setCategory(e.target.value)}
+              >
+                <option value="">All categories</option>
+                {productData.map((product, index) => (
+                  <option key={index} value={product.category.toLowerCase()}>
+                    {product.category}
+                  </option>
+                ))}
+              </select>
+              <select
+                name="status"
+                id="status"
+                className="custom-select flex-grow px-4 py-1 text-primary dark:text-white bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-transparent"
+                onChange={(e) => setStatus(e.target.value)}
+              >
+                <option value="">All Status</option>
+                <option value="Failed">Failed</option>
+                <option value="Success">Successful</option>
+              </select>
+            </div>
+            <div className="flex gap-4">
+              <input
+                type="date"
+                className="flex-grow px-4 py-1 text-primary dark:text-white bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-transparent"
+                onChange={(e) => setStartDate(e.target.value)}
+              />
+              <input
+                type="date"
+                className="flex-grow px-4 py-1 text-primary dark:text-white bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-transparent"
+                onChange={(e) => setEndDate(e.target.value)}
+              />
+            </div>
+          </div>
+
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="bg-gray-100 dark:bg-gray-700">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Reference
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Description
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Amount
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Balance
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Purchase Date
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Status
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                  {currentTransactions.map((item, index) => (
+                    <tr
+                      key={item.transaction_ref_no}
+                      className={`hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors ${
+                        index % 2 === 0 ? "bg-gray-50 dark:bg-gray-900" : ""
+                      }`}
+                    >
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                        {item.transaction_ref_no}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                        {item.product}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                        ₦ {item.price}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                        ₦ {item.new_bal}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                        {item.date_create.slice(0, 10)}
+                      </td>
+                      <td className="px-6 py-3 whitespace-nowrap">
+                        <span
+                          className={`px-2 py- inline-flex text-[.6rem] leading-5 font-semibold rounded-lg ${
+                            item.status.toLowerCase() === "success"
+                              ? "bg-green-100 text-green-800"
+                              : "bg-red-100 text-red-800"
+                          }`}
+                        >
+                          {item.status}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* Pagination */}
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+          />
+        </div>
+        <GeneralRight />
+      </div>
+    </div>
+  );
+};
+
+export default TransactionHistory;

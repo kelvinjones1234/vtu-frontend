@@ -96,7 +96,7 @@ const RegistrationPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-dark-custom-gradient font-body_two">
+    <div className="min-h-screen bg-dark-custom-gradient font-body_two z-5">
       <div className="fixed inset-0 bg-bg_one bg-contain md:bg-cover bg-center bg-no-repeat"></div>
 
       <header
@@ -138,7 +138,7 @@ const RegistrationPage = () => {
               </p>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-4 z-10">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {[
                   {
@@ -200,6 +200,9 @@ const RegistrationPage = () => {
                   },
                 ].map((field) => (
                   <div key={field.name} className="relative">
+                    {field.error && (
+                      <p className="mt-1 text-sm text-red-500">{field.error}</p>
+                    )}
                     <input
                       type={field.type || "text"}
                       name={field.name}
@@ -212,9 +215,7 @@ const RegistrationPage = () => {
                           : "border-gray-700 hover:border-gray-500 focus:border-link"
                       } transition duration-300 ease-in-out`}
                     />
-                    {field.error && (
-                      <p className="mt-1 text-sm text-red-500">{field.error}</p>
-                    )}
+
                     {field.toggleShow && (
                       <button
                         type="button"
@@ -228,27 +229,29 @@ const RegistrationPage = () => {
                 ))}
               </div>
 
-              <p className="text-center text-gray-300 text-sm">
-                By signing up, you agree to our{" "}
-                <Link
-                  to="/terms"
-                  className="underline text-link hover:text-sky-500"
-                >
-                  terms
-                </Link>{" "}
-                and{" "}
-                <Link
-                  to="/privacy"
-                  className="underline text-link hover:text-sky-500"
-                >
-                  privacy policy
-                </Link>
-              </p>
+              <div className="relative">
+                <p className="text-center text-gray-300 text-sm">
+                  By signing up, you agree to our{" "}
+                  <Link
+                    to="/terms"
+                    className="underline text-link hover:text-sky-500"
+                  >
+                    terms
+                  </Link>{" "}
+                  and{" "}
+                  <Link
+                    to="/privacy"
+                    className="underline text-link hover:text-sky-500"
+                  >
+                    privacy policy
+                  </Link>
+                </p>
 
-              <SubmitButton label="Create Account" />
+                <SubmitButton label="Create Account" />
+              </div>
             </form>
 
-            <p className="text-center text-gray-300 mt-6 sm:hidden">
+            <p className="relative text-center text-gray-300 mt-6 sm:hidden">
               Already have an account?{" "}
               <Link
                 to="/authentication/login"
