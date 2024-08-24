@@ -97,7 +97,7 @@ const HomePageNavbar = ({ homeMenuToggle, setHomeMenuToggle }) => {
         }`}
         onClick={(e) => e.stopPropagation()} // Prevent click event propagation to overlay
       >
-        <ul className="w-[13rem]">
+        <ul className="w-[13rem] mt-4">
           <div className="flex items-center gap-1 mt-[.55rem] mb-9">
             <Link to={"/"}>
               <div className="logo font-heading_one text-green-500 border border-green-500 px-2 text-[.7rem] px-2 border-white rounded-[.5rem] font-bold">

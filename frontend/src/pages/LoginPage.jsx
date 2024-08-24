@@ -64,7 +64,7 @@ const LoginPage = () => {
   return (
     <div className="min-h-screen bg-dark-custom-gradient font-body_two">
       <div className="authentication bg-bg_one bg-contain md:bg-cover bg-center min-h-screen bg-no-repeat">
-        <nav className="flex justify-between px-4 lg:px-24 py-5">
+        <nav className="flex justify-between px-4 lg:px-24 py-5 mt-3">
           <div className="flex items-center gap-1">
             <Link to={"/"}>
               <div className="logo font-heading_one text-green-500 border border-green-500 px-2 text-[.7rem] px-2 rounded-[.5rem] font-bold">
