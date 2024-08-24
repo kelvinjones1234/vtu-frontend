@@ -52,7 +52,7 @@ const HomeHero = () => {
             <Link
               to={`${user ? "/user/dashboard" : "/authentication/register"}`}
             >
-              <button className="bg-link rounded-2xl hover:bg-sky-500 py-[.4rem] transition duration-500 ease-in-out mx-4 px-6">
+              <button className="bg-link rounded-2xl hover:bg-sky-500 py-[.46rem] transition duration-500 ease-in-out mx-4 px-6">
                 Register
               </button>
             </Link>
