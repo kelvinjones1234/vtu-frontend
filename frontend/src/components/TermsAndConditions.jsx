@@ -1,13 +1,21 @@
-import React from "react";
+import { useContext } from "react";
 import { Link } from "react-router-dom";
 import GeneralLeft from "./GeneralLeft";
 import GeneralRight from "./GeneralRight";
+import { AuthContext } from "../context/AuthenticationContext";
 
 const TermsConditions = () => {
+  const { user } = useContext(AuthContext);
+
   return (
-    <div className="bg-bg_on min-h-screen bg-contain bg-no-repeat justify-center pt-24 sm:bg-cover bg-center px-4 sm:px-6 lg:px-8 xl:px-16">
+    <div
+      className={`bg-bg_on ${
+        !user && "lg:px-[6rem]"
+      } min-h-screen bg-contain bg-no-repeat justify-center pt-24 sm:bg-cover bg-center px-4 sm:px-6 lg:px-8 xl:px-16`}
+    >
+      {" "}
       <div className="max-w-7xl mx-auto sm:flex gap-8">
-        <GeneralLeft />
+        {user && <GeneralLeft />}
         <div className="min-w-[349.20px] pr-2 mx-auto">
           <div className="mb-8">
             <h2 className="font-bold font-heading_two text-primary dark:text-white text-3xl mb-4">
@@ -25,7 +33,7 @@ const TermsConditions = () => {
               1. Introduction
             </h3>
             <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-              Welcome to [Your Virtual Top Up Site]. These Terms and Conditions
+              Welcome to Atom virtual top up site. These Terms and Conditions
               govern your use of our website and services. By accessing or using
               our site, you agree to be bound by these terms.
             </p>
@@ -94,7 +102,7 @@ const TermsConditions = () => {
             </p>
           </div>
         </div>
-        <GeneralRight />
+        {user && <GeneralRight />}
       </div>
     </div>
   );

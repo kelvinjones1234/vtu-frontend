@@ -1,13 +1,19 @@
-import React from "react";
+import { useContext } from "react";
 import { Link } from "react-router-dom";
 import GeneralLeft from "./GeneralLeft";
 import GeneralRight from "./GeneralRight";
+import { AuthContext } from "../context/AuthenticationContext";
 
 const PrivacyPolicy = () => {
+  const { user } = useContext(AuthContext);
   return (
-    <div className="bg-bg_on min-h-screen bg-contain bg-no-repeat justify-center pt-24 sm:bg-cover bg-center px-4 sm:px-6 lg:px-8 xl:px-16">
+    <div
+      className={`bg-bg_on ${
+        !user && "lg:px-[6rem]"
+      } min-h-screen bg-contain bg-no-repeat justify-center pt-24 sm:bg-cover bg-center px-4 sm:px-6 lg:px-8 xl:px-16`}
+    >
       <div className="max-w-7xl mx-auto sm:flex gap-8">
-        <GeneralLeft />
+        {user && <GeneralLeft />}
         <div className="min-w-[349.20px] pr-2 mx-auto">
           <div className="mb-8">
             <h2 className="font-bold font-heading_two text-primary dark:text-white text-3xl mb-4">
@@ -25,11 +31,10 @@ const PrivacyPolicy = () => {
               1. Introduction
             </h3>
             <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-              Welcome to [Your Virtual Top Up Site]. We are committed to
-              protecting your privacy and ensuring that your personal
-              information is handled in a safe and responsible manner. This
-              Privacy Policy explains how we collect, use, and protect your
-              information.
+              Welcome to Atom virtual to up site. We are committed to protecting
+              your privacy and ensuring that your personal information is
+              handled in a safe and responsible manner. This Privacy Policy
+              explains how we collect, use, and protect your information.
             </p>
 
             <h3 className="text-lg font-semibold text-primary dark:text-white mb-4">
@@ -120,11 +125,12 @@ const PrivacyPolicy = () => {
             </h3>
             <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
               If you have any questions about this Privacy Policy or our privacy
-              practices, please contact us at [support@example.com].
+              practices, please contact us at{" "}
+              <span className="underline">atomvirtualtopup@gmail.com</span>.
             </p>
           </div>
         </div>
-        <GeneralRight />
+        {user && <GeneralRight />}
       </div>
     </div>
   );

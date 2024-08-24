@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
 import HomePageNavbar from "../components/HomePageNavbar";
-import HomeHero from "../components/HomeHero";
-import AfterHero from "../components/AfterHero";
 import Footer from "../components/Footer";
+import PrivacyPolicy from "../components/PrivacyAndPolicy";
 
-const HomePage = () => {
+const NoAuthPrivacyPolicyPage = () => {
   const [homeMenuToggle, setHomeMenuToggle] = useState(false);
 
   useEffect(() => {
@@ -21,17 +20,16 @@ const HomePage = () => {
 
   return (
     <>
-      <div className="min-w-[273px] bg-dark-custom-gradient w-full z-[-2] absolute top-0 left-0 min-h-screen">
+      <div className="min-w-[273px] bg-dark-custom-gradient w-full z-[-2] min-w-[150px] absolute top-0 left-0 min-h-screen">
         <HomePageNavbar
           homeMenuToggle={homeMenuToggle}
           setHomeMenuToggle={setHomeMenuToggle}
         />
-        <HomeHero />
-        <AfterHero />
+        <PrivacyPolicy />
         <Footer />
       </div>
     </>
   );
 };
 
-export default HomePage;
+export default NoAuthPrivacyPolicyPage;

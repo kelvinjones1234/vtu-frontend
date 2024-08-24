@@ -233,14 +233,14 @@ const RegistrationPage = () => {
                 <p className="text-center text-gray-300 text-sm">
                   By signing up, you agree to our{" "}
                   <Link
-                    to="/terms"
+                    to="/terms-and-conditions"
                     className="underline text-link hover:text-sky-500"
                   >
                     terms
                   </Link>{" "}
                   and{" "}
                   <Link
-                    to="/privacy"
+                    to="/privacy-and-policy"
                     className="underline text-link hover:text-sky-500"
                   >
                     privacy policy
@@ -251,7 +251,7 @@ const RegistrationPage = () => {
               </div>
             </form>
 
-            <p className="relative text-center text-gray-300 mt-6 sm:hidden">
+            <p className="relative text-center text-gray-300 my-6 sm:hidden">
               Already have an account?{" "}
               <Link
                 to="/authentication/login"

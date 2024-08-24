@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
-import HomePageNavbar from "../components/HomePageNavbar";
-import HomeHero from "../components/HomeHero";
-import AfterHero from "../components/AfterHero";
 import Footer from "../components/Footer";
+import PageNotFound from "../components/PageNotFound";
+import HomePageNavbar from "../components/HomePageNavbar";
 
-const HomePage = () => {
+const PageNotFoundPage = () => {
   const [homeMenuToggle, setHomeMenuToggle] = useState(false);
 
   useEffect(() => {
@@ -26,12 +25,11 @@ const HomePage = () => {
           homeMenuToggle={homeMenuToggle}
           setHomeMenuToggle={setHomeMenuToggle}
         />
-        <HomeHero />
-        <AfterHero />
+        <PageNotFound />
         <Footer />
       </div>
     </>
   );
 };
 
-export default HomePage;
+export default PageNotFoundPage;

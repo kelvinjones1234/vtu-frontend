@@ -34,6 +34,19 @@ export default {
         body_four: ["Open Sans", "sans-serif"],
         
       },
+
+      animation: {
+        'pulse-1': 'pulse 1.5s ease-in-out infinite',
+        'pulse-2': 'pulse 1.5s ease-in-out 0.2s infinite',
+        'pulse-3': 'pulse 1.5s ease-in-out 0.4s infinite',
+        'pulse-4': 'pulse 1.5s ease-in-out 0.6s infinite',
+      },
+      keyframes: {
+        pulse: {
+          '0%, 100%': { opacity: 1, transform: 'scale(1)' },
+          '50%': { opacity: 0.5, transform: 'scale(0.9)' },
+        },
+      },
     },
     screens: {
       xs: "490px",
