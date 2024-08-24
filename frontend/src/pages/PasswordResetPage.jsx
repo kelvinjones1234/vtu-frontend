@@ -85,7 +85,7 @@ const PasswordResetPage = () => {
   return (
     <div className="min-w-[150px] bg-opacity-[95%] z-[-1] font-body_two">
       <div className="authentication bg-bg_one bg-contain md:bg-cover bg-center w-full min-h-screen bg-no-repeat">
-        <div className="authenticationnavbar flex justify-between p-4 lg:px-[6rem]">
+        <div className="authenticationnavbar flex justify-between py-8 px-4 lg:px-[6rem]">
           <div className="left flex items-center gap-1">
             <Link to={"/"}>
               <div className="logo font-heading_one text-green-500 border border-green-500 px-2 text-[.7rem] px-2 border-white rounded-[.5rem] font-bold">
