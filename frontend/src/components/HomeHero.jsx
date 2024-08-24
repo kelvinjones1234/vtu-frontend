@@ -43,7 +43,7 @@ const HomeHero = () => {
         <div className="buttons flex sm:justify-start justify-center mb-[12vh] mt-[5vh] font-body_two">
           <div className="login">
             <Link to={`${user ? "/user/dashboard" : "/authentication/login"}`}>
-              <button className="border border-link rounded-2xl py-[.4rem] hover:text-sky-500 transition-all duration-500 ease-in-out text-white mx-4 px-6">
+              <button className="border bg-[#18202F] border-link rounded-2xl py-[.4rem] hover:text-sky-500 transition-all duration-500 ease-in-out text-white mx-4 px-6">
                 Login
               </button>
             </Link>
