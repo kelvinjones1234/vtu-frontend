@@ -15,7 +15,7 @@ const AfterHero = () => {
           </h1>
         </div>
         <div className="grid md:grid-cols-2 gap-5">
-          <div className="py-10 bg-primary bg-opacity-90 px-4 rounded-xl text-white text-center shadow-lg shadow-indigo-900/10">
+          <div className="py-10 bg-white bg-opacity-10 backdrop-blur-sm rounded-xl p-8 shadow-xl px-4 text-white text-center ">
             <div className="icon grid justify-center pb-[2rem]">
               <img src={fast} alt="fast-transaction" className="h-[2rem]" />
             </div>
@@ -27,7 +27,7 @@ const AfterHero = () => {
               credit.
             </p>
           </div>
-          <div className="py-10 bg-primary bg-opacity-90 px-4 rounded-xl text-white text-center shadow-lg shadow-indigo-900/10">
+          <div className="py-10 bg-white bg-opacity-10 backdrop-blur-sm rounded-xl p-8 shadow-xl px-4 text-white text-center ">
             <div className="icon grid justify-center pb-[2rem]">
               <img src={secured} alt="fast-transaction" className="h-[2rem]" />
             </div>
@@ -39,7 +39,7 @@ const AfterHero = () => {
               to protect your data and transactions.
             </p>
           </div>
-          <div className="py-10 bg-primary bg-opacity-90 px-4 rounded-xl text-white text-center shadow-lg shadow-indigo-900/10">
+          <div className="py-10 bg-white bg-opacity-10 backdrop-blur-sm rounded-xl p-8 shadow-xl px-4 text-white text-center ">
             <div className="icon grid justify-center pb-[2rem]">
               <img
                 src={available}
@@ -55,7 +55,7 @@ const AfterHero = () => {
               the clock, just like your need to stay connected.
             </p>
           </div>
-          <div className="py-10 bg-primary bg-opacity-90 px-4 rounded-xl text-white text-center shadow-lg shadow-indigo-900/10">
+          <div className="py-10 bg-white bg-opacity-10 backdrop-blur-sm rounded-xl p-8 shadow-xl px-4 text-white text-center ">
             <div className="icon grid justify-center pb-[2rem]">
               <img src={services} alt="fast-transaction" className="h-[2rem]" />
             </div>
@@ -68,7 +68,7 @@ const AfterHero = () => {
             </p>
           </div>
           <div className="md:col-span-2 flex justify-center">
-            <div className="py-10 bg-primary bg-opacity-90 mb-[1rem] px-4 rounded-xl text-white text-center shadow-lg shadow-indigo-900/20 w-full">
+            <div className="py-10 bg-white bg-opacity-10 backdrop-blur-sm p-8 shadow-xl mb-[1rem] px-4 rounded-xl text-white text-center w-full">
               <div className="icon grid justify-center pb-[2rem]">
                 <img src={easy} alt="fast-transaction" className="h-[2rem]" />
               </div>
@@ -92,10 +92,14 @@ const AfterHero = () => {
               assistance.
             </p>
           </div>
-          <div className="contact-button p-3">
-            <button className="bg-link hover:bg-sky-500 transition duration-500 ease-in-out text-primary rounded-2xl py-[.4rem] px-6">
-              Contact us
+          <div className="register p-3">
+            {/* <Link */}
+            {/* to={`${user ? "/user/dashboard" : "/authentication/register"}`}
+            > */}
+            <button className="transition text-black duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-lg bg-link rounded-2xl hover:bg-sky-500 py-[.46rem] transition duration-500 ease-in-out mx-4 px-6">
+              Contact Us
             </button>
+            {/* </Link> */}
           </div>
         </div>
       </div>

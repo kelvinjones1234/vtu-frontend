@@ -12,22 +12,17 @@ const HomeHero = () => {
         {/* <div className="bg-bg_one md:h-screen bg-contain sm:bg-cover bg-center bg-no-repeat"></div> */}
         <div className="text-white text-center sm:text-left">
           <div className="main-text text-[2rem] xs:text-[3rem] font-bold mb-[5vh] font-heading_two leading-[2rem]">
-            <h1 className="">
-              Welcome to <span className="text-gradient">MaduPay</span>
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white mb-6 font-heading_two">
+              Welcome to{" "}
+              <span className="bg-gradient-to-r from-purple-400 via-sky-500 to-red-500 text-transparent bg-clip-text">
+                MaduPay
+              </span>
             </h1>
-            <div className="sm:flex sm:mt-2">
-              <p className="text-[1rem] bg-black bg-primary inline-block bg-opacity-80 px-4 rounded-[.5rem] sm:rounded-full">
-                {" "}
-                Powering Your Connections
-              </p>
-              <div className="hidden sm:flex items-center">
-                <p className="h-7 w-7 bg-primary rounded-full ml-2 bg-opacity-80"></p>
-                <p className="h-7 w-7 bg-primary rounded-full ml-2 bg-opacity-80"></p>
-                <p className="h-7 w-7 bg-primary rounded-full ml-2 bg-opacity-80"></p>
-              </div>
-            </div>
+            <p className="text-lg sm:text-xl text-white bg-primary bg-opacity-90 inline-block px-6 py-3 rounded-full mb-10 shadow-md">
+              Powering Your Connections
+            </p>
           </div>
-          <div className="bg-opacity-90 rounded-xl px-4 sm:w-[80%] sm:max-w-[700px] py-[3vh] bg-primary my-[3vh] shadow-lg shadow-indigo-900/10">
+          <div className="px-4 sm:w-[80%] sm:max-w-[700px] py-[3vh] bg-white bg-opacity-10 backdrop-blur-sm rounded-xl p-8 shadow-xl mb-12">
             <h3 className="text-[1rem] uppercase py-4 font-heading_two">
               Instantly Top Up Anytime, Anywhere...
             </h3>
@@ -43,7 +38,7 @@ const HomeHero = () => {
         <div className="buttons flex sm:justify-start justify-center mb-[12vh] mt-[5vh] font-body_two">
           <div className="login">
             <Link to={`${user ? "/user/dashboard" : "/authentication/login"}`}>
-              <button className="border bg-[#18202F] border-link rounded-2xl py-[.4rem] hover:text-sky-500 transition-all duration-500 ease-in-out text-white mx-4 px-6">
+              <button className="transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-lg border bg-[#18202F] border-link rounded-2xl py-[.4rem] hover:text-link transition-all duration-500 ease-in-out text-white mx-4 px-6">
                 Login
               </button>
             </Link>
@@ -52,7 +47,7 @@ const HomeHero = () => {
             <Link
               to={`${user ? "/user/dashboard" : "/authentication/register"}`}
             >
-              <button className="bg-link rounded-2xl hover:bg-sky-500 py-[.46rem] transition duration-500 ease-in-out mx-4 px-6">
+              <button className="transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-lg bg-blue-500 rounded-2xl hover:bg-sky-500 py-[.46rem] transition duration-500 ease-in-out mx-4 px-6">
                 Register
               </button>
             </Link>

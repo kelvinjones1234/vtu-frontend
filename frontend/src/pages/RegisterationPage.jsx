@@ -4,12 +4,13 @@ import { Link } from "react-router-dom";
 import { GeneralContext } from "../context/GeneralContext";
 import simag from "../assets/vtu3.png";
 import SubmitButton from "../components/SubmitButton";
+import LeftSide from "../components/LeftSide";
 
-const LeftSide = () => (
-  <div className="left mt-4 leading-[3rem] relative hidden justify-center items-center sm:flex h-[364px] shadow-lg shadow-indigo-900/20 bg-opacity-50 rounded-2xl w-[20rem] bg-black text-white">
-    <img src={simag} alt="Background" className="h-[365px]" />
-  </div>
-);
+// const LeftSide = () => (
+//   <div className="left mt-4 leading-[3rem] relative hidden justify-center items-center sm:flex h-[364px] shadow-lg shadow-indigo-900/20 bg-opacity-50 rounded-2xl w-[20rem] bg-black text-white">
+//     <img src={simag} alt="Background" className="h-[365px]" />
+//   </div>
+// );
 
 const RegistrationPage = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -106,32 +107,32 @@ const RegistrationPage = () => {
       >
         <div className="flex items-center gap-1">
           <Link to={"/"}>
-            <div className="logo font-heading_one text-green-500 border border-green-500 px-2 text-[.7rem] px-2 rounded-[.5rem] font-bold">
+            <div className="logo font-heading_one text-transparent bg-clip-text border px-2 text-[.7rem] rounded-[.5rem] font-bold bg-gradient-to-r from-purple-400 via-sky-500 to-red-500 border-white">
               MaduPay
             </div>
           </Link>
-          <div className="h-3 w-3 bg-green-500 rounded-full"></div>
-          <div className="h-3 w-3 bg-green-500 rounded-full"></div>
-          <div className="h-3 w-3 bg-green-500 rounded-full"></div>
         </div>
         <div className="hidden sm:block text-gray-300">
           Already have an account?
           <Link
             to="/authentication/login"
-            className="ml-1 text-link font-bold hover:text-sky-500 transition duration-300 ease-in-out"
+            className="ml-1 text-link font-bold hover:text-sky-400 transition duration-300 ease-in-out"
           >
             Log in
           </Link>
         </div>
       </header>
 
-      <main className="pt-24 px-4 md:px-16 lg:px-32">
+      <main className="pt-[11.5rem] px-4 md:px-16 lg:px-32">
         <div className="max-w-6xl mx-auto sm:flex justify-between items-start">
           <LeftSide />
           <div className="sm:w-1/2 max-w-md mx-auto sm:mx-0">
             <div className="mb-8">
               <h1 className="font-bold text-4xl text-gray-300 font-heading_two mb-2">
-                Sign up with <span className="text-gradient">MaduPay</span>
+                Sign up with{" "}
+                <span className="bg-gradient-to-r from-purple-400 via-sky-500 to-red-500 text-transparent bg-clip-text">
+                  MaduPay
+                </span>
               </h1>
               <p className="text-gray-300 text-lg">
                 Create your MaduPay account for free
@@ -238,14 +239,14 @@ const RegistrationPage = () => {
                   By signing up, you agree to our{" "}
                   <Link
                     to="/terms-and-conditions"
-                    className="underline text-link hover:text-sky-500"
+                    className="underline text-link hover:text-sky-400"
                   >
                     terms
                   </Link>{" "}
                   and{" "}
                   <Link
                     to="/privacy-and-policy"
-                    className="underline text-link hover:text-sky-500"
+                    className="underline text-link hover:text-sky-400"
                   >
                     privacy policy
                   </Link>
@@ -259,7 +260,7 @@ const RegistrationPage = () => {
               Already have an account?{" "}
               <Link
                 to="/authentication/login"
-                className="text-link font-semibold hover:text-sky-500"
+                className="text-link font-semibold hover:text-sky-400"
               >
                 Log in
               </Link>

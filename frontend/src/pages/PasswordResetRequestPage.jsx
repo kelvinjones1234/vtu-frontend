@@ -3,14 +3,15 @@ import { Link } from "react-router-dom";
 import SubmitButton from "../components/SubmitButton";
 import axios from "axios";
 import { GeneralContext } from "../context/GeneralContext";
+import LeftSide from "../components/LeftSide";
 
-const LeftSide = () => (
-  <div className="left leading-[3rem] relative hidden justify-center items-center sm:flex h-[364px] shadow-lg shadow-indigo-900/20 bg-opacity-50 rounded-2xl w-[20rem] bg-black text-white">
-    <div className="atom-logo text-[6vw] font-bold text-gradient absolute">
-      Atom <br /> <span className="text-[1.5vw]">Virtual Top Up</span>
-    </div>
-  </div>
-);
+// const LeftSide = () => (
+//   <div className="left leading-[3rem] relative hidden justify-center items-center sm:flex h-[364px] shadow-lg shadow-indigo-900/20 bg-opacity-50 rounded-2xl w-[20rem] bg-black text-white">
+//     <div className="atom-logo text-[6vw] font-bold text-gradient absolute">
+//       Atom <br /> <span className="text-[1.5vw]">Virtual Top Up</span>
+//     </div>
+//   </div>
+// );
 
 const PasswordResetRequestPage = () => {
   const { setLoading } = useContext(GeneralContext);
@@ -48,13 +49,10 @@ const PasswordResetRequestPage = () => {
         <div className="authenticationnavbar flex justify-between py-8 px-4 lg:px-[6rem]">
           <div className="left flex items-center gap-1">
             <Link to={"/"}>
-              <div className="logo font-heading_one text-green-500 border border-green-500 px-2 text-[.7rem] px-2 border-white rounded-[.5rem] font-bold">
+              <div className="logo font-heading_one text-transparent bg-clip-text border px-2 text-[.7rem] rounded-[.5rem] font-bold bg-gradient-to-r from-purple-400 via-sky-500 to-red-500 border-white">
                 MaduPay
               </div>
             </Link>
-            <div className="h-3 w-3 bg-green-500 rounded-full"></div>
-            <div className="h-3 w-3 bg-green-500 rounded-full"></div>
-            <div className="h-3 w-3 bg-green-500 rounded-full"></div>
           </div>
           <div className="hidden ss:block text-gray-300">
             Don't have an account?

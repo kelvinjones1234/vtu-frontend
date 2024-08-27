@@ -16,7 +16,7 @@ const SubmitButton = ({ label }) => {
 
   return (
     <button
-      className="text-[1rem] my-2 w-full outline-none text-white p-1 h-[3.2rem] bg-link text-black rounded-2xl bg-opacity-[90%] font-semibold hover:bg-sky-400 transition duration-450 ease-in-out"
+      className="text-[1rem] my-2 w-full outline-none text-white p-1 h-[3.2rem] bg-link text-black rounded-2xl bg-opacity-[90%] font-semibold hover:bg-blue-500 transition duration-400 ease-in-out"
       type="submit"
       disabled={loading} // Disable button while loading
     >

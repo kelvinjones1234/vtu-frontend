@@ -10,7 +10,7 @@ export default {
   theme: {
     extend: {
       backgroundImage: {
-      'bg_one': "url('/src/assets/vtu4_optimized.png')",
+      // 'bg_one': "url('/src/assets/vtu4_optimized.png')",
       'dark-custom-gradient': 'linear-gradient(250deg, #2b4162 -50%, #0A101D 100%)',
       'light-custom-gradient':'linear-gradient(250deg, rgba(0,163,255,0.13) -50%, rgba(0,163,255,0) 100%)',
 
@@ -21,7 +21,7 @@ export default {
         secondary: "#00f6ff",
         dimWhite: "rgba(255, 255, 255, 0.7)",
         dimBlue: "rgba(9, 151, 124, 0.1)",
-        link: "#1CCEFF"
+        link: "#3B82F6"
       },
       fontFamily: {
         heading_one: ["Poppins", "sans-serif"],
