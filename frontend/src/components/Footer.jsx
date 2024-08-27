@@ -1,8 +1,9 @@
+import React from "react";
+import { useLocation, Link } from "react-router-dom";
 import whatsapp from "../assets/whatsapp.png";
 import twitter from "../assets/twitter1.png";
 import instagram from "../assets/instagram.png";
 import facebook from "../assets/facebook.png";
-import { Link } from "react-router-dom";
 
 const socials = [
   { src: twitter, alt: "Twitter" },
@@ -12,11 +13,22 @@ const socials = [
 ];
 
 const Footer = () => {
+  const location = useLocation();
+
+  // Check if the current path is the homepage
+  const isHomepage = location.pathname === "/";
+
   return (
-    <div className="text-center sm:text-start mt-10 brder-t border-link bg-gray-50 dark:bg-primary dark:text-white text-primary bg-opacity-80 w-full mx-auto font-body_two ss:px-20 px-4">
+    <div
+      className={`text-center sm:text-start mt-10 brder-t border-link ${
+        isHomepage
+          ? "bg-gray-50 bg-primary text-white"
+          : "bg-gray-50 dark:bg-primary dark:text-white text-primary bg-opacity-80"
+      }  w-full mx-auto font-body_two ss:px-20 px-4`}
+    >
       <div className="sm:flex sm:justify-between max-w-[1000px] mx-auto">
         <div className="legals sm:mt-16 sm:mx-3 ">
-          <h3 className="text-primary dark:text-link font-heading_two pt-4 text-2xl font-bold">
+          <h3 className="text-link font-heading_two pt-4 text-2xl font-bold">
             Legals
           </h3>
           <Link to={"/terms-and-conditions"}>
@@ -31,14 +43,14 @@ const Footer = () => {
           </Link>
         </div>
         <div className="contact mt-16 text-center">
-          <h3 className="text-primary dark:text-link font-heading_two pt-4 text-2xl font-bold">
+          <h3 className="text-link font-heading_two pt-4 text-2xl font-bold">
             Contact
           </h3>
-          <p>atom@atom.com</p>
+          <p>madupay@madupay.com</p>
           <p className="tell">+234 814 177 1672</p>
         </div>
         <div className="socials my-16">
-          <h3 className="text-primary dark:text-link font-heading_two pt-4 text-2xl font-bold">
+          <h3 className="text-link font-heading_two pt-4 text-2xl font-bold">
             Socials
           </h3>
           <div className="icons flex justify-center mt-2">
@@ -47,7 +59,7 @@ const Footer = () => {
                 key={index}
                 src={social.src}
                 alt={social.alt}
-                className="h-10 mx-3 sm:ml-0"
+                className="h-10 mx-3 sm:ml-0 transition-all duration-300 ease-in-out transform hover:scale-110 hover:-translate-y-1 hover:filter hover:brightness-110"
               />
             ))}
           </div>
@@ -57,8 +69,8 @@ const Footer = () => {
         <div className="logo">
           <div className="flex justify-center items-center gap-1">
             <Link to={"/"}>
-              <div className="logo font-heading_one text-green-500 border dark:border-white border-primary text-[.7rem] px-2 rounded-[.5rem] font-bold">
-                Atom
+              <div className="logo font-heading_one text-green-500 border border-green-500 dark:border-green-500 text-[.7rem] px-2 rounded-[.5rem] font-bold">
+                MaduPay
               </div>
             </Link>
             <div className="h-3 w-3 bg-green-500 rounded-full"></div>

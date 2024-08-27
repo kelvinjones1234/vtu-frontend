@@ -29,8 +29,8 @@ const errorInputStyle = "border-red-500 dark:border-red-700";
 
 const Airtime = () => {
   const { api, detectNetwork, setLoading } = useContext(GeneralContext);
-  const { airtimeNetworks } = useContext(ProductContext);
-  const { user, authTokens } = useContext(AuthContext);
+  const { airtimeNetworks, activeApi } = useContext(ProductContext);
+  const { user, authTokens, rememberMe} = useContext(AuthContext);
   const { walletData, setWalletData } = useWallet();
 
   const [formData, setFormData] = useState({
@@ -51,6 +51,14 @@ const Airtime = () => {
   const [errors, setErrors] = useState({});
   const [bypassPhoneNumber, setBypassPhoneNumber] = useState(false);
   const [networkMessage, setNetworkMessage] = useState("");
+
+  const [popupState, setPopupState] = useState({
+    isConfirmOpen: false,
+    isErrorOpen: false,
+    isSuccessOpen: false,
+    successMessage: "",
+    errorPopupMessage: "",
+  });
 
   const handleInputChange = useCallback(
     (e) => {
@@ -119,15 +127,32 @@ const Airtime = () => {
     return Object.keys(newErrors).length === 0;
   }, [formData, user.transaction_pin]);
 
-  const handleSubmit = useCallback(
-    (e) => {
-      e.preventDefault();
-      if (validInputs()) {
-        setIsConfirmOpen(true);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (validInputs()) {
+      if (rememberMe) {
+        const token = localStorage.getItem("authTokens");
+        const parsedToken = token ? JSON.parse(token) : null;
+
+        if (parsedToken) {
+          const storedAccessToken = parsedToken.access;
+          if (storedAccessToken !== authTokens.access) {
+            console.log("Token altered or empty");
+            logoutUser();
+          } else {
+            setPopupState((prev) => ({ ...prev, isConfirmOpen: true }));
+          }
+        } else {
+          console.log("No parsed token found");
+          logoutUser();
+        }
+      } else {
+        // If rememberMe is false, proceed without checking local storage
+        setPopupState((prev) => ({ ...prev, isConfirmOpen: true }));
       }
-    },
-    [validInputs]
-  );
+    }
+  };
 
   const generateUniqueId = useCallback((length = 16) => {
     const array = new Uint8Array(length / 2);
@@ -138,7 +163,7 @@ const Airtime = () => {
   }, []);
 
   const handleConfirm = useCallback(async () => {
-    setIsConfirmOpen(false);
+    setPopupState((prev) => ({ ...prev, isConfirmOpen: false }));
     setLoading(true);
     try {
       const walletResponse = await api.get(`wallet/${user.username}/`, {
@@ -166,8 +191,7 @@ const Airtime = () => {
         payload,
         {
           headers: {
-            Authorization:
-              "Token 3379df5f760eb207eb83201fdadc6ec81652e5934a37f0ac83c1c9de4c18",
+            Authorization: `Token ${activeApi}`,
             "Content-Type": "application/json",
           },
         }
@@ -199,6 +223,7 @@ const Airtime = () => {
           price: formData.amount,
           status: response.data.status,
           new_bal: newBalance,
+          phone: formData.phone,
         },
         {
           headers: {
@@ -208,14 +233,29 @@ const Airtime = () => {
         }
       );
 
-      setSuccessMessage("Transaction successful!");
-      setIsSuccessOpen(true);
+      setPopupState((prev) => ({
+        ...prev,
+        successMessage: "Transaction successful!",
+        isSuccessOpen: true,
+      }));
     } catch (error) {
       const errorMsg = error.response
-        ? error.response.data.message || "An error occurred. Please try again."
+        ? error.response.data.message
         : error.message;
-      setErrorPopupMessage(errorMsg);
-      setIsErrorOpen(true);
+
+      if (errorMsg.includes("Insufficient Account")) {
+        setPopupState((prev) => ({
+          ...prev,
+          errorPopupMessage: "Network error occurred!",
+          isErrorOpen: true,
+        }));
+      } else {
+        setPopupState((prev) => ({
+          ...prev,
+          errorPopupMessage: errorMsg,
+          isErrorOpen: true,
+        }));
+      }
     } finally {
       setLoading(false);
     }
@@ -231,18 +271,17 @@ const Airtime = () => {
     walletData.balance,
   ]);
 
-  const handleCancel = useCallback(() => setIsConfirmOpen(false), []);
-  const handleErrorClose = useCallback(() => setIsErrorOpen(false), []);
-  const handleBypass = useCallback(
-    () => setBypassPhoneNumber((prev) => !prev),
-    []
-  );
+  const handleCancel = () =>
+    setPopupState((prev) => ({ ...prev, isConfirmOpen: false }));
+  const handleErrorClose = () =>
+    setPopupState((prev) => ({ ...prev, isErrorOpen: false }));
+  const handleBypass = () => setBypassPhoneNumber((prev) => !prev);
 
   const memoizedGeneralLeft = useMemo(() => <GeneralLeft />, []);
   const memoizedGeneralRight = useMemo(() => <GeneralRight />, []);
 
   return (
-    <div className="bg-bg_on h-auto bg-contain bg-no-repeat mt-[20vh] justify-center sm:bg-cover bg-center px-4 ss:px-[5rem] sm:px-[1rem] sm:flex gap-5 md:gap-12 lg:mx-[5rem] font-body_two">
+    <div className="bg-bg_on h-auto bg-contain bg-no-repeat mt-[8rem] justify-center sm:bg-cover bg-center px-4 ss:px-[5rem] sm:px-[1rem] sm:flex gap-5 md:gap-12 lg:mx-[5rem] font-body_two">
       {memoizedGeneralLeft}
       <div>
         <div>
@@ -397,21 +436,24 @@ const Airtime = () => {
       {memoizedGeneralRight}
 
       <ConfirmationPopup
-        isOpen={isConfirmOpen}
+        isOpen={popupState.isConfirmOpen}
         onConfirm={handleConfirm}
         onCancel={handleCancel}
-        message={`Are you sure you want to proceed with transfering ₦${formData.amount} airtime to ${formData.phone}?`}
+        message={`Are you sure you want to proceed with transferring ${formData.planName} to ${formData.phone}?`}
       />
 
       <ErrorPopup
-        isOpen={isErrorOpen}
-        message={errorPopupMessage}
+        isOpen={popupState.isErrorOpen}
+        message={popupState.errorPopupMessage}
         onClose={handleErrorClose}
       />
+
       <SuccessPopup
-        isOpen={isSuccessOpen}
-        message={successMessage}
-        onClose={() => setIsSuccessOpen(false)}
+        isOpen={popupState.isSuccessOpen}
+        message={popupState.successMessage}
+        onClose={() =>
+          setPopupState((prev) => ({ ...prev, isSuccessOpen: false }))
+        }
       />
     </div>
   );

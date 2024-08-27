@@ -107,7 +107,7 @@ const RegistrationPage = () => {
         <div className="flex items-center gap-1">
           <Link to={"/"}>
             <div className="logo font-heading_one text-green-500 border border-green-500 px-2 text-[.7rem] px-2 rounded-[.5rem] font-bold">
-              Atom
+              MaduPay
             </div>
           </Link>
           <div className="h-3 w-3 bg-green-500 rounded-full"></div>
@@ -131,10 +131,10 @@ const RegistrationPage = () => {
           <div className="sm:w-1/2 max-w-md mx-auto sm:mx-0">
             <div className="mb-8">
               <h1 className="font-bold text-4xl text-gray-300 font-heading_two mb-2">
-                Sign up with <span className="text-gradient">Atom</span>
+                Sign up with <span className="text-gradient">MaduPay</span>
               </h1>
               <p className="text-gray-300 text-lg">
-                Create your Atom account for free
+                Create your MaduPay account for free
               </p>
             </div>
 
@@ -166,7 +166,11 @@ const RegistrationPage = () => {
                     name: "email",
                     placeholder: "Email address",
                     type: "email",
-                    error: errorMessage.emailError && errorMessage.emailError,
+                    // error: errorMessage.emailError && errorMessage.emailError,
+
+                    error:
+                      errorMessage.emailError ||
+                      (registerErrors.email && registerErrors.email[0]),
                   },
                   {
                     name: "phone_number",
@@ -251,7 +255,7 @@ const RegistrationPage = () => {
               </div>
             </form>
 
-            <p className="relative text-center text-gray-300 my-6 sm:hidden">
+            <p className="relative text-center text-gray-300 py-6 sm:hidden">
               Already have an account?{" "}
               <Link
                 to="/authentication/login"

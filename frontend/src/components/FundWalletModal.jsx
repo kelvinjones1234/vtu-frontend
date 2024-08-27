@@ -1,10 +1,58 @@
-import React, { useEffect, useState, useCallback, useMemo, useContext } from "react";
+import React, {
+  useEffect,
+  useState,
+  useCallback,
+  useMemo,
+  useContext,
+} from "react";
 import { useWallet } from "../context/WalletContext";
 import { AuthContext } from "../context/AuthenticationContext";
 import { GeneralContext } from "../context/GeneralContext";
 import close from "../assets/close.svg";
 
 const MIN_AMOUNT = 500;
+
+// Memoize these components to prevent unnecessary re-renders
+const CloseButton = React.memo(({ onClose }) => (
+  <button
+    className="absolute right-3 top-3 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+    onClick={onClose}
+    aria-label="Close"
+  >
+    <img src={close} alt="Close" className="h-6 w-6" />
+  </button>
+));
+
+const ErrorMessage = React.memo(({ message }) => (
+  <p className="text-red-500 mb-4">{message}</p>
+));
+
+const AmountInput = React.memo(({ amount, setAmount, minAmount }) => (
+  <input
+    type="number"
+    placeholder={`Enter Amount (min. ${minAmount})`}
+    aria-label="Enter Amount"
+    onChange={(e) => setAmount(e.target.value)}
+    value={amount}
+    min={minAmount}
+    className="w-full p-3 mb-4 border border-gray-300 dark:border-gray-600 outline-0 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
+  />
+));
+
+const SubmitButton = React.memo(({ onClick, disabled, minAmount }) => (
+  <button
+    onClick={onClick}
+    disabled={disabled}
+    className={`w-full p-3 rounded-lg font-semibold transition duration-300 ${
+      disabled
+        ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+        : "bg-blue-500 text-white hover:bg-blue-600"
+    }`}
+    type="submit"
+  >
+    {disabled ? `Enter valid amount (min. ${minAmount})` : "Proceed"}
+  </button>
+));
 
 const FundWalletModal = ({ onClose }) => {
   const { authTokens, user } = useContext(AuthContext);
@@ -66,21 +114,27 @@ const FundWalletModal = ({ onClose }) => {
   const isButtonDisabled = useMemo(() => Number(amount) < MIN_AMOUNT, [amount]);
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
-      <div className="bg-white dark:bg-gray-800 rounded-lg p-8 w-full max-w-md relative mx-5">
-        <CloseButton onClose={onClose} />
-        <h2 className="text-2xl text-primary dark:text-white mb-6 font-bold">Fund Wallet</h2>
-        <form onSubmit={(e) => e.preventDefault()}>
-          {errorMessage && <ErrorMessage message={errorMessage} />}
+    <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-60">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-8 w-full max-w-md relative mx-5 transform transition-all duration-300 ease-in-out">
+        <CloseButton onClose={onClose} className="absolute top-4 right-4" />
+        <h2 className="text-2xl text-primary dark:text-white mb-6 font-bold text-center">
+          Fund Your Wallet
+        </h2>
+        <form onSubmit={(e) => e.preventDefault()} className="space-y-6">
+          {errorMessage && (
+            <ErrorMessage message={errorMessage} className="mb-4" />
+          )}
           <AmountInput
             amount={amount}
             setAmount={setAmount}
             minAmount={MIN_AMOUNT}
+            className="w-full"
           />
           <SubmitButton
             onClick={payWithMonnify}
             disabled={isButtonDisabled}
             minAmount={MIN_AMOUNT}
+            className="w-full py-3 text-lg font-semibold transition-colors duration-200"
           />
         </form>
       </div>
@@ -88,45 +142,4 @@ const FundWalletModal = ({ onClose }) => {
   );
 };
 
-const CloseButton = ({ onClose }) => (
-  <button
-    className="absolute right-3 top-3 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
-    onClick={onClose}
-    aria-label="Close"
-  >
-    <img src={close} alt="Close" className="h-6 w-6" />
-  </button>
-);
-
-const ErrorMessage = ({ message }) => (
-  <p className="text-red-500 mb-4">{message}</p>
-);
-
-const AmountInput = ({ amount, setAmount, minAmount }) => (
-  <input
-    type="number"
-    placeholder={`Enter Amount (min. ${minAmount})`}
-    aria-label="Enter Amount"
-    onChange={(e) => setAmount(e.target.value)}
-    value={amount}
-    min={minAmount}
-    className="w-full p-3 mb-4 border border-gray-300 dark:border-gray-600 outline-0 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
-  />
-);
-
-const SubmitButton = ({ onClick, disabled, minAmount }) => (
-  <button
-    onClick={onClick}
-    disabled={disabled}
-    className={`w-full p-3 rounded-lg font-semibold transition duration-300 ${
-      disabled
-        ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-        : "bg-blue-500 text-white hover:bg-blue-600"
-    }`}
-    type="submit"
-  >
-    {disabled ? `Enter valid amount (min. ${minAmount})` : "Proceed"}
-  </button>
-);
-
-export default FundWalletModal;
+export default React.memo(FundWalletModal);

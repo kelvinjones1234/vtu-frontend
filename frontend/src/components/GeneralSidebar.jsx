@@ -63,7 +63,7 @@ const GeneralSidebar = ({ generalMenuToggle, handleGeneralMenuToggle }) => {
           <div className="flex items-center gap-1 mt-1">
             <Link to={"/"}>
               <div className="logo font-heading_one text-green-500 border dark:border-green-500 px-2 text-[.7rem] px-2 border-green-500 rounded-[.5rem] font-bold">
-                Atom
+                MaduPay
               </div>
             </Link>
             <div className="h-3 w-3 bg-green-500 rounded-full"></div>
@@ -95,7 +95,6 @@ const GeneralSidebar = ({ generalMenuToggle, handleGeneralMenuToggle }) => {
                 </p>
               </div>
             </Link>
-
             <ul>
               <li
                 className={`mt-4 items-center flex py-3 px-2 rounded-xl ${
@@ -197,13 +196,13 @@ const GeneralSidebar = ({ generalMenuToggle, handleGeneralMenuToggle }) => {
                 <div>Transactions</div>
               </Link>
             </li>
-            <li
+            {/* <li
               className={`mt-4 items-center py-3 px-2 rounded-xl ${
                 activePath === "/user/dashboard/price" &&
                 "bg-white bg-opacity-20"
               }`}
             >
-              <Link to={"/user/dashboard/price"} className="flex items-center">
+              <Link to={"/dashboard/price-list"} className="flex items-center">
                 <img
                   src={price_list}
                   alt=""
@@ -211,15 +210,16 @@ const GeneralSidebar = ({ generalMenuToggle, handleGeneralMenuToggle }) => {
                 />
                 <div>Price List</div>
               </Link>
-            </li>
-
-            <li className="mt-4 items-center flex  py-3 px-2 rounded-xl">
-              <img
-                src={about}
-                alt=""
-                className="h-[1.2rem] w-[1.1rem] ml-[.2rem] mr-[1rem]"
-              />
-              <div>About</div>
+            </li> */}
+            <li className="mt-4 py-3 px-2 rounded-xl">
+              <Link to={"/dashboard/about"} className="items-center flex">
+                <img
+                  src={about}
+                  alt=""
+                  className="h-[1.2rem] w-[1.1rem] ml-[.2rem] mr-[1rem]"
+                />
+                <div>About</div>
+              </Link>
             </li>
             <li
               className="mb-10 mt-4 items-center flex  py-3 px-2 rounded-xl cursor-pointer"

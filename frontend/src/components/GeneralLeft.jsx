@@ -6,6 +6,7 @@ import logout from "../assets/logout.svg";
 import services from "../assets/services.svg";
 import right_arrow from "../assets/right_arrow.svg";
 import transactions from "../assets/transactions.svg";
+import about from "../assets/about.svg";
 
 import bottom_arrow from "../assets/bottom_arrow.svg";
 import Transfer from "./Transfer";
@@ -145,7 +146,7 @@ const GeneralLeft = () => {
             </p>
           </Link>
         </div>
-        <div
+        {/* <div
           className={`py-[.7rem] gap-3 rounded-xl max-w-[13rem] flex items-center font-bold text-white px-4 mt-4 ${
             activePath === "/user/price-list"
               ? "dark:bg-white dark:bg-opacity-20 bg-gray-300"
@@ -154,10 +155,23 @@ const GeneralLeft = () => {
           onClick={handleDropDownClose}
         >
           <img src={price_list} alt="" className="w-4" />
-          <Link to={"/user/price-list"}>
+          <Link to={"/dashboard/price-list"}>
             <p className="cursor-pointer dark:text-white text-primary">
               Price List
             </p>
+          </Link>
+        </div> */}
+        <div
+          className={`py-[.7rem] gap-3 rounded-xl max-w-[13rem] flex items-center font-bold text-white px-4 mt-4 ${
+            activePath === "/dashboard/about"
+              ? "dark:bg-white dark:bg-opacity-20 bg-gray-300"
+              : "dark:hover:bg-white dark:hover:bg-opacity-5 transition duration-400 ease-in-out hover:bg-gray-100"
+          }`}
+          onClick={handleDropDownClose}
+        >
+          <img src={about} alt="" className="w-4" />
+          <Link to={"/dashboard/about"}>
+            <p className="cursor-pointer dark:text-white text-primary">About</p>
           </Link>
         </div>
         <div

@@ -13,7 +13,7 @@ const HomeHero = () => {
         <div className="text-white text-center sm:text-left">
           <div className="main-text text-[2rem] xs:text-[3rem] font-bold mb-[5vh] font-heading_two leading-[2rem]">
             <h1 className="">
-              Welcome to <span className="text-gradient">Atom</span>
+              Welcome to <span className="text-gradient">MaduPay</span>
             </h1>
             <div className="sm:flex sm:mt-2">
               <p className="text-[1rem] bg-black bg-primary inline-block bg-opacity-80 px-4 rounded-[.5rem] sm:rounded-full">
@@ -32,9 +32,9 @@ const HomeHero = () => {
               Instantly Top Up Anytime, Anywhere...
             </h3>
             <p className="font-body_two pb-[3vh]">
-              At Atom, we understand the importance of staying connected.
+              At MaduPay, we understand the importance of staying connected.
               Whether you need to recharge your mobile phone, pay your utility
-              bills, or purchase digital services, Atom is here to make it
+              bills, or purchase digital services, we are here to make it
               effortless. Our fast, secure, and user-friendly platform ensures
               you can top up instantly, no matter where you are.
             </p>

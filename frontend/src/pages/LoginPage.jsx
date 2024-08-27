@@ -7,8 +7,8 @@ import simag from "../assets/vtu3.png";
 
 const LeftSide = () => (
   <div className="left leading-[3rem] relative hidden justify-center items-center sm:flex h-[364px] shadow-lg shadow-indigo-900/20 bg-opacity-50 rounded-2xl w-[20rem] bg-black text-white">
-    {/* <div className="atom-logo text-[6vw] font-bold text-gradient absolute">
-      Atom <br /> <span className="text-[1.5vw]">Virtual Top Up</span>
+    {/* <div className="MaduPay-logo text-[6vw] font-bold text-gradient absolute">
+      MaduPay <br /> <span className="text-[1.5vw]">Virtual Top Up</span>
     </div> */}
     <img src={simag} alt="" className="h-[365px]" />
   </div>
@@ -64,11 +64,11 @@ const LoginPage = () => {
   return (
     <div className="min-h-screen bg-dark-custom-gradient font-body_two">
       <div className="authentication bg-bg_one bg-contain md:bg-cover bg-center min-h-screen bg-no-repeat">
-        <nav className="flex justify-between px-4 lg:px-24 py-5 mt-3">
+        <nav className="flex justify-between px-4 lg:px-24 py-8">
           <div className="flex items-center gap-1">
             <Link to={"/"}>
               <div className="logo font-heading_one text-green-500 border border-green-500 px-2 text-[.7rem] px-2 rounded-[.5rem] font-bold">
-                Atom
+                MaduPay
               </div>
             </Link>
             <div className="h-3 w-3 bg-green-500 rounded-full"></div>
@@ -95,7 +95,7 @@ const LoginPage = () => {
             <div className="sm:w-1/2 max-w-md mx-auto sm:mx-0">
               <div className="mb-8">
                 <h1 className="font-bold font-heading_two text-4xl text-gray-300 mb-2">
-                  Sign in to <span className="text-gradient">Atom</span>
+                  Sign in to <span className="text-gradient">MaduPay</span>
                 </h1>
                 <p className="text-gray-300 text-lg">
                   Enter your credentials below

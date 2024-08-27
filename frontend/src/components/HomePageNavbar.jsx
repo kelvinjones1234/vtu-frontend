@@ -16,7 +16,7 @@ const HomePageNavbar = ({ homeMenuToggle, setHomeMenuToggle }) => {
   const handleSideBarAuthToggle = () => {
     setSideBarAuthToggle((previous) => !previous);
   };
- 
+
   const handleHomeMenuToggle = () => {
     setHomeMenuToggle((previous) => !previous);
   };
@@ -46,7 +46,7 @@ const HomePageNavbar = ({ homeMenuToggle, setHomeMenuToggle }) => {
         <div className="flex items-center gap-1 ">
           <Link to={"/"}>
             <div className="logo font-heading_one text-green-500 border border-green-500 px-2 text-[.7rem] px-2 border-white rounded-[.5rem] font-bold">
-              Atom
+              MaduPay
             </div>
           </Link>
           <div className="h-3 w-3 bg-green-500 rounded-full"></div>
@@ -101,7 +101,7 @@ const HomePageNavbar = ({ homeMenuToggle, setHomeMenuToggle }) => {
           <div className="flex items-center gap-1 mt-[.55rem] mb-9">
             <Link to={"/"}>
               <div className="logo font-heading_one text-green-500 border border-green-500 px-2 text-[.7rem] px-2 border-white rounded-[.5rem] font-bold">
-                Atom
+                MaduPay
               </div>
             </Link>
             <div className="h-3 w-3 bg-green-500 rounded-full"></div>
@@ -148,13 +148,15 @@ const HomePageNavbar = ({ homeMenuToggle, setHomeMenuToggle }) => {
               </div>
             </ul>
           </ul>
-          <li className="mt-4 items-center flex bg-white bg-opacity-20 py-3 px-2 rounded-xl">
-            <img
-              src={about}
-              alt=""
-              className="h-[1.2rem] w-[1.1rem] ml-[.2rem] mr-[1rem]"
-            />
-            <div>About</div>
+          <li className="mt-4 bg-white bg-opacity-20 py-3 px-2 rounded-xl">
+            <Link to={"/dashboard/about"} className="items-center flex">
+              <img
+                src={about}
+                alt=""
+                className="h-[1.2rem] w-[1.1rem] ml-[.2rem] mr-[1rem]"
+              />
+              <div>About</div>
+            </Link>
           </li>
         </ul>
       </div>

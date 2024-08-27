@@ -17,6 +17,7 @@ import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
 import NoAuthPrivacyPolicyPage from "./pages/NoAuthPrivacyPolicyPage";
 import NoAuthTermsAndConditionPage from "./pages/NoAuthTermsAndConditionPage";
 import LoadingSpinner from "./components/LoadingSpinner";
+
 // import RegisterationPage from "./pages/RegisterationPage";
 // import PageNotFoundPage from "./pages/PageNotFoundPage";
 // import LoginPage from "./pages/LoginPage";
@@ -28,6 +29,10 @@ const PageNotFoundPage = lazy(() => import("./pages/PageNotFoundPage"));
 const LoginPage = lazy(() => import("./pages/LoginPage"));
 const RegisterationPage = lazy(() => import("./pages/RegisterationPage"));
 const PasswordResetPage = lazy(() => import("./pages/PasswordResetPage"));
+const AboutPage = lazy(() => import("./pages/AboutPage"));
+const NoAuthAboutPage = lazy(() => import("./pages/NoAuthAboutPage"));
+const PriceListPage = lazy(() => import("./pages/PriceListPage"));
+
 const PasswordResetRequestPage = lazy(() =>
   import("./pages/PasswordResetRequestPage")
 );
@@ -52,6 +57,10 @@ function AppContent() {
         <Route
           path="/privacy-and-policy"
           element={user ? <PrivacyPolicyPage /> : <NoAuthPrivacyPolicyPage />}
+        />
+        <Route
+          path="/dashboard/about"
+          element={user ? <AboutPage /> : <NoAuthAboutPage />}
         />
         <Route
           path="/terms-and-conditions"
@@ -84,6 +93,7 @@ function AppContent() {
             path="/user/dashboard/transactions"
             element={<TransactionHistoryPage />}
           />
+          {/* <Route path="/dashboard/price-list" element={<PriceListPage />} /> */}
         </Route>
       </Routes>
     </Suspense>

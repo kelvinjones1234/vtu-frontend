@@ -15,9 +15,24 @@ const ProductProvider = ({ children }) => {
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const [terms, setTerms] = useState("");
+  const [policy, setPolicy] = useState("");
+  const [apiSettings, setApiSettings] = useState([]);
+  const [activeApi, setActiveApi] = useState(null);
 
   const { api } = useContext(GeneralContext);
   const { authTokens, loginUser } = useContext(AuthContext);
+
+  useEffect(() => {
+    if (apiSettings && Array.isArray(apiSettings)) {
+      const activeApiKey = apiSettings.find((api) => api.active)?.api_key;
+      if (activeApiKey && activeApiKey !== activeApi) {
+        setActiveApi(activeApiKey);
+      }
+    } else {
+      console.error("apiSettings is null or not an array");
+    }
+  }, [apiSettings, activeApi]);
 
   const fetchNotifications = async () => {
     if (!authTokens) return; // Exit if authTokens is null
@@ -54,6 +69,9 @@ const ProductProvider = ({ children }) => {
         setProductData(data.productData);
         setAirtimeNetworks(data.airtimeNetworks);
         setCableCategories(data.cableCategories);
+        setTerms(data.terms);
+        setPolicy(data.policy);
+        setApiSettings(data.apiSettings);
       } catch (error) {
         console.error("Error fetching combined data:", error);
       }
@@ -142,6 +160,9 @@ const ProductProvider = ({ children }) => {
     fetchNotifications,
     handleMarkAsRead,
     handleMarkAllAsRead,
+    activeApi,
+    policy,
+    terms,
     notifications,
     unreadCount,
     allRead,
@@ -153,6 +174,9 @@ const ProductProvider = ({ children }) => {
     airtimeNetworks,
     cableCategories,
   };
+
+  console.log("active api", activeApi);
+  console.log(policy);
 
   return (
     <ProductContext.Provider value={contextData}>

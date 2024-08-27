@@ -4,13 +4,17 @@ import GeneralLeft from "./GeneralLeft";
 import GeneralRight from "./GeneralRight";
 import { AuthContext } from "../context/AuthenticationContext";
 
+import { ProductContext } from "../context/ProductContext";
+
 const PrivacyPolicy = () => {
   const { user } = useContext(AuthContext);
+  const { policy } = useContext(ProductContext);
+
   return (
     <div
       className={`bg-bg_on ${
         !user && "lg:px-[6rem]"
-      } min-h-screen bg-contain bg-no-repeat justify-center pt-24 sm:bg-cover bg-center px-4 sm:px-6 lg:px-8 xl:px-16`}
+      } min-h-screen bg-contain bg-no-repeat justify-center mt-[8rem] sm:bg-cover bg-center px-4 sm:px-6 lg:px-8 xl:px-16`}
     >
       <div className="max-w-7xl mx-auto sm:flex gap-8">
         {user && <GeneralLeft />}
@@ -26,109 +30,24 @@ const PrivacyPolicy = () => {
             </div>
           </div>
 
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
-            <h3 className="text-lg font-semibold text-primary dark:text-white mb-4">
-              1. Introduction
-            </h3>
-            <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-              Welcome to Atom virtual to up site. We are committed to protecting
-              your privacy and ensuring that your personal information is
-              handled in a safe and responsible manner. This Privacy Policy
-              explains how we collect, use, and protect your information.
-            </p>
-
-            <h3 className="text-lg font-semibold text-primary dark:text-white mb-4">
-              2. Information We Collect
-            </h3>
-            <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-              We may collect the following types of information:
-            </p>
-            <ul className="list-disc list-inside text-sm text-gray-500 dark:text-gray-400 mb-4">
-              <li>
-                Personal Information: such as your name, email address, and
-                payment details.
-              </li>
-              <li>
-                Usage Information: such as your IP address, browser type, and
-                browsing history.
-              </li>
-              <li>
-                Transaction Information: such as your transaction history and
-                top-up records.
-              </li>
-            </ul>
-
-            <h3 className="text-lg font-semibold text-primary dark:text-white mb-4">
-              3. How We Use Your Information
-            </h3>
-            <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-              We use your information to:
-            </p>
-            <ul className="list-disc list-inside text-sm text-gray-500 dark:text-gray-400 mb-4">
-              <li>Provide and manage our services.</li>
-              <li>Process your transactions and manage your account.</li>
-              <li>Communicate with you about your account or our services.</li>
-              <li>Improve our services and customer experience.</li>
-            </ul>
-
-            <h3 className="text-lg font-semibold text-primary dark:text-white mb-4">
-              4. Sharing Your Information
-            </h3>
-            <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-              We do not share your personal information with third parties
-              except in the following cases:
-            </p>
-            <ul className="list-disc list-inside text-sm text-gray-500 dark:text-gray-400 mb-4">
-              <li>When required by law or to comply with legal processes.</li>
-              <li>
-                To protect the rights and safety of our company, our users, or
-                others.
-              </li>
-              <li>
-                With service providers who assist us in operating our site and
-                services.
-              </li>
-            </ul>
-
-            <h3 className="text-lg font-semibold text-primary dark:text-white mb-4">
-              5. Security of Your Information
-            </h3>
-            <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-              We implement appropriate security measures to protect your
-              information from unauthorized access, alteration, disclosure, or
-              destruction. However, please note that no method of transmission
-              over the internet or electronic storage is 100% secure.
-            </p>
-
-            <h3 className="text-lg font-semibold text-primary dark:text-white mb-4">
-              6. Cookies and Tracking Technologies
-            </h3>
-            <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-              Our website uses cookies and other tracking technologies to
-              enhance your browsing experience. You can choose to disable
-              cookies through your browser settings, but this may affect your
-              ability to use certain features of our site.
-            </p>
-
-            <h3 className="text-lg font-semibold text-primary dark:text-white mb-4">
-              7. Changes to This Privacy Policy
-            </h3>
-            <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-              We may update this Privacy Policy from time to time. Any changes
-              will be posted on this page, and your continued use of our site
-              after the changes will signify your acceptance of the updated
-              terms.
-            </p>
-
-            <h3 className="text-lg font-semibold text-primary dark:text-white mb-4">
-              8. Contact Us
-            </h3>
-            <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-              If you have any questions about this Privacy Policy or our privacy
-              practices, please contact us at{" "}
-              <span className="underline">atomvirtualtopup@gmail.com</span>.
-            </p>
-          </div>
+          {policy && policy.length > 0 ? (
+            policy.map((pol, index) => (
+              <div
+                key={index}
+                className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6"
+              >
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html: pol.privacy_policy,
+                  }}
+                />
+              </div>
+            ))
+          ) : (
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+              <p>No terms and conditions available.</p>
+            </div>
+          )}
         </div>
         {user && <GeneralRight />}
       </div>

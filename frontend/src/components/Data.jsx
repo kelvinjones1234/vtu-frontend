@@ -27,7 +27,7 @@ const inputStyle =
 const errorInputStyle = "border-red-500 dark:border-red-700";
 
 const Data = () => {
-  const { dataNetworks } = useContext(ProductContext);
+  const { dataNetworks, activeApi } = useContext(ProductContext);
   const { api, detectNetwork, setLoading } = useContext(GeneralContext);
   const { user, authTokens, logoutUser, rememberMe } = useContext(AuthContext);
   const { walletData, setWalletData } = useWallet();
@@ -216,7 +216,9 @@ const Data = () => {
       });
 
       if (walletResponse.data.balance < formData.price) {
-        throw new Error("Insufficient Funds");
+        throw new Error(
+          `Insufficient Funds ₦${walletResponse.data.balance}.00`
+        );
       }
 
       const payload = {
@@ -227,26 +229,16 @@ const Data = () => {
         "request-id": `Data_${generateUniqueId()}`,
       };
 
-      const mockResponse = {
-        data: {
-          transid: `TRANS_${generateUniqueId()}`,
-          status: "SUCCESS",
-        },
-      };
-      const response = mockResponse;
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      // const response = await axios.post(
-      //   "https://kusosub.com/api/data",
-      //   payload,
-      //   {
-      //     headers: {
-      //       Authorization:
-      //         "Token 3379df5f760eb207eb83201fdadc6ec81652e5934a37f0ac83c1c9de4c18",
-      //       "Content-Type": "application/json",
-      //     },
-      //   }
-      // );
+      const response = await axios.post(
+        "https://kusosub.com/api/data",
+        payload,
+        {
+          headers: {
+            Authorization: `Token ${activeApi}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       const newBalance = Number(walletData.balance) - formData.price;
       const deduct = -formData.price;
@@ -274,6 +266,7 @@ const Data = () => {
           price: formData.price,
           status: response.data.status,
           new_bal: newBalance,
+          phone: formData.phone,
         },
         {
           headers: {
@@ -292,11 +285,20 @@ const Data = () => {
       const errorMsg = error.response
         ? error.response.data.message
         : error.message;
-      setPopupState((prev) => ({
-        ...prev,
-        errorPopupMessage: errorMsg,
-        isErrorOpen: true,
-      }));
+
+      if (errorMsg.includes("Insufficient Account")) {
+        setPopupState((prev) => ({
+          ...prev,
+          errorPopupMessage: "Network error occurred!",
+          isErrorOpen: true,
+        }));
+      } else {
+        setPopupState((prev) => ({
+          ...prev,
+          errorPopupMessage: errorMsg,
+          isErrorOpen: true,
+        }));
+      }
     } finally {
       setLoading(false);
     }
@@ -318,7 +320,7 @@ const Data = () => {
   const handleBypass = () => setBypassPhoneNumber((prev) => !prev);
 
   return (
-    <div className="bg-bg_on h-auto bg-contain bg-no-repeat mt-[20vh] sm:bg-cover bg-center px-4 justify-center ss:px-[5rem] sm:px-[1rem] sm:flex gap-5 md:gap-12 lg:mx-[5rem]">
+    <div className="bg-bg_on h-auto bg-contain bg-no-repeat mt-[8rem] sm:bg-cover bg-center px-4 justify-center ss:px-[5rem] sm:px-[1rem] sm:flex gap-5 md:gap-12 lg:mx-[5rem]">
       <GeneralLeft />
       <div>
         <div>

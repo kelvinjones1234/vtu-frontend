@@ -11,7 +11,7 @@ const AfterHero = () => {
       <div className="px-[1rem] ss:px-[6rem] mb-[8vh] mt-[2vh] font-body_two">
         <div className="image flex justify-center">
           <h1 className="text-link py-4 sm:pb-8 text-[1.2rem] font-bold font-heading_two">
-            Why Choose Atom?
+            Why Choose Us?
           </h1>
         </div>
         <div className="grid md:grid-cols-2 gap-5">
@@ -23,7 +23,7 @@ const AfterHero = () => {
               Lightning-Fast Transactions
             </h3>
             <p className="max-w-[450px] mx-auto">
-              Get your top-ups in a flash. With Atom, you’ll never be out of
+              Get your top-ups in a flash. With MaduPay, you’ll never be out of
               credit.
             </p>
           </div>
@@ -51,7 +51,7 @@ const AfterHero = () => {
               24/7 Availability
             </h3>
             <p className="max-w-[450px] mx-auto">
-              Need to top up at midnight? No problem. Atom is available round
+              Need to top up at midnight? No problem. MaduPay is available round
               the clock, just like your need to stay connected.
             </p>
           </div>
@@ -63,8 +63,8 @@ const AfterHero = () => {
               Wide Range of Services
             </h3>
             <p className="max-w-[450px] mx-auto">
-              From mobile airtime to digital subscriptions, Atom covers all your
-              top-up needs in one place.
+              From mobile airtime to digital subscriptions, MaduPay covers all
+              your top-up needs in one place.
             </p>
           </div>
           <div className="md:col-span-2 flex justify-center">

@@ -4,9 +4,9 @@ import { Link } from "react-router-dom";
 const PageNotFound = () => {
   return (
     <div className="bg-bg_on min-h-screen bg-contain bg-no-repeat flex items-center justify-center px-4 sm:px-6 lg:px-8">
-      <div className="max-w-lg w-full space-y-8 bg-white dark:bg-gray-800 shadow-2xl rounded-lg p-6 text-center">
+      <div className="max-w-lg w-full space-y-8 bg-gray-800 shadow-2xl rounded-lg p-6 text-center">
         <div>
-          <h2 className="mt-6 text-6xl font-extrabold text-primary dark:text-white">
+          <h2 className="mt-6 text-6xl font-extrabold text-white">
             404
           </h2>
           <p className="mt-2 text-3xl font-bold text-gray-900 dark:text-gray-200">

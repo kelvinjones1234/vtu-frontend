@@ -21,25 +21,29 @@ const UserDashBoard = () => {
   };
 
   return (
-    <div className="mt-[10rem] sm:bg-cover bg-center px-4 ss:px-[5rem] sm:px-[1rem] sm:flex gap-5 md:gap-12 justify-center lg:mx-[5rem] font-body_two">
+    <div className="bg-bg_on h-auto bg-contain bg-no-repeat mt-[8rem] sm:bg-cover bg-center px-4 justify-center ss:px-[5rem] sm:px-[1rem] sm:flex gap-5 md:gap-12 lg:mx-[5rem]">
       {/* left layer */}
       <GeneralLeft />
 
       {/* middle layer */}
-      <div className="flex flex-col text-[.8rem] md:text-[1rem]">
+      <div className="min-w-[349.20px] pr-2 mx-auto">
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg mb-6 p-6 text-primary dark:text-white">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-sm font-semibold">Available Balance</h2>
+            <h2 className="text-sm font-semibold sm:text-[.8rem] md:text-[1rem]">
+              Available Balance
+            </h2>
             <Link
               to="/user/dashboard/transactions"
               className="flex items-center text-blue-500 hover:text-blue-600 transition-colors duration-300"
             >
-              <span className="mr-2">Transaction History</span>
+              <span className="mr-2 sm:text-[.8rem] md:text-[1rem]">
+                Transaction History
+              </span>
               <FaAngleRight className="h-4 w-4" />
             </Link>
           </div>
           <div className="flex justify-between items-center">
-            <p className="text-3xl font-bold">
+            <p className="text-2xl sm:text-[1.2rem] md:text-[2rem] font-bold">
               ₦{" "}
               {walletData &&
                 Number(walletData.balance).toLocaleString("en-US", {
@@ -49,7 +53,7 @@ const UserDashBoard = () => {
             </p>
             <button
               onClick={handleOpenModal}
-              className="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-full transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50"
+              className="bg-green-500 hover:bg-green-600 text-white font-semibold py-1 sm:py-1 md:py-2 px-3 rounded-full transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50"
             >
               + Fund Wallet
             </button>
@@ -61,10 +65,10 @@ const UserDashBoard = () => {
             other users with their phone number.
           </p>
           <div className="flex justify-between">
-            <button className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-full transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
+            <button className="bg-blue-500 text-[.8rem] hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-full transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
               Create Shortcut
             </button>
-            <button className="border border-green-500 text-green-500 font-semibold py-2 px-4 rounded-full transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50">
+            <button className="border text-[.8rem] border-green-500 text-green-500 font-semibold py-2 px-4 rounded-full transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50">
               Transfer Credit
             </button>
           </div>
