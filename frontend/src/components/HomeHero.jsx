@@ -22,7 +22,8 @@ const HomeHero = () => {
               Powering Your Connections
             </p>
           </div>
-          <div className="px-4 sm:w-[80%] sm:max-w-[700px] py-[3vh] bg-white bg-opacity-10 backdrop-blur-sm rounded-xl p-8 shadow-xl mb-12">
+          <div className="bg-opacity-90 rounded-xl px-4 sm:w-[80%] sm:max-w-[700px] py-[3vh] bg-primary my-[3vh] shadow-lg shadow-indigo-900/10">
+            {" "}
             <h3 className="text-[1rem] uppercase py-4 font-heading_two">
               Instantly Top Up Anytime, Anywhere...
             </h3>
