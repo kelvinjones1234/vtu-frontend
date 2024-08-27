@@ -53,7 +53,9 @@ const HomePageNavbar = ({ homeMenuToggle, setHomeMenuToggle }) => {
         <div className="right">
           <div className={`small-screen flex items-center sm:hidden`}>
             <div className="get-started">
-              <button className="bg-geen-500 py-[.4rem] mr-9 px-4 text-[1.1rem] hover:text-sky-500 text-link rounded-2xl font-bold">
+              <button
+                className="bg-geen-500 py-[.4rem] mr-9 px-4 text-[1.1rem] bg-opacity-[90%] hover:bg-blue-500 text-link rounded-2xl font-bold"
+              >
                 <Link to={"/authentication/register"}>Get Started</Link>
               </button>
             </div>
