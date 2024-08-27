@@ -5,14 +5,6 @@ import { GeneralContext } from "../context/GeneralContext";
 import SubmitButton from "../components/SubmitButton";
 import LeftSide from "../components/LeftSide";
 
-// const LeftSide = () => (
-//   <div className="left leading-[3rem] relative hidden justify-center items-center sm:flex h-[364px] shadow-lg shadow-indigo-900/20 bg-opacity-50 rounded-2xl w-[20rem] bg-black text-white">
-//     <div className="atom-logo text-[6vw] font-bold text-gradient absolute">
-//       Atom <br /> <span className="text-[1.5vw]">Virtual Top Up</span>
-//     </div>
-//   </div>
-// );
-
 const PasswordResetPage = () => {
   const { uidb64, token } = useParams();
   const navigate = useNavigate();
