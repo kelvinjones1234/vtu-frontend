@@ -5,7 +5,7 @@ import GeneralRight from "./GeneralRight";
 import { AuthContext } from "../context/AuthenticationContext";
 import { ProductContext } from "../context/ProductContext";
 
-const TermsConditions = () => {
+const TermsConditions = () => { 
   const { user } = useContext(AuthContext);
   const { terms } = useContext(ProductContext);
 

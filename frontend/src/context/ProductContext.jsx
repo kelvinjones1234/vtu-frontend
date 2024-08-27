@@ -17,6 +17,8 @@ const ProductProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [terms, setTerms] = useState("");
   const [policy, setPolicy] = useState("");
+  const [about, setAbout] = useState("");
+
   const [apiSettings, setApiSettings] = useState([]);
   const [activeApi, setActiveApi] = useState(null);
 
@@ -60,7 +62,7 @@ const ProductProvider = ({ children }) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      if (!authTokens) return; // Exit if authTokens is null
+      // if (!authTokens) return; // Exit if authTokens is null
 
       try {
         const response = await api.get("combined-data/");
@@ -71,6 +73,7 @@ const ProductProvider = ({ children }) => {
         setCableCategories(data.cableCategories);
         setTerms(data.terms);
         setPolicy(data.policy);
+        setAbout(data.about);
         setApiSettings(data.apiSettings);
       } catch (error) {
         console.error("Error fetching combined data:", error);
@@ -79,8 +82,9 @@ const ProductProvider = ({ children }) => {
 
     fetchData();
     fetchNotifications();
-  }, [loginUser, authTokens]); // Now it checks both loginUser and authTokens
+  }, []); // Now it checks both loginUser and authTokens
 
+  console.log(terms);
   const handleMarkAsRead = async (id) => {
     if (!authTokens) return; // Exit if authTokens is null
 
@@ -160,6 +164,7 @@ const ProductProvider = ({ children }) => {
     fetchNotifications,
     handleMarkAsRead,
     handleMarkAllAsRead,
+    about,
     activeApi,
     policy,
     terms,
