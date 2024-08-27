@@ -14,16 +14,13 @@ const LoadingSpinner = () => {
               key={index}
               className={`inline-block animate-bounce`}
               style={{
-                animationDelay: `${index * 100}ms`,
+                animationDelay: `${index * 200}ms`,
                 animationDuration: "1s",
               }}
             >
               {letter}
             </span>
           ))}
-        </div>
-        <div className="mt-4 text-primary text-lg animate-pulse">
-          Loading...
         </div>
       </div>
     </div>
