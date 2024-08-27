@@ -21,7 +21,7 @@ const GeneralRight = () => {
           />
         </div>
         <div className="grid justify-center text-center">
-          <p className="pt-3 pb-5 text-primary dark:text-secondary font-bold">
+          <p className="pt-3 pb-5 text-link dark:text-link font-bold">
             Godwin Praise
           </p>
           <div className="flex gap-2">

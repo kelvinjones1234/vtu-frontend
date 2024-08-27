@@ -69,7 +69,7 @@ const Footer = () => {
         <div className="logo">
           <div className="flex justify-center items-center gap-1">
             <Link to={"/"}>
-              <div className="logo font-heading_one text-transparent bg-clip-text border px-2 text-[.7rem] rounded-[.5rem] font-bold bg-gradient-to-r from-purple-400 via-sky-500 to-red-500 border-white">
+              <div className="logo font-heading_one text-transparent bg-clip-text px-2 text-[.7rem] rounded-[.5rem] font-bold bg-gradient-to-r from-purple-400 via-sky-500 to-red-500 border-white">
                 MaduPay
               </div>
             </Link>

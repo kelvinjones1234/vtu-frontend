@@ -62,13 +62,10 @@ const GeneralSidebar = ({ generalMenuToggle, handleGeneralMenuToggle }) => {
         <div className="flex justify-between mr-9">
           <div className="flex items-center gap-1 mt-1">
             <Link to={"/"}>
-              <div className="logo font-heading_one text-green-500 border dark:border-green-500 px-2 text-[.7rem] px-2 border-green-500 rounded-[.5rem] font-bold">
+              <div className="logo font-heading_one text-transparent bg-clip-text  px-2 text-[.7rem] rounded-[.5rem] font-bold bg-gradient-to-r from-purple-400 via-sky-500 to-red-500 border-white">
                 MaduPay
               </div>
             </Link>
-            <div className="h-3 w-3 bg-green-500 rounded-full"></div>
-            <div className="h-3 w-3 bg-green-500 rounded-full"></div>
-            <div className="h-3 w-3 bg-green-500 rounded-full"></div>
           </div>
           <div className="light-dark-mode mt-3">
             <div
