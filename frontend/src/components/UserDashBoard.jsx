@@ -81,7 +81,7 @@ const UserDashBoard = () => {
               className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 flex flex-col items-center justify-center transition duration-300 ease-in-out transform hover:scale-105 hover:shadow-xl"
             >
               <img
-                src={`http://127.0.0.1:8000${item.image}`}
+                src={`https://madupay.pythonanywhere.com${item.image}`}
                 alt={item.name}
                 className="h-12 w-12 object-contain mb-2"
               />
