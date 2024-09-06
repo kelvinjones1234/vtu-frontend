@@ -5,15 +5,17 @@ import GeneralRight from "./GeneralRight";
 import { AuthContext } from "../context/AuthenticationContext";
 import { ProductContext } from "../context/ProductContext";
 
-const TermsConditions = () => { 
+const TermsConditions = () => {
   const { user } = useContext(AuthContext);
   const { terms } = useContext(ProductContext);
 
   return (
     <div
-      className={`bg-bg_on ${
+      className={`${
         !user && "lg:px-[6rem]"
-      } min-h-screen bg-contain bg-no-repeat justify-center mt-[8rem] sm:bg-cover bg-center px-4 sm:px-6 lg:px-8 xl:px-16`}
+      } min-h-screen bg-contain bg-no-repeat justify-center mt-[8rem] sm:bg-cover bg-center px-4 sm:px-6 lg:px-8 xl:px-16 ${
+        user ? "" : "dark" // Apply the dark mode class if no user
+      }`}
     >
       <div className="max-w-7xl mx-auto sm:flex gap-8">
         {user && <GeneralLeft />}

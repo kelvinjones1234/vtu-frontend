@@ -55,9 +55,9 @@ const GeneralNavbar = () => {
   return (
     <>
       <div
-        className={`p-4 lg:px-0 flex justify-between py-4 z-[10] fixed top-0 w-full transition-colors duration-200 ${
+        className={`px-4 lg:px-0 flex justify-between py-1 z-[10] fixed top-0 w-full transition-colors duration-200 ${
           isScrolled
-            ? "dark:bg-gray-900 dark:bg-opacity-95 bg-opacity-95 py- bg-gray-50 shadow"
+            ? "dark:bg-gray-900 dark:bg-opacity-95 bg-opacity-95 bg-gray-50 shadow"
             : "bg-transparent"
         }`}
       >
@@ -98,7 +98,7 @@ const GeneralNavbar = () => {
             <div className="hamburger ">
               <div
                 onClick={handleGeneralMenuToggle}
-                className="text-[25px] dark:text-white text-link"
+                className="text-[25px] text-link"
               >
                 {generalMenuToggle ? <RiCloseLargeLine /> : <RiMenu4Line />}
               </div>

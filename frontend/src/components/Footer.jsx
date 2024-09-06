@@ -1,9 +1,11 @@
 import React from "react";
+import { useContext } from "react";
 import { useLocation, Link } from "react-router-dom";
 import whatsapp from "../assets/whatsapp.png";
 import twitter from "../assets/twitter1.png";
 import instagram from "../assets/instagram.png";
 import facebook from "../assets/facebook.png";
+import { AuthContext } from "../context/AuthenticationContext"; // Assuming AuthContext provides the user
 
 const socials = [
   { src: twitter, alt: "Twitter" },
@@ -14,6 +16,7 @@ const socials = [
 
 const Footer = () => {
   const location = useLocation();
+  const { user } = useContext(AuthContext); // Access user from context
 
   // Check if the current path is the homepage
   const isHomepage = location.pathname === "/";
@@ -21,9 +24,9 @@ const Footer = () => {
   return (
     <div
       className={`text-center sm:text-start mt-10 brder-t border-link ${
-        isHomepage
-          ? "bg-gray-50 bg-primary text-white"
-          : "bg-gray-50 dark:bg-primary dark:text-white text-primary bg-opacity-80"
+        user
+          ? "bg-gray-50 dark:bg-primary dark:text-white text-primary bg-opacity-80"
+          : "bg-primary"
       }  w-full mx-auto font-body_two ss:px-20 px-4`}
     >
       <div className="sm:flex sm:justify-between max-w-[1000px] mx-auto">

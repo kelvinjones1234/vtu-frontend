@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import GeneralLeft from "./GeneralLeft";
 import GeneralRight from "./GeneralRight";
 import { AuthContext } from "../context/AuthenticationContext";
-
 import { ProductContext } from "../context/ProductContext";
 
 const PrivacyPolicy = () => {
@@ -14,7 +13,9 @@ const PrivacyPolicy = () => {
     <div
       className={`bg-bg_on ${
         !user && "lg:px-[6rem]"
-      } min-h-screen bg-contain bg-no-repeat justify-center mt-[8rem] sm:bg-cover bg-center px-4 sm:px-6 lg:px-8 xl:px-16`}
+      } min-h-screen bg-contain bg-no-repeat justify-center mt-[8rem] sm:bg-cover bg-center px-4 sm:px-6 lg:px-8 xl:px-16 ${
+        user ? "" : "dark"  // Apply dark mode if no user is logged in
+      }`}
     >
       <div className="max-w-7xl mx-auto sm:flex gap-8">
         {user && <GeneralLeft />}
@@ -45,7 +46,7 @@ const PrivacyPolicy = () => {
             ))
           ) : (
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
-              <p>No terms and conditions available.</p>
+              <p>No privacy policy available.</p>
             </div>
           )}
         </div>
