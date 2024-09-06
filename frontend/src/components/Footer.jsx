@@ -1,11 +1,10 @@
-import React from "react";
-import { useContext } from "react";
+import React, { useContext } from "react";
 import { useLocation, Link } from "react-router-dom";
 import whatsapp from "../assets/whatsapp.png";
 import twitter from "../assets/twitter1.png";
 import instagram from "../assets/instagram.png";
 import facebook from "../assets/facebook.png";
-import { AuthContext } from "../context/AuthenticationContext"; // Assuming AuthContext provides the user
+import { AuthContext } from "../context/AuthenticationContext";
 
 const socials = [
   { src: twitter, alt: "Twitter" },
@@ -16,18 +15,38 @@ const socials = [
 
 const Footer = () => {
   const location = useLocation();
-  const { user } = useContext(AuthContext); // Access user from context
+  const { user } = useContext(AuthContext);
 
-  // Check if the current path is the homepage
   const isHomepage = location.pathname === "/";
+
+  const getFooterClasses = () => {
+    if (isHomepage) {
+      return "bg-primary text-white";
+    }
+    return user
+      ? "bg-gray-50 dark:bg-primary dark:text-white text-primary bg-opacity-80"
+      : "bg-primary text-white";
+  };
+
+  const getLinkClasses = () => {
+    if (isHomepage) {
+      return "underline hover:text-link duration-400 transition-all ease-in-out text-white";
+    }
+    return user
+      ? "underline hover:text-link duration-400 transition-all ease-in-out text-primary dark:text-white"
+      : "underline hover:text-link duration-400 transition-all ease-in-out text-white";
+  };
+
+  const getTextClasses = () => {
+    if (isHomepage) {
+      return "text-white";
+    }
+    return user ? "text-primary dark:text-white" : "text-white";
+  };
 
   return (
     <div
-      className={`text-center sm:text-start mt-10 brder-t border-link ${
-        user
-          ? "bg-gray-50 dark:bg-primary dark:text-white text-primary bg-opacity-80"
-          : "bg-primary"
-      }  w-full mx-auto font-body_two ss:px-20 px-4`}
+      className={`text-center sm:text-start mt-10 border-t border-link ${getFooterClasses()} w-full mx-auto font-body_two ss:px-20 px-4`}
     >
       <div className="sm:flex sm:justify-between max-w-[1000px] mx-auto">
         <div className="legals sm:mt-16 sm:mx-3 ">
@@ -35,46 +54,18 @@ const Footer = () => {
             Legals
           </h3>
           <Link to={"/terms-and-conditions"}>
-            <p
-              className={`${
-                user
-                  ? "underline hover:text-link duration-400 transition-all ease-in-out text-primary dark:text-white"
-                  : "underline hover:text-link duration-400 transition-all ease-in-out  text-white"
-              }`}
-            >
-              Terms and Condition
-            </p>
+            <p className={getLinkClasses()}>Terms and Condition</p>
           </Link>
           <Link to={"/privacy-and-policy"}>
-            <p
-              className={`${
-                user
-                  ? "underline hover:text-link duration-400 transition-all ease-in-out text-primary dark:text-white"
-                  : "underline hover:text-link duration-400 transition-all ease-in-out  text-white"
-              }`}
-            >
-              Privacy Policy
-            </p>
+            <p className={getLinkClasses()}>Privacy Policy</p>
           </Link>
         </div>
         <div className="contact mt-16 text-center">
           <h3 className="text-link font-heading_two pt-4 text-2xl font-bold">
             Contact
           </h3>
-          <p
-            className={`${
-              user ? "text-primary dark:text-white" : "text-white"
-            }`}
-          >
-            madupay@madupay.com
-          </p>
-          <p
-            className={`${
-              user ? "text-primary dark:text-white" : "text-white"
-            }`}
-          >
-            +234 814 177 1672
-          </p>
+          <p className={getTextClasses()}>madupay@madupay.com</p>
+          <p className={getTextClasses()}>+234 814 177 1672</p>
         </div>
         <div className="socials my-16">
           <h3 className="text-link font-heading_two pt-4 text-2xl font-bold">
@@ -102,13 +93,7 @@ const Footer = () => {
             </Link>
           </div>
         </div>
-        <p
-          className={`${
-            user
-              ? "text-[.8rem] text-center mt-2 text-primary dark:text-white"
-              : "text-[.8rem] text-center mt-2 text-white"
-          }`}
-        >
+        <p className={`text-[.8rem] text-center mt-2 ${getTextClasses()}`}>
           Copyright © 2024 PraiseMedia.
           <br />
           All rights reserved
