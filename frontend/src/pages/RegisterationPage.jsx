@@ -56,9 +56,13 @@ const RegistrationPage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    const updatedFormData = {
+      ...formData,
+      username: formData.username.toLowerCase(),
+    };
     if (validInputs()) {
       setLoading(true);
-      registerUser(formData).finally(() => {
+      registerUser(updatedFormData).finally(() => {
         setLoading(false);
       });
     }
