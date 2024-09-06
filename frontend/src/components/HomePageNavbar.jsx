@@ -39,7 +39,7 @@ const HomePageNavbar = ({ homeMenuToggle, setHomeMenuToggle }) => {
   return (
     <>
       <div
-        className={`p-4 lg:px-0 flex justify-between py-5 lg:px-[6rem] fixed top-0 w-full transition-colors duration-200 ${
+        className={`p-4 lg:px-0 flex justify-between py-2 lg:px-[6rem] fixed top-0 w-full transition-colors duration-200 ${
           isScrolled ? "bg-gray-900 bg-opacity-95 z-[100]" : "bg-transparent"
         }`}
       >

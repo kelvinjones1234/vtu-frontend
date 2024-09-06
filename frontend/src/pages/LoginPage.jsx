@@ -65,7 +65,7 @@ const LoginPage = () => {
   return (
     <div className="min-h-screen bg-dark-custom-gradient font-body_two">
       <div className="authentication bg-bg_one bg-contain md:bg-cover bg-center min-h-screen bg-no-repeat">
-        <nav className="flex justify-between px-4 lg:px-24 py-8">
+        <nav className="flex justify-between px-4 lg:px-24 py-[1.18rem]">
           <div className="flex items-center gap-1">
             <Link to={"/"}>
               <div className="logo font-heading_one text-transparent bg-clip-text px-2 text-[.7rem] rounded-[.5rem] font-bold bg-gradient-to-r from-purple-400 via-sky-500 to-red-500 border-white">
@@ -84,7 +84,7 @@ const LoginPage = () => {
           </div>
         </nav>
 
-        <div className="mt-24 px-4 md:px-16 lg:px-32">
+        <div className="mt-[1.8rem] px-4 md:px-16 lg:px-32">
           <form
             onSubmit={login}
             className="font-poppins sm:flex justify-between max-w-6xl mx-auto"

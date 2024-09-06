@@ -163,6 +163,7 @@ const AuthProvider = ({ children }) => {
     setUserError,
     refreshToken,
     setRememberMe,
+    setRegisterErrors,
     rememberMe,
     registerErrors,
     user,

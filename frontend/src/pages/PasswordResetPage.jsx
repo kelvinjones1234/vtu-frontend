@@ -78,7 +78,7 @@ const PasswordResetPage = () => {
   return (
     <div className="min-w-[150px] bg-opacity-[95%] z-[-1] font-body_two">
       <div className="authentication bg-bg_one bg-contain md:bg-cover bg-center w-full min-h-screen bg-no-repeat">
-        <div className="authenticationnavbar flex justify-between py-8 px-4 lg:px-[6rem]">
+        <div className="authenticationnavbar flex justify-between py-[1.18rem] px-4 lg:px-[6rem]">
           <div className="left flex items-center gap-1">
             <Link to={"/"}>
               <div className="logo font-heading_one text-transparent bg-clip-text px-2 text-[.7rem] rounded-[.5rem] font-bold bg-gradient-to-r from-purple-400 via-sky-500 to-red-500 border-white">
@@ -89,7 +89,7 @@ const PasswordResetPage = () => {
         </div>{" "}
         <form
           onSubmit={reset}
-          className="font-poppins mt-[10vh] sm:flex justify-between login mx-auto px-4 w-full md:px-[4rem] lg:px-[8rem]"
+          className="font-poppins mt-[3rem] sm:flex justify-between login mx-auto px-4 w-full md:px-[4rem] lg:px-[8rem]"
         >
           <LeftSide />
           <div className="right sm:w-[50%] max-w-[550px] mx-auto sm:mx-0">

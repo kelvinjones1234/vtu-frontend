@@ -16,8 +16,13 @@ const RegistrationPage = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [errorMessage, setErrorMessage] = useState({});
   const [showPassword, setShowPassword] = useState(false);
-  const { registerUser, registerErrors } = useContext(AuthContext);
+  const { registerUser, registerErrors, setRegisterErrors } =
+    useContext(AuthContext);
   const { setLoading } = useContext(GeneralContext);
+
+  useEffect(() => {
+    return () => setRegisterErrors({});
+  }, []);
 
   const [formData, setFormData] = useState({
     first_name: "",
@@ -61,15 +66,19 @@ const RegistrationPage = () => {
 
   const validInputs = () => {
     const newError = {};
+
     if (!formData.username) {
       newError.usernameError = "Please fill in your username";
     }
-    if (formData.password.length < 8) {
+
+    if (!formData.password) {
+      newError.passwordError = "Please fill in your password";
+    } else if (formData.password.length < 8) {
       newError.passwordError = "Your password must be at least 8 characters";
+    } else if (formData.password !== formData.confirm_password) {
+      newError.passwordError = "Passwords do not match";
     }
-    if (formData.password !== formData.confirm_password) {
-      newError.confirm_passwordError = "Passwords do not match";
-    }
+
     if (!formData.transaction_pin) {
       newError.transaction_pinError = "Please fill in your transaction pin";
     } else if (
@@ -79,19 +88,29 @@ const RegistrationPage = () => {
       newError.transaction_pinError =
         "Transaction pin must be exactly four digits";
     }
+
     if (!formData.first_name) {
       newError.first_nameError = "Please fill in your first name";
     }
+
     if (!formData.last_name) {
       newError.last_nameError = "Please fill in your last name";
     }
-    if (formData.phone_number.length !== 11 || isNaN(formData.phone_number)) {
+
+    if (!formData.phone_number) {
+      newError.phone_numberError = "Please fill in your phone number";
+    } else if (
+      formData.phone_number.length !== 11 ||
+      isNaN(formData.phone_number)
+    ) {
       newError.phone_numberError =
         "Phone number must be exactly 11 digits and numeric";
     }
+
     if (!formData.email) {
       newError.emailError = "Please fill in your email";
     }
+
     setErrorMessage(newError);
     return Object.keys(newError).length === 0;
   };
@@ -101,7 +120,7 @@ const RegistrationPage = () => {
       <div className="fixed inset-0 bg-bg_one bg-contain md:bg-cover bg-center bg-no-repeat"></div>
 
       <header
-        className={`fixed top-0 w-full px-4 py-8 md:px-24 flex justify-between items-center transition-colors duration-300 ${
+        className={`fixed top-0 w-full px-4 py-[1.18rem] md:px-24 flex justify-between items-center transition-colors duration-300 ${
           isScrolled ? "bg-gray-900 bg-opacity-95 z-[100]" : "bg-transparent"
         }`}
       >
@@ -123,7 +142,7 @@ const RegistrationPage = () => {
         </div>
       </header>
 
-      <main className="pt-[11.5rem] px-4 md:px-16 lg:px-32">
+      <main className="pt-[5.2rem] px-4 md:px-16 lg:px-32">
         <div className="max-w-6xl mx-auto sm:flex justify-between items-start">
           <LeftSide />
           <div className="sm:w-1/2 max-w-md mx-auto sm:mx-0">
@@ -194,6 +213,8 @@ const RegistrationPage = () => {
                     type: showPassword ? "text" : "password",
                     toggleShow: () => setShowPassword(!showPassword),
                     show: showPassword,
+                    error:
+                      errorMessage.passwordError && errorMessage.passwordError,
                   },
                   {
                     name: "confirm_password",
