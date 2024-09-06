@@ -35,12 +35,24 @@ const Footer = () => {
             Legals
           </h3>
           <Link to={"/terms-and-conditions"}>
-            <p className="underline hover:text-link duration-400 transition-all ease-in-out">
+            <p
+              className={`${
+                user
+                  ? "underline hover:text-link duration-400 transition-all ease-in-out text-primary dark:text-white"
+                  : "underline hover:text-link duration-400 transition-all ease-in-out  text-white"
+              }`}
+            >
               Terms and Condition
             </p>
           </Link>
           <Link to={"/privacy-and-policy"}>
-            <p className="underline hover:text-link duration-400 transition-all ease-in-out">
+            <p
+              className={`${
+                user
+                  ? "underline hover:text-link duration-400 transition-all ease-in-out text-primary dark:text-white"
+                  : "underline hover:text-link duration-400 transition-all ease-in-out  text-white"
+              }`}
+            >
               Privacy Policy
             </p>
           </Link>
@@ -49,8 +61,20 @@ const Footer = () => {
           <h3 className="text-link font-heading_two pt-4 text-2xl font-bold">
             Contact
           </h3>
-          <p>madupay@madupay.com</p>
-          <p className="tell">+234 814 177 1672</p>
+          <p
+            className={`${
+              user ? "text-primary dark:text-white" : "text-white"
+            }`}
+          >
+            madupay@madupay.com
+          </p>
+          <p
+            className={`${
+              user ? "text-primary dark:text-white" : "text-white"
+            }`}
+          >
+            +234 814 177 1672
+          </p>
         </div>
         <div className="socials my-16">
           <h3 className="text-link font-heading_two pt-4 text-2xl font-bold">
@@ -78,7 +102,13 @@ const Footer = () => {
             </Link>
           </div>
         </div>
-        <p className="text-[.8rem] text-center mt-2">
+        <p
+          className={`${
+            user
+              ? "text-[.8rem] text-center mt-2 text-primary dark:text-white"
+              : "text-[.8rem] text-center mt-2 text-white"
+          }`}
+        >
           Copyright © 2024 PraiseMedia.
           <br />
           All rights reserved
