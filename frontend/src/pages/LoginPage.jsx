@@ -27,7 +27,7 @@ const LoginPage = () => {
 
   const login = (e) => {
     e.preventDefault();
-    lowercase_username = username.toLocaleLowerCase();
+    const lowercase_username = username.toLocaleLowerCase();
     if (validInputs()) {
       setLoading(true); // Set loading to true when login starts
       loginUser(lowercase_username, password).finally(() => {
