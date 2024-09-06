@@ -1,8 +1,11 @@
-import React from "react";
+import React, { useContext } from "react";
+import { AuthContext } from "../context/AuthenticationContext"; // Assuming AuthContext provides the user
 
 const LoadingSpinner = () => {
+  const { user } = useContext(AuthContext); // Access user from context
+
   return (
-    <div className="flex justify-center items-center h-screen bg-bg_on">
+    <div className={`flex justify-center items-center h-screen ${user ? "bg-bg_on dark:bg-primary" : "dark"}`}>
       <div className="flex flex-col justify-center items-center">
         <div className="relative">
           <div className="w-20 h-20 border-4 border-primary rounded-full animate-spin border-t-transparent"></div>
