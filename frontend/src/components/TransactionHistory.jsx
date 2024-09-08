@@ -302,19 +302,39 @@ const TransactionHistory = () => {
               <option value="Success">Successful</option>
             </select>
           </div>
-          <div className="flex gap-4">
-            <input
-              type="date"
-              placeholder="Start Date"
-              className="flex-grow px-4 py-1 text-primary dark:text-white bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-transparent"
-              onChange={(e) => setStartDate(e.target.value)}
-            />
-            <input
-              placeholder="Start Date"
-              type="date"
-              className="flex-grow px-4 py-1 text-primary dark:text-white bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-transparent"
-              onChange={(e) => setEndDate(e.target.value)}
-            />
+          <div className="flex flex-col gap-4">
+            <div className="flex flex-col sm:flex-row gap-4">
+              <div className="flex-grow">
+                <label
+                  htmlFor="start-date"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                >
+                  Start Date
+                </label>
+                <input
+                  id="start-date"
+                  type="date"
+                  className="w-full px-4 py-2 text-primary dark:text-white bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-transparent"
+                  onChange={(e) => setStartDate(e.target.value)}
+                  value={startDate}
+                />
+              </div>
+              <div className="flex-grow">
+                <label
+                  htmlFor="end-date"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                >
+                  End Date
+                </label>
+                <input
+                  id="end-date"
+                  type="date"
+                  className="w-full px-4 py-2 text-primary dark:text-white bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-transparent"
+                  onChange={(e) => setEndDate(e.target.value)}
+                  value={endDate}
+                />
+              </div>
+            </div>
           </div>
         </div>
 
