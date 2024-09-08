@@ -255,14 +255,6 @@ const TransactionHistory = () => {
     printWindow.print();
   };
 
-  const handleStartDateChange = (e) => {
-    setStartDate(e.target.value);
-  };
-
-  const handleEndDateChange = (e) => {
-    setEndDate(e.target.value);
-  };
-
   return (
     <div className="bg-bg_on h-auto bg-contain bg-no-repeat mt-[8rem] sm:bg-cover bg-center px-4 justify-center ss:px-[5rem] sm:px-[1rem] sm:flex gap-5 md:gap-12 lg:mx-[5rem]">
       {/* <div className="max-w-7xl mx-auto sm:flex gap-8"> */}
@@ -314,24 +306,12 @@ const TransactionHistory = () => {
             <input
               type="date"
               className="flex-grow px-4 py-1 text-primary dark:text-white bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-transparent"
-              value={startDate}
-              onChange={handleStartDateChange}
-              onFocus={(e) => (e.target.placeholder = "")}
-              onBlur={(e) =>
-                (e.target.placeholder = startDate ? "" : "mm/dd/yyyy")
-              }
-              placeholder="mm/dd/yyyy"
+              onChange={(e) => setStartDate(e.target.value)}
             />
             <input
               type="date"
-              className="flex-grow px-4 py-1 text-primary dark:text-white bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-transparent"
-              value={endDate}
-              onChange={handleEndDateChange}
-              onFocus={(e) => (e.target.placeholder = "")}
-              onBlur={(e) =>
-                (e.target.placeholder = endDate ? "" : "mm/dd/yyyy")
-              }
-              placeholder="mm/dd/yyyy"
+              // className="flex-grow px-4 py-1 text-primary dark:text-white bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-transparent"
+              onChange={(e) => setEndDate(e.target.value)}
             />
           </div>
         </div>
