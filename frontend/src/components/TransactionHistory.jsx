@@ -305,10 +305,12 @@ const TransactionHistory = () => {
           <div className="flex gap-4">
             <input
               type="date"
+              placeholder="Start Date"
               className="flex-grow px-4 py-1 text-primary dark:text-white bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-transparent"
               onChange={(e) => setStartDate(e.target.value)}
             />
             <input
+              placeholder="Start Date"
               type="date"
               className="flex-grow px-4 py-1 text-primary dark:text-white bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-transparent"
               onChange={(e) => setEndDate(e.target.value)}
