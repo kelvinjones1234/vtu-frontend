@@ -2,6 +2,7 @@ import { useState, useEffect, React, useContext } from "react";
 import { Link } from "react-router-dom";
 import menu from "../assets/menu.svg";
 import close from "../assets/close.svg";
+import logo from "../assets/4.svg";
 import notification from "../assets/notification.svg";
 import GeneralSidebar from "./GeneralSidebar";
 import dark from "../assets/dark.svg";
@@ -63,9 +64,10 @@ const GeneralNavbar = () => {
       >
         <div className="flex justify-between lg:px-[6rem] w-[2000px] mx-auto">
           <div className="left flex gap-6 items-center">
-            <div className="flex items-center gap-1">
+            <div className="flex items-center">
+              <img src={logo} alt="" className="h-7 mb-1" />
               <Link to={"/"}>
-                <div className="logo font-heading_one text-transparent bg-clip-text px-2 text-[.7rem] rounded-[.5rem] font-bold bg-gradient-to-r from-purple-400 via-sky-500 to-red-500 border-white">
+                <div className="logo font-heading_one text-transparent bg-clip-text pr-2 text-[.9rem] rounded-[.5rem] font-bold bg-gradient-to-r from-purple-400 via-sky-500 to-red-500 border-white">
                   MaduPay
                 </div>
               </Link>

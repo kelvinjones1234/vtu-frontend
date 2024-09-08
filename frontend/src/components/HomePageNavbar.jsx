@@ -45,7 +45,7 @@ const HomePageNavbar = ({ homeMenuToggle, setHomeMenuToggle }) => {
         }`}
       >
         <div className="flex items-center">
-          <img src={logo} alt="" className="h-7 mb-1"/>
+          <img src={logo} alt="" className="h-7 mb-1" />
           <Link to={"/"}>
             <div className="logo font-heading_one text-transparent bg-clip-text pr-2 text-[.9rem] rounded-[.5rem] font-bold bg-gradient-to-r from-purple-400 via-sky-500 to-red-500 border-white">
               MaduPay
@@ -62,7 +62,7 @@ const HomePageNavbar = ({ homeMenuToggle, setHomeMenuToggle }) => {
             <div className="hamburger">
               <div
                 onClick={handleHomeMenuToggle}
-                className="text-[25px] dark:text-white text-link"
+                className="text-[25px] text-link"
               >
                 {homeMenuToggle ? <RiCloseLargeLine /> : <RiMenu4Line />}
               </div>
@@ -96,10 +96,11 @@ const HomePageNavbar = ({ homeMenuToggle, setHomeMenuToggle }) => {
         }`}
         onClick={(e) => e.stopPropagation()} // Prevent click event propagation to overlay
       >
-        <ul className="w-[13rem] mt-4">
-          <div className="flex items-center gap-1 mt-[.55rem] mb-9">
+        <ul className="w-[13rem] mt-">
+          <div className="flex items-center mb-9">
+            <img src={logo} alt="" className="h-7 mb-1" />
             <Link to={"/"}>
-              <div className="logo font-heading_one text-transparent bg-clip-text px-2 text-[.7rem] rounded-[.5rem] font-bold bg-gradient-to-r from-purple-400 via-sky-500 to-red-500 border-white">
+              <div className="logo font-heading_one text-transparent bg-clip-text pr-2 text-[.9rem] rounded-[.5rem] font-bold bg-gradient-to-r from-purple-400 via-sky-500 to-red-500 border-white">
                 MaduPay
               </div>
             </Link>

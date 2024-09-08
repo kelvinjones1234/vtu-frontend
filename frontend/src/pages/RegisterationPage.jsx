@@ -3,6 +3,7 @@ import { AuthContext } from "../context/AuthenticationContext";
 import { Link } from "react-router-dom";
 import { GeneralContext } from "../context/GeneralContext";
 import simag from "../assets/vtu3.png";
+import logo from "../assets/4.svg";
 import SubmitButton from "../components/SubmitButton";
 import LeftSide from "../components/LeftSide";
 
@@ -124,13 +125,15 @@ const RegistrationPage = () => {
       <div className="fixed inset-0 bg-bg_one bg-contain md:bg-cover bg-center bg-no-repeat"></div>
 
       <header
-        className={`fixed top-0 w-full px-4 py-[1.18rem] md:px-24 flex justify-between items-center transition-colors duration-300 ${
+        className={`fixed top-0 w-full px-4 py-[.75rem] md:px-24 flex justify-between items-center transition-colors duration-300 ${
           isScrolled ? "bg-gray-900 bg-opacity-95 z-[100]" : "bg-transparent"
         }`}
       >
-        <div className="flex items-center gap-1">
+        <div className="flex items-center">
+          <img src={logo} alt="" className="h-7 mb-1"/>
+
           <Link to={"/"}>
-            <div className="logo font-heading_one text-transparent bg-clip-text px-2 text-[.7rem] rounded-[.5rem] font-bold bg-gradient-to-r from-purple-400 via-sky-500 to-red-500 border-white">
+            <div className="logo font-heading_one text-transparent bg-clip-text pr-2 text-[.9rem] rounded-[.5rem] font-bold bg-gradient-to-r from-purple-400 via-sky-500 to-red-500 border-white">
               MaduPay
             </div>
           </Link>
