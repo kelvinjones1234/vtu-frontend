@@ -255,17 +255,6 @@ const TransactionHistory = () => {
     printWindow.print();
   };
 
-  const formatDate = (dateString) => {
-    if (!dateString) return "";
-    const [year, month, day] = dateString.split("-");
-    return `${day}/${month}/${year}`;
-  };
-
-  const handleDateChange = (setter) => (e) => {
-    const inputDate = e.target.value;
-    setter(inputDate);
-  };
-
   return (
     <div className="bg-bg_on h-auto bg-contain bg-no-repeat mt-[8rem] sm:bg-cover bg-center px-4 justify-center ss:px-[5rem] sm:px-[1rem] sm:flex gap-5 md:gap-12 lg:mx-[5rem]">
       {/* <div className="max-w-7xl mx-auto sm:flex gap-8"> */}
@@ -313,51 +302,17 @@ const TransactionHistory = () => {
               <option value="Success">Successful</option>
             </select>
           </div>
-          <div className="flex flex-col gap-4">
-            <div className="flex flex-col sm:flex-row gap-4">
-              <div className="flex-grow">
-                <label
-                  htmlFor="start-date"
-                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-                >
-                  Start Date
-                </label>
-                <div className="relative">
-                  <input
-                    id="start-date"
-                    type="date"
-                    className="w-full px-4 py-2 text-primary dark:text-white bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-transparent"
-                    onChange={handleDateChange(setStartDate)}
-                    value={startDate}
-                  />
-                  <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                    <span className="text-gray-500">
-                      {formatDate(startDate)}
-                    </span>
-                  </div>
-                </div>
-              </div>
-              <div className="flex-grow">
-                <label
-                  htmlFor="end-date"
-                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-                >
-                  End Date
-                </label>
-                <div className="relative">
-                  <input
-                    id="end-date"
-                    type="date"
-                    className="w-full px-4 py-2 text-primary dark:text-white bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-transparent"
-                    onChange={handleDateChange(setEndDate)}
-                    value={endDate}
-                  />
-                  <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                    <span className="text-gray-500">{formatDate(endDate)}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
+          <div className="flex gap-4">
+            <input
+              type="date"
+              className="flex-grow px-4 py-1 text-primary dark:text-white bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-transparent"
+              onChange={(e) => setStartDate(e.target.value)}
+            />
+            <input
+              type="date"
+              className="flex-grow px-4 py-1 text-primary dark:text-white bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-transparent"
+              onChange={(e) => setEndDate(e.target.value)}
+            />
           </div>
         </div>
 
