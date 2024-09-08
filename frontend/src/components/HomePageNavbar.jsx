@@ -8,6 +8,7 @@ import bottom from "../assets/bottom_arrow.svg";
 import { Link } from "react-router-dom";
 import { RiMenu4Line } from "react-icons/ri";
 import { RiCloseLargeLine } from "react-icons/ri";
+import logo from "../assets/4.svg";
 
 const HomePageNavbar = ({ homeMenuToggle, setHomeMenuToggle }) => {
   const [sideBarAuthToggle, setSideBarAuthToggle] = useState(false);
@@ -43,9 +44,10 @@ const HomePageNavbar = ({ homeMenuToggle, setHomeMenuToggle }) => {
           isScrolled ? "bg-gray-900 bg-opacity-95 z-[100]" : "bg-transparent"
         }`}
       >
-        <div className="flex items-center gap-1 ">
+        <div className="flex items-center">
+          <img src={logo} alt="" className="h-7 mb-1"/>
           <Link to={"/"}>
-            <div className="logo font-heading_one text-transparent bg-clip-text px-2 text-[.7rem] rounded-[.5rem] font-bold bg-gradient-to-r from-purple-400 via-sky-500 to-red-500 border-white">
+            <div className="logo font-heading_one text-transparent bg-clip-text pr-2 text-[.9rem] rounded-[.5rem] font-bold bg-gradient-to-r from-purple-400 via-sky-500 to-red-500 border-white">
               MaduPay
             </div>
           </Link>
@@ -53,9 +55,7 @@ const HomePageNavbar = ({ homeMenuToggle, setHomeMenuToggle }) => {
         <div className="right">
           <div className={`small-screen flex items-center sm:hidden`}>
             <div className="get-started">
-              <button
-                className="bg-geen-500 py-[.4rem] mr-9 px-4 text-[1.1rem] bg-opacity-[90%] hover:bg-blue-500 text-link rounded-2xl font-bold"
-              >
+              <button className="bg-geen-500 py-[.4rem] mr-9 px-4 text-[1.1rem] bg-opacity-[90%] hover:bg-blue-500 text-link rounded-2xl font-bold">
                 <Link to={"/authentication/register"}>Get Started</Link>
               </button>
             </div>
