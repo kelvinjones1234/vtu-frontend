@@ -13,8 +13,8 @@ const TransactionHistory = () => {
   const [category, setCategory] = useState("");
   const [status, setStatus] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
+  const [startDate, setStartDate] = useState("mm/dd/yyyy");
+  const [endDate, setEndDate] = useState("mm/dd/yyyy");
   const [currentPage, setCurrentPage] = useState(1);
   const [transactionsPerPage] = useState(10);
 
