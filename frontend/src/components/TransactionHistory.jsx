@@ -302,24 +302,16 @@ const TransactionHistory = () => {
               <option value="Success">Successful</option>
             </select>
           </div>
-          <div className="flex flex-col gap-4">
+          <div className="flex gap-4">
             <input
-              type="text"
+              type="date"
               className="flex-grow px-4 py-1 text-primary dark:text-white bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-transparent"
-              onFocus={(e) => (e.target.type = "date")}
-              onBlur={(e) => (e.target.type = startDate ? "date" : "text")}
               onChange={(e) => setStartDate(e.target.value)}
-              placeholder="Start Date"
-              value={startDate}
             />
             <input
-              type="text"
+              type="date"
               className="flex-grow px-4 py-1 text-primary dark:text-white bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-transparent"
-              onFocus={(e) => (e.target.type = "date")}
-              onBlur={(e) => (e.target.type = endDate ? "date" : "text")}
               onChange={(e) => setEndDate(e.target.value)}
-              placeholder="End Date"
-              value={endDate}
             />
           </div>
         </div>
