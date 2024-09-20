@@ -72,7 +72,7 @@ const LoginPage = () => {
             <img src={logo} alt="" className="h-7 mb-1" />
 
             <Link to={"/"}>
-              <div className="logo font-heading_one text-white text-[.9rem] rounded-[.5rem] font-bold bg-gradient-to-r from-purple-400 via-sky-500 to-red-500 border-white">
+              <div className="logo font-heading_one text-transparent bg-clip-text pr-2 text-[.9rem] rounded-[.5rem] font-bold bg-gradient-to-r from-purple-400 via-sky-500 to-red-500 border-white">
                 MaduConnect
               </div>
             </Link>
@@ -98,7 +98,7 @@ const LoginPage = () => {
               <div className="mb-8">
                 <h1 className="font-bold font-heading_two text-4xl text-gray-300 mb-2">
                   Sign in to{" "}
-                  <span className="bg-gradient-to-r from-purple-400 via-sky-500 to-red-500 text-transparent bg-clip-text">
+                  <span className="text-white">
                     MaduConnect
                   </span>
                 </h1>
