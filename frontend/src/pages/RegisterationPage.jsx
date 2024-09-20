@@ -121,7 +121,7 @@ const RegistrationPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-dark-custom-gradient font-body_two z-5">
+    <div className="min-h-screen bg-dark-custom-gradient font-body_two z-5 pb-[3rem]">
       <div className="fixed inset-0 bg-bg_one bg-contain md:bg-cover bg-center bg-no-repeat"></div>
 
       <header
@@ -130,11 +130,11 @@ const RegistrationPage = () => {
         }`}
       >
         <div className="flex items-center">
-          <img src={logo} alt="" className="h-7 mb-1"/>
+          <img src={logo} alt="" className="h-7 mb-1" />
 
           <Link to={"/"}>
             <div className="logo font-heading_one text-transparent bg-clip-text pr-2 text-[.9rem] rounded-[.5rem] font-bold bg-gradient-to-r from-purple-400 via-sky-500 to-red-500 border-white">
-              MaduPay
+              MaduConnect
             </div>
           </Link>
         </div>
@@ -157,11 +157,11 @@ const RegistrationPage = () => {
               <h1 className="font-bold text-4xl text-gray-300 font-heading_two mb-2">
                 Sign up with{" "}
                 <span className="bg-gradient-to-r from-purple-400 via-sky-500 to-red-500 text-transparent bg-clip-text">
-                  MaduPay
+                  MaduConnect
                 </span>
               </h1>
               <p className="text-gray-300 text-lg">
-                Create your MaduPay account for free
+                Create your MaduConnect account for free
               </p>
             </div>
 

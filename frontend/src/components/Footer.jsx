@@ -64,7 +64,7 @@ const Footer = () => {
           <h3 className="text-link font-heading_two pt-4 text-2xl font-bold">
             Contact
           </h3>
-          <p className={getTextClasses()}>madupay@madupay.com</p>
+          <p className={getTextClasses()}>MaduConnect@MaduConnect.com</p>
           <p className={getTextClasses()}>+234 814 177 1672</p>
         </div>
         <div className="socials my-16">
@@ -88,7 +88,7 @@ const Footer = () => {
           <div className="flex justify-center items-center gap-1">
             <Link to={"/"}>
               <div className="logo font-heading_one text-transparent bg-clip-text px-2 text-[.7rem] rounded-[.5rem] font-bold bg-gradient-to-r from-purple-400 via-sky-500 to-red-500 border-white">
-                MaduPay
+                MaduConnect
               </div>
             </Link>
           </div>

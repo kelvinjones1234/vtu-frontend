@@ -9,8 +9,8 @@ import LeftSide from "../components/LeftSide";
 
 // const LeftSide = () => (
 //   <div className="left leading-[3rem] relative hidden justify-center items-center sm:flex h-[364px] shadow-lg shadow-indigo-900/20 bg-opacity-50 rounded-2xl w-[20rem] bg-black text-white">
-//     {/* <div className="MaduPay-logo text-[6vw] font-bold text-gradient absolute">
-//       MaduPay <br /> <span className="text-[1.5vw]">Virtual Top Up</span>
+//     {/* <div className="MaduConnect-logo text-[6vw] font-bold text-gradient absolute">
+//       MaduConnect <br /> <span className="text-[1.5vw]">Virtual Top Up</span>
 //     </div> */}
 //     <img src={simag} alt="" className="h-[365px]" />
 //   </div>
@@ -73,7 +73,7 @@ const LoginPage = () => {
 
             <Link to={"/"}>
               <div className="logo font-heading_one text-transparent bg-clip-text pr-2 text-[.9rem] rounded-[.5rem] font-bold bg-gradient-to-r from-purple-400 via-sky-500 to-red-500 border-white">
-                MaduPay
+                MaduConnect
               </div>
             </Link>
           </div>
@@ -99,7 +99,7 @@ const LoginPage = () => {
                 <h1 className="font-bold font-heading_two text-4xl text-gray-300 mb-2">
                   Sign in to{" "}
                   <span className="bg-gradient-to-r from-purple-400 via-sky-500 to-red-500 text-transparent bg-clip-text">
-                    MaduPay
+                    MaduConnect
                   </span>
                 </h1>
                 <p className="text-gray-300 text-lg">

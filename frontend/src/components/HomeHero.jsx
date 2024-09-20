@@ -15,7 +15,7 @@ const HomeHero = () => {
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white mb-6 font-heading_two">
               Welcome to{" "}
               <span className="bg-gradient-to-r from-purple-400 via-sky-500 to-red-500 text-transparent bg-clip-text">
-                MaduPay
+                MaduConnect
               </span>
             </h1>
             <p className="text-lg sm:text-xl text-white bg-primary bg-opacity-90 inline-block px-6 py-3 rounded-full mb-10 shadow-md">
@@ -28,7 +28,7 @@ const HomeHero = () => {
               Instantly Top Up Anytime, Anywhere...
             </h3>
             <p className="font-body_two pb-[3vh]">
-              At MaduPay, we understand the importance of staying connected.
+              At MaduConnect, we understand the importance of staying connected.
               Whether you need to recharge your mobile phone, pay your utility
               bills, or purchase digital services, we are here to make it
               effortless. Our fast, secure, and user-friendly platform ensures
