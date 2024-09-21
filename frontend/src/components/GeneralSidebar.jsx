@@ -15,6 +15,8 @@ import Transfer from "./Transfer";
 import { AuthContext } from "../context/AuthenticationContext";
 import dark from "../assets/dark.svg";
 import light from "../assets/light.svg";
+import logo from "../assets/4.svg";
+
 import { GeneralContext } from "../context/GeneralContext";
 
 const GeneralSidebar = ({ generalMenuToggle, handleGeneralMenuToggle }) => {
@@ -59,15 +61,16 @@ const GeneralSidebar = ({ generalMenuToggle, handleGeneralMenuToggle }) => {
         }`}
         onClick={(e) => e.stopPropagation()} // Prevent click event propagation to overlay
       >
-        <div className="flex justify-between mr-9">
-          <div className="flex items-center gap-1 mt-1">
+        <div className="flex items-center justify-between mr-9">
+          <div className="flex items-center">
+            <img src={logo} alt="" className="h-7 mb-" />
             <Link to={"/"}>
-              <div className="logo font-heading_one text-transparent bg-clip-text  px-2 text-[.7rem] rounded-[.5rem] font-bold bg-gradient-to-r from-purple-400 via-sky-500 to-red-500 border-white">
+              <div className="logo font-heading_one text-transparent bg-clip-text pr-2 text-[.8rem] rounded-[.5rem] font-bold bg-gradient-to-r from-purple-400 via-sky-500 to-red-500 border-white">
                 MaduConnect
               </div>
             </Link>
           </div>
-          <div className="light-dark-mode mt-3">
+          <div className="light-dark-mode">
             <div
               onClick={handleThemeSettings}
               className="justify-center py-[.5rem] gap-8 rounded-xl flex items-center bg-gray-200 hover:bg-gray-300 px-3 dark:bg-white dark:bg-opacity-20 dark:hover:bg-opacity-10 transition duration-300 ease-in-out cursor-pointer"

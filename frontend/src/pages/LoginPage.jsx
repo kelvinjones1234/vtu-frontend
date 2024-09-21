@@ -68,11 +68,10 @@ const LoginPage = () => {
     <div className="min-h-screen bg-dark-custom-gradient font-body_two">
       <div className="authentication bg-bg_one bg-contain md:bg-cover bg-center min-h-screen bg-no-repeat">
         <nav className="flex justify-between px-4 lg:px-24 py-[.75rem]">
-          <div className="flex items-center ">
+          <div className="flex items-center">
             <img src={logo} alt="" className="h-7 mb-1" />
-
             <Link to={"/"}>
-              <div className="logo font-heading_one text-transparent bg-clip-text pr-2 text-[.9rem] rounded-[.5rem] font-bold bg-gradient-to-r from-purple-400 via-sky-500 to-red-500 border-white">
+              <div className="logo font-heading_one text-transparent bg-clip-text pr-2 text-[.8rem] rounded-[.5rem] font-bold bg-gradient-to-r from-purple-400 via-sky-500 to-red-500 border-white">
                 MaduConnect
               </div>
             </Link>
@@ -98,7 +97,7 @@ const LoginPage = () => {
               <div className="mb-8">
                 <h1 className="font-bold font-heading_two text-4xl text-gray-300 mb-2">
                   Sign in to{" "}
-                  <span className="text-white">
+                  <span className="bg-gradient-to-r from-purple-400 via-sky-500 to-red-500 text-transparent bg-clip-text">
                     MaduConnect
                   </span>
                 </h1>

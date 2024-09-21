@@ -131,9 +131,8 @@ const RegistrationPage = () => {
       >
         <div className="flex items-center">
           <img src={logo} alt="" className="h-7 mb-1" />
-
           <Link to={"/"}>
-            <div className="logo font-heading_one text-transparent bg-clip-text pr-2 text-[.9rem] rounded-[.5rem] font-bold bg-gradient-to-r from-purple-400 via-sky-500 to-red-500 border-white">
+            <div className="logo font-heading_one text-transparent bg-clip-text pr-2 text-[.8rem] rounded-[.5rem] font-bold bg-gradient-to-r from-purple-400 via-sky-500 to-red-500 border-white">
               MaduConnect
             </div>
           </Link>

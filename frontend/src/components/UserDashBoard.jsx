@@ -6,10 +6,13 @@ import GeneralRight from "./GeneralRight";
 import { ProductContext } from "../context/ProductContext";
 import { useWallet } from "../context/WalletContext";
 import FundWalletModal from "./FundWalletModal";
+import { AuthContext } from "../context/AuthenticationContext";
 
 const UserDashBoard = () => {
   const { productData } = useContext(ProductContext);
   const { walletData } = useWallet();
+  const { user } = useContext(AuthContext);
+
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleOpenModal = () => {
@@ -20,13 +23,26 @@ const UserDashBoard = () => {
     setIsModalOpen(false);
   };
 
+  // Function to capitalize the first letter
+  const capitalizeFirstLetter = (name) => {
+    if (!name) return ""; // If name is empty, return empty string
+    return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
+  };
+
   return (
-    <div className="bg-bg_on h-auto bg-contain bg-no-repeat mt-[8rem] sm:bg-cover bg-center px-4 justify-center ss:px-[5rem] sm:px-[1rem] sm:flex gap-5 md:gap-12 lg:mx-[5rem]">
+    <div className="bg-bg_on h-auto bg-contain bg-no-repeat mt-[6rem] sm:bg-cover bg-center px-4 justify-center ss:px-[5rem] sm:px-[1rem] sm:flex gap-5 md:gap-12 lg:mx-[5rem]">
       {/* left layer */}
       <GeneralLeft />
 
       {/* middle layer */}
       <div className="min-w-[349.20px] pr-2 mx-auto">
+        <div className="text-primary text-[1.5rem] font-bold dark:text-white py-8 text-center xs:hidden">
+          Welcome Back to{" "}
+          <span className="bg-gradient-to-r from-purple-400 via-sky-500 to-red-500 text-transparent bg-clip-text">
+            MaduConnect
+          </span>
+          , {capitalizeFirstLetter(user.first_name)}!
+        </div>
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg mb-6 p-6 text-primary dark:text-white">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-sm font-semibold sm:text-[.8rem] md:text-[1rem]">
