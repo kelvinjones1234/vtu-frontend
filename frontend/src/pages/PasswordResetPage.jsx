@@ -4,6 +4,8 @@ import axios from "axios";
 import { GeneralContext } from "../context/GeneralContext";
 import SubmitButton from "../components/SubmitButton";
 import LeftSide from "../components/LeftSide";
+import logo from "../assets/4.svg";
+
 
 const PasswordResetPage = () => {
   const { uidb64, token } = useParams();
@@ -79,10 +81,11 @@ const PasswordResetPage = () => {
     <div className="min-w-[150px] bg-opacity-[95%] z-[-1] font-body_two">
       <div className="authentication bg-bg_one bg-contain md:bg-cover bg-center w-full min-h-screen bg-no-repeat">
         <div className="authenticationnavbar flex justify-between py-[1.18rem] px-4 lg:px-[6rem]">
-          <div className="left flex items-center gap-1">
+          <div className="flex items-center">
+            <img src={logo} alt="" className="h-7 mb-1" />
             <Link to={"/"}>
-              <div className="logo font-heading_one text-transparent bg-clip-text px-2 text-[.7rem] rounded-[.5rem] font-bold bg-gradient-to-r from-purple-400 via-sky-500 to-red-500 border-white">
-                MaduPay
+              <div className="logo font-heading_one text-transparent bg-clip-text pr-2 text-[.8rem] rounded-[.5rem] font-bold bg-gradient-to-r from-purple-400 via-sky-500 to-red-500 border-white">
+                MaduConnect
               </div>
             </Link>
           </div>
