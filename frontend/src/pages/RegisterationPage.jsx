@@ -125,12 +125,12 @@ const RegistrationPage = () => {
       <div className="fixed inset-0 bg-bg_one bg-contain md:bg-cover bg-center bg-no-repeat"></div>
 
       <header
-        className={`fixed top-0 w-full px-4 py-[.75rem] md:px-24 flex justify-between items-center transition-colors duration-300 ${
+        className={`fixed top-0 w-full px-4 py-[.6rem] md:px-24 flex justify-between items-center transition-colors duration-300 ${
           isScrolled ? "bg-gray-900 bg-opacity-95 z-[100]" : "bg-transparent"
         }`}
       >
         <div className="flex items-center">
-          <img src={logo} alt="" className="h-7 mb-1" />
+          <img src={logo} alt="" className="h-7 mb-1/2" />
           <Link to={"/"}>
             <div className="logo font-heading_one text-transparent bg-clip-text pr-2 text-[.8rem] rounded-[.5rem] font-bold bg-gradient-to-r from-purple-400 via-sky-500 to-red-500 border-white">
               MaduConnect
@@ -160,7 +160,7 @@ const RegistrationPage = () => {
                 </span>
               </h1>
               <p className="text-gray-300 text-lg">
-                Create your MaduConnect account for free
+                Create a MaduConnect account for free
               </p>
             </div>
 
@@ -262,7 +262,7 @@ const RegistrationPage = () => {
               </div>
 
               <div className="relative">
-                <p className="text-center text-gray-300 text-sm">
+                <p className="text-center text-gray-300 text-sm py-5">
                   By signing up, you agree to our{" "}
                   <Link
                     to="/terms-and-conditions"
