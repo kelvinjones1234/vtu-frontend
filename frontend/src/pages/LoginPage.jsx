@@ -3,18 +3,8 @@ import { AuthContext } from "../context/AuthenticationContext";
 import { Link } from "react-router-dom";
 import SubmitButton from "../components/SubmitButton";
 import { GeneralContext } from "../context/GeneralContext";
-import simag from "../assets/vtu3.png";
 import logo from "../assets/4.svg";
 import LeftSide from "../components/LeftSide";
-
-// const LeftSide = () => (
-//   <div className="left leading-[3rem] relative hidden justify-center items-center sm:flex h-[364px] shadow-lg shadow-indigo-900/20 bg-opacity-50 rounded-2xl w-[20rem] bg-black text-white">
-//     {/* <div className="MaduConnect-logo text-[6vw] font-bold text-gradient absolute">
-//       MaduConnect <br /> <span className="text-[1.5vw]">Virtual Top Up</span>
-//     </div> */}
-//     <img src={simag} alt="" className="h-[365px]" />
-//   </div>
-// );
 
 const LoginPage = () => {
   const { loginUser, userError, setUserError, setRememberMe, rememberMe } =
@@ -24,7 +14,6 @@ const LoginPage = () => {
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState({});
   const [showPassword, setShowPassword] = useState(false);
-  // const [rememberMe, setRememberMe] = useState(false);
 
   const login = (e) => {
     e.preventDefault();

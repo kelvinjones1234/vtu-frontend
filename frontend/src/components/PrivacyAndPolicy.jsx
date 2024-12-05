@@ -13,8 +13,8 @@ const PrivacyPolicy = () => {
     <div
       className={`bg-bg_on ${
         !user && "lg:px-[6rem]"
-      } min-h-screen bg-contain bg-no-repeat justify-center mt-[8rem] sm:bg-cover bg-center px-4 sm:px-6 lg:px-8 xl:px-16 ${
-        user ? "" : "dark"  // Apply dark mode if no user is logged in
+      } min-h-screen bg-contain bg-no-repeat justify-center mt-[6rem] sm:bg-cover bg-center px-4 sm:px-6 lg:px-8 xl:px-16 lg:mx-[4rem] ${
+        user ? "" : "dark" // Apply dark mode if no user is logged in
       }`}
     >
       <div className="max-w-7xl mx-auto sm:flex gap-8">

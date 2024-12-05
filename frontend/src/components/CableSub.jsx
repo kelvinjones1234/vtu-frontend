@@ -268,7 +268,7 @@ const CableSub = () => {
   }, [formData.selectedCableCategory, api]);
 
   return (
-    <div className="bg-bg_on h-auto bg-contain bg-no-repeat justify-center mt-[8rem] sm:bg-cover bg-center px-4 ss:px-[5rem] sm:px-[1rem] sm:flex gap-5 md:gap-12 lg:mx-[5rem]">
+    <div className="bg-bg_on h-auto bg-contain bg-no-repeat justify-center mt-[6rem] sm:bg-cover bg-center px-4 ss:px-[5rem] sm:px-[1rem] sm:flex gap-5 md:gap-12 lg:mx-[5rem]">
       <GeneralLeft />
       <div className="">
         <div>

@@ -12,8 +12,8 @@ const TermsConditions = () => {
   return (
     <div
       className={`${
-        !user && "lg:px-[6rem]"
-      } min-h-screen bg-contain bg-no-repeat justify-center mt-[8rem] sm:bg-cover bg-center px-4 sm:px-6 lg:px-8 xl:px-16 ${
+        !user && "lg:px-[6rem] "
+      } min-h-screen bg-contain bg-no-repeat justify-center mt-[6rem] sm:bg-cover bg-center px-4 sm:px-6 lg:px-8 xl:px-16 lg:mx-[4rem] ${
         user ? "" : "dark" // Apply the dark mode class if no user
       }`}
     >

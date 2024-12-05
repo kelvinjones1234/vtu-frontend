@@ -48,27 +48,6 @@ const TransactionHistory = () => {
   }, [api, authTokens.access]);
 
   useEffect(() => {
-    const fetchTransactionHistory = async () => {
-      try {
-        const response = await api.get("transactions/", {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${authTokens.access}`,
-          },
-        });
-        setTransactionHistory(response.data);
-      } catch (error) {
-        console.error(
-          "Error:",
-          error.response ? error.response.data : error.message
-        );
-      }
-    };
-
-    fetchTransactionHistory();
-  }, [api, authTokens.access]);
-
-  useEffect(() => {
     let filtered = transactionHistory;
 
     // Filter by category
@@ -256,8 +235,7 @@ const TransactionHistory = () => {
   };
 
   return (
-    <div className="bg-bg_on h-auto bg-contain bg-no-repeat mt-[8rem] sm:bg-cover bg-center px-4 justify-center ss:px-[5rem] sm:px-[1rem] sm:flex gap-5 md:gap-12 lg:mx-[5rem]">
-      {/* <div className="max-w-7xl mx-auto sm:flex gap-8"> */}
+    <div className="bg-bg_on h-auto bg-contain bg-no-repeat mt-[6rem] sm:bg-cover bg-center px-4 justify-center ss:px-[5rem] sm:px-[1rem] sm:flex gap-5 md:gap-12 lg:mx-[5rem]">
       <GeneralLeft />
       <div className="min-w-[349.20px] pr-2 mx-auto">
         <div className="mb-8">
@@ -347,7 +325,6 @@ const TransactionHistory = () => {
                   </th>
                 </tr>
               </thead>
-              {console.log(currentTransactions)}
               <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                 {currentTransactions.map((item, index) => (
                   <tr
@@ -408,7 +385,6 @@ const TransactionHistory = () => {
         />
       </div>
       <GeneralRight />
-      {/* </div> */}
     </div>
   );
 };

@@ -281,7 +281,7 @@ const Airtime = () => {
   const memoizedGeneralRight = useMemo(() => <GeneralRight />, []);
 
   return (
-    <div className="bg-bg_on h-auto bg-contain bg-no-repeat mt-[8rem] justify-center sm:bg-cover bg-center px-4 ss:px-[5rem] sm:px-[1rem] sm:flex gap-5 md:gap-12 lg:mx-[5rem] font-body_two">
+    <div className="bg-bg_on h-auto bg-contain bg-no-repeat mt-[6rem] justify-center sm:bg-cover bg-center px-4 ss:px-[5rem] sm:px-[1rem] sm:flex gap-5 md:gap-12 lg:mx-[5rem] font-body_two">
       {memoizedGeneralLeft}
       <div>
         <div>

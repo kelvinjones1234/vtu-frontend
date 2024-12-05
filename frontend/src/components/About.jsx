@@ -13,7 +13,7 @@ const About = ({ style }) => {
     <div
       className={`${
         !user && "lg:px-[6rem]"
-      } min-h-screen bg-contain lg:px-[6rem] bg-no-repeat justify-center mt-[8rem] sm:bg-cover bg-center px-4 sm:px-6 lg:px-8 xl:px-16 ${
+      } min-h-screen bg-contain lg:px-[6rem] bg-no-repeat justify-center mt-[6rem] sm:bg-cover bg-center px-4 sm:px-6 lg:px-8 xl:px-16 ${
         user ? "" : "dark"
       }`} // Force dark mode if no user
     >

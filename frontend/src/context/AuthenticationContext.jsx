@@ -6,7 +6,7 @@ import {
   useContext,
   useCallback,
 } from "react";
-import { jwtDecode } from "jwt-decode"; // Fixed import
+import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import { GeneralContext } from "./GeneralContext";
 
@@ -146,7 +146,7 @@ const AuthProvider = ({ children }) => {
         return () => clearInterval(interval);
       }
     }
-  }, [authTokens]);
+  }, [authTokens, refreshToken]);
 
   const logoutUser = () => {
     setUser(null);

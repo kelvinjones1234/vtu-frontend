@@ -53,21 +53,29 @@ export const WalletProvider = ({ children }) => {
     return () => controller.abort();
   }, [fetchWalletData]);
 
-  const updateWalletBalance = useCallback((newBalance, amount) => {
-    memoizedApi
-      .put(
-        `fund-wallet/${user.username}/`,
-        { balance: amount },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${authTokens.access}`,
-          },
+  const updateWalletBalance = useCallback(
+    async (newBalance, amount) => {
+      try {
+        const response = await memoizedApi.put(
+          `fund-wallet/${user.username}/`,
+          { balance: amount },
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${authTokens.access}`,
+            },
+          }
+        );
+
+        if (response.status === 200) {
+          setWalletData((prevData) => ({ ...prevData, balance: newBalance }));
         }
-      )
-      .catch((error) => console.error("Error updating user data:", error));
-    setWalletData((prevData) => ({ ...prevData, balance: newBalance }));
-  }, []);
+      } catch (error) {
+        console.error("Error updating user data:", error);
+      }
+    },
+    [user, authTokens, memoizedApi]
+  );
 
   const value = useMemo(
     () => ({
