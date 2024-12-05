@@ -6,6 +6,7 @@ import { AuthContext } from "../context/AuthenticationContext";
 import { GeneralContext } from "../context/GeneralContext";
 import { ProductContext } from "../context/ProductContext";
 import Pagination from "./Pagination";
+import logo from "../assets/4.svg";
 
 const TransactionHistory = () => {
   const [transactionHistory, setTransactionHistory] = useState([]);
@@ -197,7 +198,7 @@ const TransactionHistory = () => {
       </head>
       <body>
         <div class="logo">
-          <img src="https://example.com/your-logo.png" alt="MaduPay">
+          <img src=${logo} alt="maduconnect">
         </div>
         <h2>Transaction Receipt</h2>
         <div class="receipt-details">
@@ -209,7 +210,6 @@ const TransactionHistory = () => {
             transaction.product
           }</span></p>
           <p><strong>Amount</strong> <span>₦${transaction.price.toLocaleString()}</span></p>
-          <p><strong>Balance</strong> <span>₦${transaction.new_bal.toLocaleString()}</span></p>
           <p><strong>Time Stamp</strong> <span>${new Date(
             transaction.date_create
           ).toLocaleString()}</span></p>
@@ -221,7 +221,7 @@ const TransactionHistory = () => {
         </div>
         <div class="footer">
           <p>Thank you for using our service!</p>
-          <p>For support, please contact: madupay@gmail.com</p>
+          <p>For support, please contact: maduconnect@gmail.com</p>
           <p>© ${new Date().getFullYear()} PraiseMedia. All rights reserved.</p>
         </div>
       </body>

@@ -1,7 +1,5 @@
 import { useState, useEffect, React, useContext } from "react";
 import { Link } from "react-router-dom";
-import menu from "../assets/menu.svg";
-import close from "../assets/close.svg";
 import logo from "../assets/4.svg";
 import notification from "../assets/notification.svg";
 import GeneralSidebar from "./GeneralSidebar";
