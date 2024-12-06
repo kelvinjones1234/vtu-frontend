@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import { Link } from "react-router-dom";
-import { FaAngleRight } from "react-icons/fa6";
+import { FaAngleRight, FaEye, FaEyeSlash } from "react-icons/fa6";
 import GeneralLeft from "./GeneralLeft";
 import GeneralRight from "./GeneralRight";
 import { ProductContext } from "../context/ProductContext";
@@ -14,6 +14,11 @@ const UserDashBoard = () => {
   const { user } = useContext(AuthContext);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isBalanceHidden, setIsBalanceHidden] = useState(false);
+
+  const toggleBalanceVisibility = () => {
+    setIsBalanceHidden(!isBalanceHidden);
+  };
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
@@ -43,18 +48,26 @@ const UserDashBoard = () => {
           </span>
           , {capitalizeFirstLetter(user.first_name)}!
         </div>
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg mb-6 p-6 text-primary dark:text-white">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-sm font-semibold sm:text-[.8rem] md:text-[1rem]">
-              Available Balance
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg mb-6 px-3 py-6 text-primary dark:text-white">
+          <div className="flex justify-between items-center mb-4 text-sm sm:text-[.7rem] md:text-[1rem]">
+            <h2 className="flex items-center space-x-2">
+              <span>Available Balance</span>
+              <button
+                onClick={toggleBalanceVisibility}
+                className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors duration-300"
+              >
+                {isBalanceHidden ? (
+                  <FaEyeSlash style={{ color: "" }} />
+                ) : (
+                  <FaEye style={{ color: "" }} />
+                )}
+              </button>
             </h2>
             <Link
               to="/user/dashboard/transactions"
               className="flex items-center text-blue-500 hover:text-blue-600 transition-colors duration-300"
             >
-              <span className="mr-2 sm:text-[.8rem] md:text-[1rem]">
-                Transaction History
-              </span>
+              <span className="mr-2">Transaction History</span>
               <FaAngleRight className="h-4 w-4" />
             </Link>
           </div>
