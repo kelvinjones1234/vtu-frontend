@@ -46,7 +46,7 @@ const Footer = () => {
 
   return (
     <div
-      className={`text-center sm:text-start mt-10 border-t border-link ${getFooterClasses()} w-full mx-auto font-body_two ss:px-20 px-4`}
+      className={`text-center sm:text-start mt-[12rem] border-t border-link ${getFooterClasses()} w-full mx-auto font-body_two ss:px-20 px-4`}
     >
       <div className="sm:flex sm:justify-between max-w-[1000px] mx-auto">
         <div className="legals sm:mt-16 sm:mx-3 ">
