@@ -1,23 +1,25 @@
 import { useState, useContext, useEffect, React } from "react";
-import authenticate from "../assets/authenticate.svg";
-import about from "../assets/about.svg";
-import right from "../assets/right_arrow.svg";
-import bottom from "../assets/bottom_arrow.svg";
 import { Link } from "react-router-dom";
-import transfer from "../assets/transfer.svg";
-import dashboard from "../assets/dashboard.svg";
-import services from "../assets/services.svg";
-import transactions from "../assets/transactions.svg";
-import price_list from "../assets/price_list.svg";
-import logout from "../assets/logout.svg";
+import {
+  FaHome,
+  FaExchangeAlt,
+  FaCog,
+  FaHistory,
+  FaInfoCircle,
+  FaSignOutAlt,
+  FaChevronRight,
+  FaChevronDown,
+  FaMoon,
+  FaSun,
+  FaUser,
+} from "react-icons/fa";
 import { ProductContext } from "../context/ProductContext";
 import Transfer from "./Transfer";
 import { AuthContext } from "../context/AuthenticationContext";
+import { GeneralContext } from "../context/GeneralContext";
 import dark from "../assets/dark.svg";
 import light from "../assets/light.svg";
 import logo from "../assets/4.svg";
-
-import { GeneralContext } from "../context/GeneralContext";
 
 const GeneralSidebar = ({ generalMenuToggle, handleGeneralMenuToggle }) => {
   const [generalSideBarAuthToggle, setGeneralSideBarAuthToggle] =
@@ -56,14 +58,14 @@ const GeneralSidebar = ({ generalMenuToggle, handleGeneralMenuToggle }) => {
         ></div>
       )}
       <div
-        className={`harmburger-dropdown fixed top-0 left-0 h-screen p-[1rem] pr-0 bg-white dark:bg-primary sm:hidden text-primary dark:text-white transform transition-transform rounded-r-xl duration-200 ease-in-out z-20 ${
+        className={`harmburger-dropdown fixed top-0 left-0 h-screen py-2 px-[1rem] pr-0 bg-white dark:bg-primary sm:hidden text-primary dark:text-white transform transition-transform rounded-r-xl duration-200 ease-in-out z-20 ${
           generalMenuToggle ? "translate-x-0" : "-translate-x-full"
         }`}
         onClick={(e) => e.stopPropagation()} // Prevent click event propagation to overlay
       >
         <div className="flex items-center justify-between mr-9">
           <div className="flex items-center">
-            <img src={logo} alt="" className="h-7 mb-" />
+            {/* <img src={logo} alt="" className="h-7 mb-" /> */}
             <Link to={"/"}>
               <div className="logo font-heading_one text-transparent bg-clip-text pr-2 text-[.8rem] rounded-[.5rem] font-bold bg-gradient-to-r from-purple-400 via-sky-500 to-red-500 border-white">
                 MaduConnect
@@ -75,7 +77,7 @@ const GeneralSidebar = ({ generalMenuToggle, handleGeneralMenuToggle }) => {
               onClick={handleThemeSettings}
               className="justify-center py-[.5rem] gap-8 rounded-xl flex items-center bg-gray-200 hover:bg-gray-300 px-3 dark:bg-white dark:bg-opacity-20 dark:hover:bg-opacity-10 transition duration-300 ease-in-out cursor-pointer"
             >
-              <img src={darkMode ? dark : light} alt="" className="w-4" />
+              <img src={darkMode ? dark : light} alt="" className="w-5" />
             </div>
           </div>
         </div>
@@ -104,10 +106,9 @@ const GeneralSidebar = ({ generalMenuToggle, handleGeneralMenuToggle }) => {
                 }`}
               >
                 <Link to={"/user/dashboard"} className="flex items-center">
-                  <img
-                    src={dashboard}
-                    alt=""
+                  <FaHome
                     className="h-[1.2rem] ml-[.2rem] mr-[1rem]"
+                    style={{ color: "#1CCEFF" }}
                   />
                   <div>Dashboard</div>
                 </Link>
@@ -120,10 +121,9 @@ const GeneralSidebar = ({ generalMenuToggle, handleGeneralMenuToggle }) => {
                 }`}
                 onClick={handleTransferForm}
               >
-                <img
-                  src={transfer}
-                  alt=""
+                <FaExchangeAlt
                   className="h-[1.2rem] w-[1.1rem] ml-[.2rem] mr-[1rem]"
+                  style={{ color: "#1CCEFF" }}
                 />
                 <div>Transfer</div>
               </li>
@@ -142,17 +142,22 @@ const GeneralSidebar = ({ generalMenuToggle, handleGeneralMenuToggle }) => {
                     : "dark:hover:bg-white dark:hover:bg-opacity-5 hover:bg-gray-100 transition duration-400 ease-in-out"
                 }`}
               >
-                <img
-                  src={services}
-                  alt=""
+                <FaCog
                   className="h-[1.2rem] w-[1.5rem] mr-3"
+                  style={{ color: "#1CCEFF" }}
                 />
                 <div className="flex items-center">
                   <div className="mr-12 ">Services</div>
                   {generalSideBarAuthToggle ? (
-                    <img src={bottom} alt="" className="h-[1.2rem]" />
+                    <FaChevronDown
+                      className="h-[1.2rem]"
+                      style={{ color: "#1CCEFF" }}
+                    />
                   ) : (
-                    <img src={right} alt="" className="h-[1.2rem]" />
+                    <FaChevronRight
+                      className="h-[1.2rem]"
+                      style={{ color: "#1CCEFF" }}
+                    />
                   )}
                 </div>
               </li>
@@ -188,20 +193,18 @@ const GeneralSidebar = ({ generalMenuToggle, handleGeneralMenuToggle }) => {
                 to={"/user/dashboard/transactions"}
                 className="flex items-center gap-[.9rem]"
               >
-                <img
-                  src={transactions}
-                  alt=""
+                <FaHistory
                   className="h-[1.2rem] ml-[.2rem]"
+                  style={{ color: "#1CCEFF" }}
                 />
                 <div>Transactions</div>
               </Link>
             </li>
             <li className="mt-4 py-3 px-2 rounded-xl">
               <Link to={"/dashboard/about"} className="items-center flex">
-                <img
-                  src={about}
-                  alt=""
+                <FaInfoCircle
                   className="h-[1.2rem] w-[1.1rem] ml-[.2rem] mr-[1rem]"
+                  style={{ color: "#1CCEFF" }}
                 />
                 <div>About</div>
               </Link>
@@ -210,10 +213,9 @@ const GeneralSidebar = ({ generalMenuToggle, handleGeneralMenuToggle }) => {
               className="mb-10 mt-4 items-center flex  py-3 px-2 rounded-xl cursor-pointer"
               onClick={logoutUser}
             >
-              <img
-                src={logout}
-                alt=""
+              <FaSignOutAlt
                 className="h-[1.2rem] w-[1.1rem] ml-[.2rem] mr-[1rem]"
+                style={{ color: "#1CCEFF" }}
               />
               <div>Log Out</div>
             </li>

@@ -1,17 +1,19 @@
 import { AuthContext } from "../context/AuthenticationContext";
-import dashboard from "../assets/dashboard.svg";
-import transfer from "../assets/transfer.svg";
-import services from "../assets/services.svg";
-import logout from "../assets/logout.svg";
-import transactions from "../assets/transactions.svg";
-import about from "../assets/about.svg";
-import bottom_arrow from "../assets/bottom_arrow.svg";
-import right_arrow from "../assets/right_arrow.svg";
-import Transfer from "./Transfer";
 import { Link, useLocation } from "react-router-dom";
 import { useContext, React, useEffect, useState } from "react";
 import { ProductContext } from "../context/ProductContext";
 import { motion } from "framer-motion";
+import {
+  FaHome,
+  FaExchangeAlt,
+  FaCog,
+  FaSignOutAlt,
+  FaHistory,
+  FaInfoCircle,
+  FaChevronRight,
+  FaChevronDown,
+} from "react-icons/fa";
+import Transfer from "./Transfer";
 
 const GeneralLeft = () => {
   const { logoutUser } = useContext(AuthContext);
@@ -59,13 +61,13 @@ const GeneralLeft = () => {
               : "dark:hover:bg-white dark:hover:bg-opacity-5 transition duration-400 ease-in-out hover:bg-gray-100"
           }`}
           onClick={handleDropDownClose}
-          whileHover={{ scale: .95 }}
+          whileHover={{ scale: 0.95 }}
           whileTap={{ scale: 0.95 }}
         >
           <div className="cursor-pointer dark:text-white text-primary inline-flex items-center gap-3">
-            <img src={dashboard} alt="" className="w-4" />
+            <FaHome className="w-4" style={{ color: "#1CCEFF" }} />
             <Link to={"/user/dashboard"}>
-              <p className="">Dashboard</p>
+              <p className="dark:text-white text-primary">Dashboard</p>
             </Link>
           </div>
         </motion.div>
@@ -75,10 +77,10 @@ const GeneralLeft = () => {
               ? "bg-white bg-opacity-20"
               : "dark:hover:bg-white dark:hover:bg-opacity-5 transition duration-400 ease-in-out hover:bg-gray-100"
           }`}
-          whileHover={{ scale: .95 }}
+          whileHover={{ scale: 0.95 }}
           whileTap={{ scale: 0.95 }}
         >
-          <img src={transfer} alt="" className="w-4" />
+          <FaExchangeAlt className="w-4" style={{ color: "#1CCEFF" }} />
           <p
             className="cursor-pointer dark:text-white text-primary"
             onClick={handleTransferForm}
@@ -103,7 +105,7 @@ const GeneralLeft = () => {
               ? "bg-white bg-opacity-20"
               : "dark:hover:bg-white dark:hover:bg-opacity-5 hover:bg-gray-100 transition duration-400 ease-in-out"
           }`}
-          whileHover={{ scale: .95 }}
+          whileHover={{ scale: 0.95 }}
           whileTap={{ scale: 0.95 }}
         >
           <div
@@ -111,15 +113,21 @@ const GeneralLeft = () => {
             onClick={handleServicesDropDowns}
           >
             <div className="flex items-center gap-3">
-              <img src={services} alt="" className="w-4" />
+              <FaCog className="w-4" style={{ color: "#1CCEFF" }} />
               <div className="dark:text-white text-primary">Services</div>
             </div>
             <div className="">
-              <img
-                src={servicesDropDown ? bottom_arrow : right_arrow}
-                alt=""
-                className="w-4 absolute top-[.3rem]"
-              />
+              {servicesDropDown ? (
+                <FaChevronDown
+                  className="w-4 absolute top-[.3rem]"
+                  style={{ color: "#1CCEFF" }}
+                />
+              ) : (
+                <FaChevronRight
+                  className="w-4 absolute top-[.3rem]"
+                  style={{ color: "#1CCEFF" }}
+                />
+              )}
             </div>
           </div>
         </motion.div>
@@ -136,13 +144,15 @@ const GeneralLeft = () => {
               <motion.li
                 className="mt-4 pl-11 bg-opacity-25 flex py-2 px-2 rounded-xl hover:bg-gray-100 dark:hover:bg-white max-w-[13rem] dark:hover:bg-opacity-5 transition duration-300 ease-in-out"
                 key={items.id}
-                whileHover={{ scale: .95 }}
+                whileHover={{ scale: 0.95 }}
                 whileTap={{ scale: 0.95 }}
               >
                 <Link
                   to={`/user/dashboard/services/${items.category.toLowerCase()}`}
                 >
-                  {items.category.toLowerCase()}
+                  <p className="dark:text-white text-primary">
+                    {items.category.toLowerCase()}
+                  </p>
                 </Link>
               </motion.li>
             ))}
@@ -155,10 +165,10 @@ const GeneralLeft = () => {
               : "dark:hover:bg-white dark:hover:bg-opacity-5 transition duration-400 ease-in-out hover:bg-gray-100"
           }`}
           onClick={handleDropDownClose}
-          whileHover={{ scale: .95 }}
+          whileHover={{ scale: 0.95 }}
           whileTap={{ scale: 0.95 }}
         >
-          <img src={transactions} alt="" className="w-4" />
+          <FaHistory className="w-4" style={{ color: "#1CCEFF" }} />
           <Link to={"/user/dashboard/transactions"}>
             <p className="cursor-pointer dark:text-white text-primary">
               Transactions
@@ -172,10 +182,10 @@ const GeneralLeft = () => {
               : "dark:hover:bg-white dark:hover:bg-opacity-5 transition duration-400 ease-in-out hover:bg-gray-100"
           }`}
           onClick={handleDropDownClose}
-          whileHover={{ scale: .95 }}
+          whileHover={{ scale: 0.95 }}
           whileTap={{ scale: 0.95 }}
         >
-          <img src={about} alt="" className="w-4" />
+          <FaInfoCircle className="w-4" style={{ color: "#1CCEFF" }} />
           <Link to={"/dashboard/about"}>
             <p className="cursor-pointer dark:text-white text-primary">About</p>
           </Link>
@@ -183,10 +193,10 @@ const GeneralLeft = () => {
         <motion.div
           className="dark:hover:bg-white dark:hover:bg-opacity-5 hover:bg-gray-100 max-w-[13rem] transition duration-400 ease-in-out py-[.7rem] gap-3 rounded-xl flex items-center font-bold text-white px-4 mt-4"
           onClick={logoutUser}
-          whileHover={{ scale: .95 }}
+          whileHover={{ scale: 0.95 }}
           whileTap={{ scale: 0.95 }}
         >
-          <img src={logout} alt="" className="w-4" />
+          <FaSignOutAlt className="w-4" style={{ color: "#1CCEFF" }} />
           <p className="cursor-pointer dark:text-white text-primary">Log Out</p>
         </motion.div>
       </div>
