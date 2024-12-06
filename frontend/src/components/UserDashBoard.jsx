@@ -35,7 +35,7 @@ const UserDashBoard = () => {
   };
 
   return (
-    <div className="h-screen bg-contain bg-no-repeat py-[6rem] sm:bg-cover bg-center px-4 justify-center ss:px-[5rem] sm:px-[1rem] sm:flex gap-5 md:gap-12 lg:mx-[5rem]">
+    <div className="h-screen bg-contain bg-no-repeat mb-[18rem] pt-[6rem] sm:bg-cover bg-center px-4 justify-center ss:px-[5rem] sm:px-[1rem] sm:flex gap-5 md:gap-12 lg:mx-[5rem]">
       {/* left layer */}
       <GeneralLeft />
 

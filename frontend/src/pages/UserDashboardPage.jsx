@@ -11,7 +11,7 @@ const UserDashboardPage = () => {
 
   return (
     <div className="relative">
-      <div className={`w-full z-[-2] min-w-[150px] fixed top-0 left-0 `}></div>
+      <div className={`w-full z-[-2] min-w-[150px] fixed top-0 left-0`}></div>
       <div className="min-w-[283px]">
         <GeneralNavbar />
         <UserDashBoard />

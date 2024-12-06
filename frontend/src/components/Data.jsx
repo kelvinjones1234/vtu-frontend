@@ -320,7 +320,7 @@ const Data = () => {
   const handleBypass = () => setBypassPhoneNumber((prev) => !prev);
 
   return (
-    <div className="bg-bg_on h-auto bg-contain bg-no-repeat mt-[6rem] sm:bg-cover bg-center px-4 justify-center ss:px-[5rem] sm:px-[1rem] sm:flex gap-5 md:gap-12 lg:mx-[5rem]">
+    <div className="bg-bg_on h-auto bg-contain bg-no-repeat pt-[6rem] sm:bg-cover bg-center px-4 justify-center ss:px-[5rem] sm:px-[1rem] sm:flex gap-5 md:gap-12 lg:mx-[5rem]">
       <GeneralLeft />
       <div>
         <div>

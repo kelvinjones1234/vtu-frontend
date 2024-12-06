@@ -18,12 +18,6 @@ import NoAuthPrivacyPolicyPage from "./pages/NoAuthPrivacyPolicyPage";
 import NoAuthTermsAndConditionPage from "./pages/NoAuthTermsAndConditionPage";
 import LoadingSpinner from "./components/LoadingSpinner";
 
-// import RegisterationPage from "./pages/RegisterationPage";
-// import PageNotFoundPage from "./pages/PageNotFoundPage";
-// import LoginPage from "./pages/LoginPage";
-// import PasswordResetRequestPage from "./pages/PasswordResetRequestPage";
-// import PasswordResetPage from "./pages/PasswordResetPage";
-
 const HomePage = lazy(() => import("./pages/HomePage"));
 const PageNotFoundPage = lazy(() => import("./pages/PageNotFoundPage"));
 const LoginPage = lazy(() => import("./pages/LoginPage"));
