@@ -18,22 +18,20 @@ function App() {
         <AuthProvider>
           <ProductProvider>
             <WalletProvider>
-              <div className="relative">
-                <div className="absolute top-0 left-0 w-full h-full bg-white dark:bg-dark-custom-gradient z-[-100]"></div>
-                <ParticleComponent className="particles" />
-                <ScrollToTop />
-                <ErrorBoundary>
-                  <Suspense
-                    fallback={
-                      <div className="flex items-center justify-center h-screen">
-                        Loading...
-                      </div>
-                    }
-                  >
-                    <AppContent />
-                  </Suspense>
-                </ErrorBoundary>
-              </div>
+              <div className="absolute top-0 left-0 w-full min-h-full bg-white dark:bg-dark-custom-gradient z-[-100]"></div>
+              <ParticleComponent className="particles" />
+              <ScrollToTop />
+              <ErrorBoundary>
+                <Suspense
+                  fallback={
+                    <div className="flex items-center justify-center h-screen">
+                      Loading...
+                    </div>
+                  }
+                >
+                  <AppContent />
+                </Suspense>
+              </ErrorBoundary>
             </WalletProvider>
           </ProductProvider>
         </AuthProvider>

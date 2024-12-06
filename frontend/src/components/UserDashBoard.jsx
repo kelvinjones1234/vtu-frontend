@@ -34,13 +34,16 @@ const UserDashBoard = () => {
     return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
   };
 
+  // <div className="px-[1rem] ss:px-[6rem] mt-[2vh] font-body_two">
+
+
   return (
-    <div className="h-screen bg-contain bg-no-repeat pt-[6rem] sm:bg-cover bg-center px-4 justify-center ss:px-[5rem] sm:px-[1rem] sm:flex gap-5 md:gap-12 lg:mx-[5rem]">
+    <div className="pt-[6rem] sm:bg-cover px-4 justify-center ss:px-[5rem] sm:px-[1rem] sm:flex gap-5 md:gap-12 lg:mx-[5rem]">
       {/* left layer */}
       <GeneralLeft />
 
       {/* middle layer */}
-      <div className="min-w-[349.20px] pr-2 mx-auto">
+      <div className="mx-auto">
         <div className="text-primary text-[1.5rem] font-bold dark:text-white py-8 text-center xs:hidden">
           Hi,{" "}
           <span className="bg-gradient-to-r from-purple-400 via-sky-500 to-red-500 text-transparent bg-clip-text">

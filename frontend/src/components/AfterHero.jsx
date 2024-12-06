@@ -46,7 +46,7 @@ const AfterHero = () => {
     threshold: 0.1, // Percentage of the element in view to trigger the animation
   });
 
-  return (
+  return ( 
     <div className="px-[1rem] ss:px-[6rem] mt-[2vh] font-body_two">
       <div className="image flex justify-center">
         <h1 className="text-link py-4 sm:pb-8 text-[1.2rem] font-bold font-heading_two">
