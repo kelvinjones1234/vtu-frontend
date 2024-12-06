@@ -56,11 +56,7 @@ const UserDashBoard = () => {
                 onClick={toggleBalanceVisibility}
                 className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors duration-300"
               >
-                {isBalanceHidden ? (
-                  <FaEyeSlash style={{ color: "" }} />
-                ) : (
-                  <FaEye style={{ color: "" }} />
-                )}
+                {isBalanceHidden ? <FaEyeSlash /> : <FaEye />}
               </button>
             </h2>
             <Link
@@ -74,11 +70,13 @@ const UserDashBoard = () => {
           <div className="flex justify-between items-center">
             <p className="text-2xl sm:text-[1.2rem] md:text-[2rem] font-bold">
               ₦{" "}
-              {walletData &&
-                Number(walletData.balance).toLocaleString("en-US", {
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2,
-                })}
+              {isBalanceHidden
+                ? "****"
+                : walletData &&
+                  Number(walletData.balance).toLocaleString("en-US", {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })}
             </p>
             <button
               onClick={handleOpenModal}
