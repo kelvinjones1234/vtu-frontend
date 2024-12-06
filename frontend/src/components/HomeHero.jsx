@@ -54,7 +54,7 @@ const HomeHero = () => {
         >
           <div className="login">
             <Link to={`${user ? "/user/dashboard" : "/authentication/login"}`}>
-              <button className="transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-lg border bg-[#18202F] border-link rounded-2xl py-[.4rem] hover:text-link transition-all duration-500 ease-in-out text-white mx-4 px-6">
+              <button className="transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-lg border bg-[#18202F] border-link rounded-2xl py-[.3rem] transition-all duration-500 ease-in-out text-white mx-4 px-6">
                 Login
               </button>
             </Link>
@@ -63,7 +63,7 @@ const HomeHero = () => {
             <Link
               to={`${user ? "/user/dashboard" : "/authentication/register"}`}
             >
-              <button className="transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-lg bg-blue-400 rounded-2xl hover:bg-blue-500 py-[.46rem] transition duration-500 ease-in-out mx-4 px-6">
+              <button className="bg-green-500 py-[.4rem] mr-9 px-6 text-[.9rem] bg-opacity-[90%] transition duration-300 ease-in-out transform hover:-translate-y-1 text-white rounded-2xl font-bold">
                 Register
               </button>
             </Link>

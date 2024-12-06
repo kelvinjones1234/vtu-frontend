@@ -1,14 +1,11 @@
 import React, { useState, useEffect } from "react";
-import menu from "../assets/menu.svg";
-import close from "../assets/close.svg";
+import { Link } from "react-router-dom";
+import { RiMenu4Line, RiCloseLargeLine } from "react-icons/ri";
+import logo from "../assets/4.svg";
 import authenticate from "../assets/authenticate.svg";
 import about from "../assets/about.svg";
 import right from "../assets/right_arrow.svg";
 import bottom from "../assets/bottom_arrow.svg";
-import { Link } from "react-router-dom";
-import { RiMenu4Line } from "react-icons/ri";
-import { RiCloseLargeLine } from "react-icons/ri";
-import logo from "../assets/4.svg";
 
 const HomePageNavbar = ({ homeMenuToggle, setHomeMenuToggle }) => {
   const [sideBarAuthToggle, setSideBarAuthToggle] = useState(false);
@@ -40,8 +37,8 @@ const HomePageNavbar = ({ homeMenuToggle, setHomeMenuToggle }) => {
   return (
     <>
       <div
-        className={`p-4 lg:px-0 flex justify-between py-2 lg:px-[6rem] fixed top-0 w-full transition-colors duration-200 ${
-          isScrolled ? "bg-gray-900 bg-opacity-95 z-[100]" : "bg-transparent"
+        className={`p-4 lg:px-0 flex justify-between py-2 lg:px-[6rem] fixed top-0 w-full transition-colors duration-200 z-50 ${
+          isScrolled ? "bg-gray-900 bg-opacity-95" : "bg-transparent"
         }`}
       >
         <div className="flex items-center">
@@ -55,7 +52,7 @@ const HomePageNavbar = ({ homeMenuToggle, setHomeMenuToggle }) => {
         <div className="right">
           <div className={`small-screen flex items-center sm:hidden`}>
             <div className="get-started">
-              <button className="bg-geen-500 py-[.4rem] mr-9 px-4 text-[.9rem] bg-opacity-[90%] bg-blue-500 text-white rounded-2xl font-bold">
+              <button className="bg-green-500 py-[.4rem] mr-9 px-4 text-[.9rem] bg-opacity-[90%] text-white rounded-2xl font-bold">
                 <Link to={"/authentication/register"}>Get Started</Link>
               </button>
             </div>
@@ -68,15 +65,10 @@ const HomePageNavbar = ({ homeMenuToggle, setHomeMenuToggle }) => {
               </div>
             </div>
           </div>
-          <div className="large-screen hidden lg:pr-[6rem]">
+          <div className="large-screen hidden sm:flex lg:pr-[6rem]">
             <div className="button">
-              <button className="text-link border py-[.5rem] mr-8 font-semibold px-4 text-[.9rem] rounded-xl">
-                <Link to={"/authentication/register"}>Login</Link>
-              </button>
-            </div>
-            <div className="button">
-              <button className="bg-link py-[.5rem] font-semibold px-4 text-[.9rem] rounded-xl">
-                <Link to={"/authentication/register"}>Register</Link>
+              <button className="bg-green-500 rounded-2xl py-[.3rem] hover:bg-green-600 font-bold transition-all duration-500 ease-in-out text-white mx-4 px-6">
+                <Link to={"/authentication/register"}>Get Started</Link>
               </button>
             </div>
           </div>
@@ -85,13 +77,13 @@ const HomePageNavbar = ({ homeMenuToggle, setHomeMenuToggle }) => {
 
       {homeMenuToggle && (
         <div
-          className="overlay fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 sm:hidden pointer-events-auto z-10"
+          className="overlay fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 sm:hidden pointer-events-auto z-40"
           onClick={handleHomeMenuToggle}
         ></div>
       )}
 
       <div
-        className={`harmburger-dropdown fixed top-0 left-0 h-screen p-[1rem] sm:hidden bg-opacity-95 bg-primary text-white transform transition-transform rounded-r-xl duration-200 ease-in-out z-20 ${
+        className={`harmburger-dropdown fixed top-0 left-0 h-screen p-[1rem] sm:hidden bg-opacity-95 bg-primary text-white transform transition-transform rounded-r-xl duration-200 ease-in-out z-50 ${
           homeMenuToggle ? "translate-x-0" : "-translate-x-full"
         }`}
         onClick={(e) => e.stopPropagation()} // Prevent click event propagation to overlay
