@@ -35,18 +35,17 @@ const UserDashBoard = () => {
   };
 
   return (
-    <div className="bg-bg_on h-auto bg-contain bg-no-repeat mt-[6rem] sm:bg-cover bg-center px-4 justify-center ss:px-[5rem] sm:px-[1rem] sm:flex gap-5 md:gap-12 lg:mx-[5rem]">
+    <div className="h-screen bg-contain bg-no-repeat pt-[6rem] sm:bg-cover bg-center px-4 justify-center ss:px-[5rem] sm:px-[1rem] sm:flex gap-5 md:gap-12 lg:mx-[5rem]">
       {/* left layer */}
       <GeneralLeft />
 
       {/* middle layer */}
       <div className="min-w-[349.20px] pr-2 mx-auto">
         <div className="text-primary text-[1.5rem] font-bold dark:text-white py-8 text-center xs:hidden">
-          Welcome Back to{" "}
+          Hi,{" "}
           <span className="bg-gradient-to-r from-purple-400 via-sky-500 to-red-500 text-transparent bg-clip-text">
-            MaduConnect
+            {capitalizeFirstLetter(user.first_name)}!
           </span>
-          , {capitalizeFirstLetter(user.first_name)}!
         </div>
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg mb-6 px-3 py-6 text-primary dark:text-white">
           <div className="flex justify-between items-center mb-4 text-sm sm:text-[.7rem] md:text-[1rem]">

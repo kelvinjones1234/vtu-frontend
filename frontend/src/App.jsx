@@ -6,8 +6,10 @@ import { WalletProvider } from "./context/WalletContext";
 import GeneralProvider from "./context/GeneralContext";
 import ParticleComponent from "./components/ParticleComponent";
 import ScrollToTop from "./components/ScrollTop";
-import AppContent from "./AppContent";
 import ErrorBoundary from "./pages/ErrorBoundary";
+
+// Lazy load the AppContent component
+const AppContent = lazy(() => import("./AppContent"));
 
 function App() {
   return (
@@ -16,11 +18,21 @@ function App() {
         <AuthProvider>
           <ProductProvider>
             <WalletProvider>
-              <div>
-                <div className="bg-white dark:bg-dark-custom-gradient w-full z-[-100] min-w-[150px] fixed top-0 left-0 min-h-screen"></div>
+              <div className="relative">
+                <div className="absolute top-0 left-0 w-full h-full bg-white dark:bg-dark-custom-gradient z-[-100]"></div>
                 <ParticleComponent className="particles" />
                 <ScrollToTop />
-                <AppContent />
+                <ErrorBoundary>
+                  <Suspense
+                    fallback={
+                      <div className="flex items-center justify-center h-screen">
+                        Loading...
+                      </div>
+                    }
+                  >
+                    <AppContent />
+                  </Suspense>
+                </ErrorBoundary>
               </div>
             </WalletProvider>
           </ProductProvider>
