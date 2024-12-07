@@ -4,9 +4,14 @@ import logo from "../assets/4.svg";
 import { motion } from "framer-motion";
 
 const LoadingSpinner = () => {
+  const { user } = useContext(AuthContext); // Access user from context
 
   return (
-    <div>
+    <div
+      // className={`flex justify-center items-center h-screen ${
+      //   user ? "dark:bg-primary" : "dark"
+      // }`}
+    >
       <div className="flex flex-col justify-center items-center">
         <motion.div
           className="relative"

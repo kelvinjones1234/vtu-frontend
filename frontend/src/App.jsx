@@ -19,7 +19,7 @@ function App() {
         <AuthProvider>
           <ProductProvider>
             <WalletProvider>
-              <div className="absolute top-0 left-0 w-full min-h-full z-[-100]"></div>
+              <div className="absolute top-0 left-0 w-full min-h-full bg-white dark:bg-dark-custom-gradient z-[-100]"></div>
               <ParticleComponent className="particles" />
               <ScrollToTop />
               <ErrorBoundary>
