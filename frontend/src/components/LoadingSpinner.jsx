@@ -8,9 +8,9 @@ const LoadingSpinner = () => {
 
   return (
     <div
-      className={`flex justify-center items-center h-screen ${
-        user ? "dark:bg-primary" : "dark"
-      }`}
+      // className={`flex justify-center items-center h-screen ${
+      //   user ? "dark:bg-primary" : "dark"
+      // }`}
     >
       <div className="flex flex-col justify-center items-center">
         <motion.div

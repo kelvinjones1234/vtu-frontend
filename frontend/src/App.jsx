@@ -7,6 +7,7 @@ import GeneralProvider from "./context/GeneralContext";
 import ParticleComponent from "./components/ParticleComponent";
 import ScrollToTop from "./components/ScrollTop";
 import ErrorBoundary from "./pages/ErrorBoundary";
+import LoadingSpinner from "./components/LoadingSpinner";
 
 // Lazy load the AppContent component
 const AppContent = lazy(() => import("./AppContent"));
@@ -25,7 +26,7 @@ function App() {
                 <Suspense
                   fallback={
                     <div className="flex items-center justify-center h-screen">
-                      Loading...
+                      <LoadingSpinner />
                     </div>
                   }
                 >

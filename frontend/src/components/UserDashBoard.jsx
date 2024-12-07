@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { FaAngleRight, FaEye, FaEyeSlash } from "react-icons/fa6";
 import GeneralLeft from "./GeneralLeft";
@@ -10,7 +10,7 @@ import { AuthContext } from "../context/AuthenticationContext";
 
 const UserDashBoard = () => {
   const { productData } = useContext(ProductContext);
-  const { walletData } = useWallet();
+  const { walletData, loading, error } = useWallet();
   const { user } = useContext(AuthContext);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -28,26 +28,33 @@ const UserDashBoard = () => {
     setIsModalOpen(false);
   };
 
-  // Function to capitalize the first letter
-  const capitalizeFirstLetter = (name) => {
-    if (!name) return ""; // If name is empty, return empty string
-    return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
-  };
+  const capitalizedFirstName = useMemo(() => {
+    return user?.first_name
+      ? user.first_name.charAt(0).toUpperCase() +
+          user.first_name.slice(1).toLowerCase()
+      : "";
+  }, [user]);
 
-  // <div className="px-[1rem] ss:px-[6rem] mt-[2vh] font-body_two">
+  const formattedBalance = useMemo(() => {
+    return walletData?.balance
+      ? Number(walletData.balance).toLocaleString("en-US", {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        })
+      : "0.00";
+  }, [walletData]);
 
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
 
   return (
     <div className="pt-[6rem] sm:bg-cover px-4 justify-center ss:px-[5rem] sm:px-[1rem] sm:flex gap-5 md:gap-12 lg:mx-[5rem]">
-      {/* left layer */}
       <GeneralLeft />
-
-      {/* middle layer */}
       <div className="mx-auto">
         <div className="text-primary text-[1.5rem] font-bold dark:text-white py-8 text-center xs:hidden">
           Hi,{" "}
           <span className="bg-gradient-to-r from-purple-400 via-sky-500 to-red-500 text-transparent bg-clip-text">
-            {capitalizeFirstLetter(user.first_name)}!
+            {capitalizedFirstName}!
           </span>
         </div>
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg mb-6 px-3 py-6 text-primary dark:text-white">
@@ -71,14 +78,7 @@ const UserDashBoard = () => {
           </div>
           <div className="flex justify-between items-center">
             <p className="text-2xl sm:text-[1.2rem] md:text-[2rem] font-bold">
-              ₦{" "}
-              {isBalanceHidden
-                ? "****"
-                : walletData &&
-                  Number(walletData.balance).toLocaleString("en-US", {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2,
-                  })}
+              ₦ {isBalanceHidden ? "****" : formattedBalance}
             </p>
             <button
               onClick={handleOpenModal}
@@ -127,7 +127,6 @@ const UserDashBoard = () => {
         </div>
       </div>
       <GeneralRight />
-
       {isModalOpen && <FundWalletModal onClose={handleCloseModal} />}
     </div>
   );
