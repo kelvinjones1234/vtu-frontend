@@ -49,7 +49,7 @@ const PasswordResetRequestPage = () => {
       <div className="authentication bg-bg_one bg-contain md:bg-cover bg-center w-full min-h-screen bg-no-repeat">
         <div className="authenticationnavbar flex justify-between py-[1.18rem] px-4 lg:px-[6rem]">
           <div className="flex items-center">
-            <img src={logo} alt="" className="h-7 mb-1" />
+            {/* <img src={logo} alt="" className="h-7 mb-1" /> */}
             <Link to={"/"}>
               <div className="logo font-heading_one text-transparent bg-clip-text pr-2 text-[.8rem] rounded-[.5rem] font-bold bg-gradient-to-r from-purple-400 via-sky-500 to-red-500 border-white">
                 MaduConnect
