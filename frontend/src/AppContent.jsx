@@ -1,6 +1,7 @@
-import { React, lazy, Suspense, useContext, useEffect } from "react";
+import { React, lazy, Suspense, useContext } from "react";
 import { Routes, Route } from "react-router-dom";
 import { AuthContext } from "./context/AuthenticationContext";
+// import HomePage from "./pages/HomePage";
 import UserDashboardPage from "./pages/UserDashboardPage";
 import PrivateRoute from "./utils/PrivateRoute";
 import DataPage from "./pages/DataPage";
@@ -9,6 +10,7 @@ import CableSubPage from "./pages/CableSubPage";
 import ElectricityBillPage from "./pages/ElectricityBillPage";
 import ProfilePage from "./pages/ProfilePage";
 import TransactionHistoryPage from "./pages/TransactionHistoryPage";
+
 import NotificationPage from "./pages/NotificationPage";
 import TermsAndConditionsPage from "./pages/TermsAndConditionsPage";
 import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
@@ -24,16 +26,13 @@ const PasswordResetPage = lazy(() => import("./pages/PasswordResetPage"));
 const AboutPage = lazy(() => import("./pages/AboutPage"));
 const NoAuthAboutPage = lazy(() => import("./pages/NoAuthAboutPage"));
 const PriceListPage = lazy(() => import("./pages/PriceListPage"));
+
 const PasswordResetRequestPage = lazy(() =>
   import("./pages/PasswordResetRequestPage")
 );
 
-function AppContent({ onLoad }) {
+function AppContent() {
   const { user } = useContext(AuthContext);
-
-  useEffect(() => {
-    onLoad();
-  }, [onLoad]);
 
   return (
     <Suspense fallback={<LoadingSpinner />}>
