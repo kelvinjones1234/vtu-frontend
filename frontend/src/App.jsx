@@ -1,4 +1,4 @@
-import { React, lazy, Suspense } from "react";
+import { React, lazy, Suspense, useState } from "react";
 import { BrowserRouter } from "react-router-dom";
 import AuthProvider from "./context/AuthenticationContext";
 import ProductProvider from "./context/ProductContext";
@@ -13,6 +13,8 @@ import LoadingSpinner from "./components/LoadingSpinner";
 const AppContent = lazy(() => import("./AppContent"));
 
 function App() {
+  const [isLoading, setIsLoading] = useState(true);
+
   return (
     <BrowserRouter>
       <GeneralProvider>
@@ -21,7 +23,7 @@ function App() {
             <WalletProvider>
               <div className="absolute top-0 left-0 w-full min-h-full bg-white dark:bg-dark-custom-gradient z-[-100]"></div>
               <ParticleComponent className="particles" />
-              <ScrollToTop />
+              {!isLoading && <ScrollToTop />}
               <ErrorBoundary>
                 <Suspense
                   fallback={
@@ -30,7 +32,7 @@ function App() {
                     </div>
                   }
                 >
-                  <AppContent />
+                  <AppContent onLoad={() => setIsLoading(false)} />
                 </Suspense>
               </ErrorBoundary>
             </WalletProvider>
