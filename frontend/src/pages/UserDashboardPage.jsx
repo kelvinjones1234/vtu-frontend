@@ -10,7 +10,7 @@ const UserDashboardPage = () => {
   const { authTokens, user } = useContext(AuthContext);
 
   return (
-    <div className="min-w-[273px] bg-dark-custom-gradient w-full z-[-2] absolute top-0">
+    <div className="min-w-[273px] bg-white dark:bg-dark-custom-gradient w-full z-[-2] absolute top-0">
       <GeneralNavbar />
       <UserDashBoard />
       <Footer />
