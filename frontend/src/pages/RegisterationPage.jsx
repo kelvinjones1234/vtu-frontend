@@ -127,7 +127,8 @@ const RegistrationPage = () => {
     if (Object.values(errorMessage).some((error) => error)) {
       const errorContainer = document.querySelector(".error-container");
       if (errorContainer) {
-        errorContainer.scrollIntoView({ behavior: "smooth" });
+        errorContainer.scrollIntoView({ behavior: "smooth", block: "start" });
+        window.scrollBy({ top: -190, behavior: "smooth" }); // Adjust the scroll position by -100 pixels
       }
     }
   }, [errorMessage]);
