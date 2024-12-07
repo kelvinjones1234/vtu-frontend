@@ -7,12 +7,6 @@ import logo from "../assets/4.svg";
 import SubmitButton from "../components/SubmitButton";
 import LeftSide from "../components/LeftSide";
 
-// const LeftSide = () => (
-//   <div className="left mt-4 leading-[3rem] relative hidden justify-center items-center sm:flex h-[364px] shadow-lg shadow-indigo-900/20 bg-opacity-50 rounded-2xl w-[20rem] bg-black text-white">
-//     <img src={simag} alt="Background" className="h-[365px]" />
-//   </div>
-// );
-
 const RegistrationPage = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [errorMessage, setErrorMessage] = useState({});
@@ -120,6 +114,24 @@ const RegistrationPage = () => {
     return Object.keys(newError).length === 0;
   };
 
+  useEffect(() => {
+    if (registerErrors) {
+      setErrorMessage((prev) => ({
+        ...prev,
+        ...registerErrors,
+      }));
+    }
+  }, [registerErrors]);
+
+  useEffect(() => {
+    if (Object.values(errorMessage).some((error) => error)) {
+      const errorContainer = document.querySelector(".error-container");
+      if (errorContainer) {
+        errorContainer.scrollIntoView({ behavior: "smooth" });
+      }
+    }
+  }, [errorMessage]);
+
   return (
     <div className="min-h-screen bg-dark-custom-gradient font-body_two z-5 pb-[3rem]">
       <div className="fixed inset-0 bg-bg_one bg-contain md:bg-cover bg-center bg-no-repeat"></div>
@@ -164,54 +176,60 @@ const RegistrationPage = () => {
               </p>
             </div>
 
+            {Object.values(errorMessage).some((error) => error) && (
+              <div className="mb-4 p-4 rounded-lg shadow-md flex items-start bg-red-50 border-l-4 border-red-500 error-container">
+                <div className="flex-shrink-0 mr-3 mt-0.5">
+                  <svg
+                    className="h-5 w-5 text-red-400"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </div>
+                <div className="flex-1">
+                  <p className="font-medium text-red-800">Error</p>
+                  <ul className="mt-1 text-sm text-red-700">
+                    {Object.values(errorMessage).map(
+                      (error, index) => error && <li key={index}>{error}</li>
+                    )}
+                  </ul>
+                </div>
+              </div>
+            )}
+
             <form onSubmit={handleSubmit} className="space-y-4 z-10">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {[
                   {
                     name: "first_name",
                     placeholder: "First Name",
-                    error:
-                      errorMessage.first_nameError &&
-                      errorMessage.first_nameError,
                   },
                   {
                     name: "last_name",
                     placeholder: "Last Name",
-                    error:
-                      errorMessage.last_nameError &&
-                      errorMessage.last_nameError,
                   },
                   {
                     name: "username",
                     placeholder: "Username",
-                    error:
-                      errorMessage.usernameError ||
-                      (registerErrors.username && registerErrors.username[0]),
                   },
                   {
                     name: "email",
                     placeholder: "Email address",
                     type: "email",
-                    // error: errorMessage.emailError && errorMessage.emailError,
-
-                    error:
-                      errorMessage.emailError ||
-                      (registerErrors.email && registerErrors.email[0]),
                   },
                   {
                     name: "phone_number",
                     placeholder: "Phone Number",
                     type: "tel",
-                    error:
-                      errorMessage.phone_numberError &&
-                      errorMessage.phone_numberError,
                   },
                   {
                     name: "transaction_pin",
                     placeholder: "4-Digit Transaction PIN",
-                    error:
-                      errorMessage.transaction_pinError &&
-                      errorMessage.transaction_pinError,
                   },
                   {
                     name: "password",
@@ -219,33 +237,21 @@ const RegistrationPage = () => {
                     type: showPassword ? "text" : "password",
                     toggleShow: () => setShowPassword(!showPassword),
                     show: showPassword,
-                    error:
-                      errorMessage.passwordError && errorMessage.passwordError,
                   },
                   {
                     name: "confirm_password",
                     placeholder: "Confirm Password",
                     type: showPassword ? "text" : "password",
-                    error:
-                      errorMessage.confirm_passwordError &&
-                      errorMessage.confirm_passwordError,
                   },
                 ].map((field) => (
                   <div key={field.name} className="relative">
-                    {field.error && (
-                      <p className="mt-1 text-sm text-red-500">{field.error}</p>
-                    )}
                     <input
                       type={field.type || "text"}
                       name={field.name}
                       placeholder={field.placeholder}
                       value={formData[field.name]}
                       onChange={handleChange}
-                      className={`w-full text-white py-3 px-4 bg-[#18202F] text-lg rounded-xl outline-none border ${
-                        field.error
-                          ? "border-red-500"
-                          : "border-gray-700 hover:border-gray-500 focus:border-link"
-                      } transition duration-300 ease-in-out`}
+                      className="w-full text-white py-3 px-4 bg-[#18202F] text-lg rounded-xl outline-none border border-gray-700 hover:border-gray-500 focus:border-link transition duration-300 ease-in-out"
                     />
 
                     {field.toggleShow && (
