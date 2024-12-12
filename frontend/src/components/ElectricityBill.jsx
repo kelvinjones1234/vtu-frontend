@@ -5,10 +5,10 @@ import { Link } from "react-router-dom";
 import { GeneralContext } from "../context/GeneralContext";
 
 const selectStyle =
-  "custom-select dark:bg-[#18202F] bg-white sm:w-[40vw] transition duration-450 ease-in-out mb-2 w-full text-primary dark:text-white py-1 px-4 h-[3.5rem] text-[1.2rem] rounded-2xl outline-0 border border-[#1CCEFF] dark:border-gray-700 dark:hover:border-black dark:focus:border-[#1CCEFF]";
+  "custom-select dark:bg-[#18202F] bg-white sm:w-[40vw] hover:transition hover:duration-450 ease-in-out mb-2 w-full text-primary dark:text-white py-1 px-4 h-[3.5rem] text-[1.2rem] rounded-2xl outline-0 border border-[#1CCEFF] dark:border-gray-700 dark:hover:border-black dark:focus:border-[#1CCEFF]";
 
 const inputStyle =
-  "dark:bg-[#18202F] bg-white sm:w-[40vw] transition duration-450 ease-in-out mb-2 w-full text-primary dark:text-white py-1 px-4 h-[3.5rem] text-[1.2rem] rounded-2xl outline-0 border border-[#1CCEFF] dark:border-gray-700 dark:hover:border-gray-500 dark:hover:border-black dark:focus:border-[#1CCEFF]";
+  "dark:bg-[#18202F] bg-white sm:w-[40vw] hover:transition hover:duration-450 ease-in-out mb-2 w-full text-primary dark:text-white py-1 px-4 h-[3.5rem] text-[1.2rem] rounded-2xl outline-0 border border-[#1CCEFF] dark:border-gray-700 dark:hover:border-gray-500 dark:hover:border-black dark:focus:border-[#1CCEFF]";
 
 const ElectricityBill = () => {
   const [phone, setPhone] = useState("");
@@ -132,7 +132,7 @@ const ElectricityBill = () => {
                   }`}
                 >
                   <div
-                    className={`button h-5 w-5 bg-white rounded-full absolute transition-all duration-500 ease-in-out ${
+                    className={`button h-5 w-5 bg-white rounded-full absolute hover:transition-all hover:duration-450 ease-in-out ${
                       bypassPhoneNumber ? "right-0" : "left-0"
                     }`}
                     onClick={handleBypass}
@@ -142,7 +142,7 @@ const ElectricityBill = () => {
             </div>
             <div>
               <button
-                className="text-[1rem] my-2 w-full outline-none text-white p-1 h-[3.2rem] bg-[#1CCEFF] text-black rounded-2xl bg-opacity-[90%] font-semibold hover:bg-sky-500 transition duration-450 ease-in-out"
+                className="text-[1rem] my-2 w-full outline-none text-white p-1 h-[3.2rem] bg-[#1CCEFF] text-black rounded-2xl bg-opacity-[90%] font-semibold hover:bg-sky-500 hover:transition hover:duration-450 ease-in-out"
                 type="submit"
               >
                 Purchase

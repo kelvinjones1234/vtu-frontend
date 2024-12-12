@@ -108,7 +108,7 @@ const UserDashBoard = () => {
             <Link
               key={item.id}
               to={`/user/dashboard/services/${item.category.toLowerCase()}`}
-              className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 flex flex-col items-center justify-center transition duration-300 ease-in-out transform hover:scale-105 hover:shadow-xl"
+              className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 flex flex-col items-center justify-center hover:transition hover:duration-300 hover:ease-in-out transform hover:scale-105 hover:shadow-xl"
             >
               <img
                 src={`https://madupay.pythonanywhere.com${item.image}`}

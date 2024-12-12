@@ -54,7 +54,7 @@ const GeneralNavbar = () => {
   return (
     <>
       <div
-        className={`px-4 lg:px-0 flex justify-between py-1 z-[10] fixed top-0 w-full transition-colors duration-200 ${
+        className={`px-4 lg:px-0 flex justify-between py-1 z-[10] fixed top-0 w-full hover:transition-colors hover:duration-200 ${
           isScrolled
             ? "dark:bg-gray-900 dark:bg-opacity-95 bg-opacity-95 bg-gray-50 shadow"
             : "bg-transparent"
@@ -77,7 +77,7 @@ const GeneralNavbar = () => {
           <div className="light-dark-mode hidden sm:block">
             <div
               onClick={handleThemeSettings}
-              className="justify-center py-[.5rem] gap-8 rounded-xl flex items-center bg-gray-200 hover:bg-gray-300 px-3 dark:bg-white dark:bg-opacity-20 dark:hover:bg-opacity-10 transition duration-300 ease-in-out cursor-pointer"
+              className="justify-center py-[.5rem] gap-8 rounded-xl flex items-center bg-gray-200 hover:bg-gray-300 px-3 dark:bg-white dark:bg-opacity-20 dark:hover:bg-opacity-10 hover:transition hover:duration-300 ease-in-out cursor-pointer"
             >
               <img src={darkMode ? dark : light} alt="" className="w-4" />
             </div>
@@ -85,7 +85,7 @@ const GeneralNavbar = () => {
         </div>
         <div className="right mt-1">
           <div className="small-screen flex items-center sm:hidden relative">
-            <div className="notification h-10 w-10 mr-9 grid relative items-center rounded-full bg-gray-200 hover:bg-gray-300 dark:bg-white dark:bg-opacity-20 grid relative justify-center items-center dark:hover:bg-opacity-10 transition duration-300 ease-in-out cursor-pointer">
+            <div className="notification h-10 w-10 mr-9 grid relative items-center rounded-full bg-gray-200 hover:bg-gray-300 dark:bg-white dark:bg-opacity-20 grid relative justify-center items-center dark:hover:bg-opacity-10 hover:transition hover:duration-300 ease-in-out cursor-pointer">
               <Link to={"/user/notifications"}>
                 <img src={notification} alt="" className="w-6" />
               </Link>

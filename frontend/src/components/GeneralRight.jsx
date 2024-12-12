@@ -20,7 +20,7 @@ const GeneralRight = () => {
             Godwin Praise
           </p>
           <div className="flex gap-2">
-            <div className="notification h-10 w-10 rounded-full bg-gray-200 hover:bg-gray-300 dark:bg-white dark:bg-opacity-20 grid relative justify-center items-center dark:hover:bg-opacity-10 transition duration-300 ease-in-out cursor-pointer">
+            <div className="notification h-10 w-10 rounded-full bg-gray-200 hover:bg-gray-300 dark:bg-white dark:bg-opacity-20 grid relative justify-center items-center dark:hover:bg-opacity-10 hover:transition hover:duration-300 ease-in-out cursor-pointer">
               <Link to={"/user/notifications"}>
                 <FaBell className="w-6 h-6" style={{ color: "#1CCEFF" }} />
               </Link>
@@ -30,7 +30,7 @@ const GeneralRight = () => {
                 </div>
               )}
             </div>
-            <div className="notification h-10 w-10 rounded-full bg-gray-200 hover:bg-gray-300 dark:bg-white dark:bg-opacity-20 justify-center flex items-center dark:hover:bg-opacity-10 transition duration-300 ease-in-out cursor-pointer">
+            <div className="notification h-10 w-10 rounded-full bg-gray-200 hover:bg-gray-300 dark:bg-white dark:bg-opacity-20 justify-center flex items-center dark:hover:bg-opacity-10 hover:transition hover:duration-300 ease-in-out cursor-pointer">
               <Link to={"/user/dashboard/profile"}>
                 <FaEdit className="w-6 h-6" style={{ color: "#1CCEFF" }} />
               </Link>

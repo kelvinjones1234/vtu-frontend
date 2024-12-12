@@ -19,10 +19,10 @@ import SuccessPopup from "./SuccessPopup";
 import axios from "axios";
 
 const selectStyle =
-  "custom-select dark:bg-[#18202F] bg-white sm:w-[40vw] transition duration-450 ease-in-out mb-3 w-full text-primary dark:text-white py-1 px-4 h-[3.5rem] text-[1.2rem] rounded-2xl outline-none border border-[#1CCEFF] dark:border-gray-700 dark:hover:border-black dark:focus:border-[#1CCEFF]";
+  "custom-select dark:bg-[#18202F] bg-white sm:w-[40vw] hover:transition hoveer:duration-450 hover:ease-in-out mb-3 w-full text-primary dark:text-white py-1 px-4 h-[3.5rem] text-[1.2rem] rounded-2xl outline-none border border-[#1CCEFF] dark:border-gray-700 dark:hover:border-black dark:focus:border-[#1CCEFF]";
 
 const inputStyle =
-  "dark:bg-[#18202F] bg-white sm:w-[40vw] transition duration-450 ease-in-out mb-3 w-full text-primary dark:text-white py-1 px-4 h-[3.5rem] text-[1.2rem] rounded-2xl outline-none border border-[#1CCEFF] dark:border-gray-700 dark:hover:border-gray-500 dark:hover:border-black dark:focus:border-[#1CCEFF]";
+  "dark:bg-[#18202F] bg-white sm:w-[40vw] hover:transition hoveer:duration-450 hover:ease-in-out mb-3 w-full text-primary dark:text-white py-1 px-4 h-[3.5rem] text-[1.2rem] rounded-2xl outline-none border border-[#1CCEFF] dark:border-gray-700 dark:hover:border-gray-500 dark:hover:border-black dark:focus:border-[#1CCEFF]";
 
 const errorInputStyle = "border-red-500 dark:border-red-700";
 
@@ -320,7 +320,7 @@ const Data = () => {
   const handleBypass = () => setBypassPhoneNumber((prev) => !prev);
 
   return (
-    <div className="bg-contain bg-no-repeat pt-[6rem] sm:bg-cover bg-center px-4 justify-center ss:px-[5rem] sm:px-[1rem] sm:flex gap-5 md:gap-12 lg:mx-[5rem]">
+    <div className="pt-[6rem] sm:bg-cover bg-center px-4 justify-center ss:px-[5rem] sm:px-[1rem] sm:flex gap-5 md:gap-12 lg:mx-[5rem]">
       <GeneralLeft />
       <div>
         <div>
@@ -489,13 +489,13 @@ const Data = () => {
               </p>
               <div className="flex items-center mr-3">
                 <div
-                  className={`h-5 w-10 rounded-full flex items-center relative cursor-pointer transition-colors duration-300 ease-in-out ${
+                  className={`h-5 w-10 rounded-full flex items-center relative cursor-pointer hover:transition-colors hoveer:duration-300 hover:ease-in-out ${
                     bypassPhoneNumber ? "bg-gray-600" : "bg-primary"
                   }`}
                   onClick={handleBypass}
                 >
                   <div
-                    className={`h-6 w-6 bg-white bg-gray-400 rounded-full absolute transform transition-transform duration-300 ease-in-out ${
+                    className={`h-6 w-6 bg-white bg-gray-400 rounded-full absolute transform hover:transition-transform hoveer:duration-300 hover:ease-in-out ${
                       bypassPhoneNumber
                         ? "translate-x-5"
                         : "translate-x-[-0.1rem]"
