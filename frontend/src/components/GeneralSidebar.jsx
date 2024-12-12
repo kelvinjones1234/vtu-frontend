@@ -19,7 +19,6 @@ import { AuthContext } from "../context/AuthenticationContext";
 import { GeneralContext } from "../context/GeneralContext";
 import dark from "../assets/dark.svg";
 import light from "../assets/light.svg";
-import logo from "../assets/4.svg";
 
 const GeneralSidebar = ({ generalMenuToggle, handleGeneralMenuToggle }) => {
   const [generalSideBarAuthToggle, setGeneralSideBarAuthToggle] =

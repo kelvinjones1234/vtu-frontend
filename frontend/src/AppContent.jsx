@@ -16,6 +16,8 @@ import TermsAndConditionsPage from "./pages/TermsAndConditionsPage";
 import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
 import NoAuthPrivacyPolicyPage from "./pages/NoAuthPrivacyPolicyPage";
 import NoAuthTermsAndConditionPage from "./pages/NoAuthTermsAndConditionPage";
+import FundWallet from "./components/FundWallet";
+import FundWalletPage from "./pages/FundWalletPage";
 // import LoadingSpinner from "./components/LoadingSpinner";
 
 const HomePage = lazy(() => import("./pages/HomePage"));
@@ -66,6 +68,7 @@ function AppContent() {
         <Route path="/user/dashboard" element={<UserDashboardPage />} />
         <Route path="/user/notifications" element={<NotificationPage />} />
         <Route path="/user/dashboard/services/data" element={<DataPage />} />
+        <Route path="/user/dashboard/fundwallet" element={<FundWalletPage />} />
         <Route
           path="/user/dashboard/services/airtime"
           element={<AirtimePage />}

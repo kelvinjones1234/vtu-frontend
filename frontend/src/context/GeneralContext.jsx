@@ -7,8 +7,22 @@ const GeneralProvider = ({ children }) => {
   const [darkMode, setDarkMode] = useState(false);
   const [theme, setTheme] = useState("dark");
   const [loading, setLoading] = useState(false);
+  const [transferForm, setTransferForm] = useState(false);
+  const [servicesDropDown, setServicesDropDown] = useState(false);
 
+  const handleServicesDropDowns = () => {
+    setServicesDropDown((previous) => !previous);
+    if (transferForm) {
+      setTransferForm(false);
+    }
+  };
 
+  const handleTransferForm = () => {
+    setTransferForm((previous) => !previous);
+    if (servicesDropDown) {
+      setServicesDropDown(false);
+    }
+  };
 
   const handleThemeSettings = () => {
     const newTheme = theme === "dark" ? "light" : "dark";
@@ -95,15 +109,19 @@ const GeneralProvider = ({ children }) => {
     return networkPrefixes[prefix] || "Unknown Network";
   };
 
-  
-
   const contextData = {
     darkMode: darkMode,
     theme: theme,
     api: api,
     loading: loading,
     networkPrefixes: networkPrefixes,
-    
+    transferForm,
+    servicesDropDown,
+    setServicesDropDown,
+    handleServicesDropDowns,
+    setTransferForm,
+    handleTransferForm,
+
     detectNetwork: detectNetwork,
     setLoading: setLoading,
     setTheme: setTheme,

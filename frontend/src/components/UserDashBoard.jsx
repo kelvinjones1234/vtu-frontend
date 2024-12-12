@@ -5,27 +5,26 @@ import GeneralLeft from "./GeneralLeft";
 import GeneralRight from "./GeneralRight";
 import { ProductContext } from "../context/ProductContext";
 import { useWallet } from "../context/WalletContext";
-import FundWalletModal from "./FundWalletModal";
 import { AuthContext } from "../context/AuthenticationContext";
+import { GeneralContext } from "../context/GeneralContext";
 
 const UserDashBoard = () => {
   const { productData } = useContext(ProductContext);
   const { walletData, loading, error } = useWallet();
   const { user } = useContext(AuthContext);
+  const {
+    handleTransferForm,
+    setTransferForm,
+    transferForm,
+    servicesDropDown,
+    setServicesDropDown,
+    handleServicesDropDowns,
+  } = useContext(GeneralContext);
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [isBalanceHidden, setIsBalanceHidden] = useState(false);
 
   const toggleBalanceVisibility = () => {
     setIsBalanceHidden(!isBalanceHidden);
-  };
-
-  const handleOpenModal = () => {
-    setIsModalOpen(true);
-  };
-
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
   };
 
   const capitalizedFirstName = useMemo(() => {
@@ -80,12 +79,11 @@ const UserDashBoard = () => {
             <p className="text-2xl sm:text-[1.2rem] md:text-[2rem] font-bold">
               ₦ {isBalanceHidden ? "****" : formattedBalance}
             </p>
-            <button
-              onClick={handleOpenModal}
-              className="bg-green-500 hover:bg-green-600 text-white font-semibold py-1 sm:py-1 md:py-2 px-3 rounded-full transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50"
-            >
-              + Fund Wallet
-            </button>
+            <Link to={"/user/dashboard/fundwallet"}>
+              <button className="bg-green-500 hover:bg-green-600 text-black font-semibold py-1 sm:py-1 md:py-2 px-3 rounded-full transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50">
+                + Fund Wallet
+              </button>
+            </Link>
           </div>
         </div>
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6  text-primary dark:text-white">
@@ -97,7 +95,10 @@ const UserDashBoard = () => {
             <button className="bg-blue-500 text-[.8rem] hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-full transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
               Create Shortcut
             </button>
-            <button className="border text-[.8rem] border-green-500 text-green-500 font-semibold py-2 px-4 rounded-full transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50">
+            <button
+              onClick={handleTransferForm}
+              className="border text-[.8rem] border-green-500 text-green-500 font-semibold py-2 px-4 rounded-full transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50"
+            >
               Transfer Credit
             </button>
           </div>
@@ -127,7 +128,6 @@ const UserDashBoard = () => {
         </div>
       </div>
       <GeneralRight />
-      {isModalOpen && <FundWalletModal onClose={handleCloseModal} />}
     </div>
   );
 };

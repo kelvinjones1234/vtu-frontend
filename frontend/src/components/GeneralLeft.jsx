@@ -3,6 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import { useContext, React, useEffect, useState } from "react";
 import { ProductContext } from "../context/ProductContext";
 import { motion } from "framer-motion";
+import { GeneralContext } from "../context/GeneralContext";
 import {
   FaHome,
   FaExchangeAlt,
@@ -18,28 +19,36 @@ import Transfer from "./Transfer";
 const GeneralLeft = () => {
   const { logoutUser } = useContext(AuthContext);
   const { productData } = useContext(ProductContext);
-  const [servicesDropDown, setServicesDropDown] = useState(false);
+  const {
+    handleTransferForm,
+    setTransferForm,
+    transferForm,
+    servicesDropDown,
+    setServicesDropDown,
+    handleServicesDropDowns,
+  } = useContext(GeneralContext);
+  // const [servicesDropDown, setServicesDropDown] = useState(false);
   const location = useLocation();
   const [activePath, setActivePath] = useState(location.pathname);
-  const [transferForm, setTransferForm] = useState(false);
+  // const [transferForm, setTransferForm] = useState(false);
 
   useEffect(() => {
     setActivePath(location.pathname);
   }, [location.pathname]);
 
-  const handleServicesDropDowns = () => {
-    setServicesDropDown((previous) => !previous);
-    if (transferForm) {
-      setTransferForm(false);
-    }
-  };
+  // const handleServicesDropDowns = () => {
+  //   setServicesDropDown((previous) => !previous);
+  //   if (transferForm) {
+  //     setTransferForm(false);
+  //   }
+  // };
 
-  const handleTransferForm = () => {
-    setTransferForm((previous) => !previous);
-    if (servicesDropDown) {
-      setServicesDropDown(false);
-    }
-  };
+  // const handleTransferForm = () => {
+  //   setTransferForm((previous) => !previous);
+  //   if (servicesDropDown) {
+  //     setServicesDropDown(false);
+  //   }
+  // };
 
   const handleDropDownClose = () => {
     setServicesDropDown(false);
