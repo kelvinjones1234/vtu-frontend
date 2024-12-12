@@ -84,7 +84,7 @@ const GeneralSidebar = ({ generalMenuToggle, handleGeneralMenuToggle }) => {
         <div className="h-full overflow-y-auto pr-[1rem]">
           <ul className="w-[13rem] font-bold">
             <Link to={"/user/dashboard/profile"}>
-              <div className="h-[4rem] w-52 bg-gray-300 hover:bg-opacity-75 dark:hover:bg-opacity-25 transition-all duration-400 ease-in-out dark:bg-white dark:bg-opacity-20 my-12 rounded-xl flex items-center font-bold">
+              <div className="h-[4rem] w-52 bg-gray-300 hover:bg-opacity-75 dark:hover:bg-opacity-25 hover:transition-all hover:duration-400 ease-in-out dark:bg-white dark:bg-opacity-20 my-12 rounded-xl flex items-center font-bold">
                 <div className="h-10 w-10 bg-sky-500 rounded-full flex justify-center items-center m-3">
                   <p>P</p>
                 </div>
@@ -101,7 +101,7 @@ const GeneralSidebar = ({ generalMenuToggle, handleGeneralMenuToggle }) => {
                 className={`mt-4 items-center flex py-3 px-2 rounded-xl ${
                   activePath === "/user/dashboard"
                     ? "dark:bg-white dark:bg-opacity-20 bg-gray-300"
-                    : "dark:hover:bg-white dark:hover:bg-opacity-5 transition duration-400 ease-in-out hover:bg-gray-100"
+                    : "dark:hover:bg-white dark:hover:bg-opacity-5 hover:transition hover:duration-400 ease-in-out hover:bg-gray-100"
                 }`}
               >
                 <Link to={"/user/dashboard"} className="flex items-center">
@@ -116,7 +116,7 @@ const GeneralSidebar = ({ generalMenuToggle, handleGeneralMenuToggle }) => {
                 className={`mt-4 items-center flex py-3 px-2 rounded-xl cursor-pointer ${
                   activePath === "/user/transfer"
                     ? "bg-white bg-opacity-20"
-                    : "dark:hover:bg-white dark:hover:bg-opacity-5 transition duration-400 ease-in-out hover:bg-gray-100"
+                    : "dark:hover:bg-white dark:hover:bg-opacity-5 hover:transition hover:duration-400 ease-in-out hover:bg-gray-100"
                 }`}
                 onClick={handleTransferForm}
               >
@@ -138,7 +138,7 @@ const GeneralSidebar = ({ generalMenuToggle, handleGeneralMenuToggle }) => {
                   activePath === "/user/dashboard/services/airtime" ||
                   activePath === "/user/dashboard/services/cable subscription"
                     ? "bg-white bg-opacity-20"
-                    : "dark:hover:bg-white dark:hover:bg-opacity-5 hover:bg-gray-100 transition duration-400 ease-in-out"
+                    : "dark:hover:bg-white dark:hover:bg-opacity-5 hover:bg-gray-100 hover:transition hover:duration-400 ease-in-out"
                 }`}
               >
                 <FaCog
@@ -185,7 +185,7 @@ const GeneralSidebar = ({ generalMenuToggle, handleGeneralMenuToggle }) => {
               className={`mt-4 items-center py-3 px-2 rounded-xl ${
                 activePath === "/user/dashboard/transactions"
                   ? "dark:bg-white dark:bg-opacity-20 bg-gray-300"
-                  : "dark:hover:bg-white dark:hover:bg-opacity-5 transition duration-400 ease-in-out hover:bg-gray-100"
+                  : "dark:hover:bg-white dark:hover:bg-opacity-5 hover:transition hover:duration-400 ease-in-out hover:bg-gray-100"
               }`}
             >
               <Link

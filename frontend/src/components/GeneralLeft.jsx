@@ -67,7 +67,7 @@ const GeneralLeft = () => {
           className={`py-[.7rem] rounded-xl font-bold text-white px-4 mt-4 max-w-[13rem] sm:mt-0 ${
             activePath === "/user/dashboard"
               ? "dark:bg-white dark:bg-opacity-20 bg-gray-300"
-              : "dark:hover:bg-white dark:hover:bg-opacity-5 transition duration-400 ease-in-out hover:bg-gray-100"
+              : "dark:hover:bg-white dark:hover:bg-opacity-5 hover:transition hover:duration-400 ease-in-out hover:bg-gray-100"
           }`}
           onClick={handleDropDownClose}
           whileHover={{ scale: 0.95 }}
@@ -84,7 +84,7 @@ const GeneralLeft = () => {
           className={`py-[.7rem] gap-3 rounded-xl flex items-center max-w-[13rem] font-bold text-white px-4 mt-4 ${
             activePath === "/user/transfer"
               ? "bg-white bg-opacity-20"
-              : "dark:hover:bg-white dark:hover:bg-opacity-5 transition duration-400 ease-in-out hover:bg-gray-100"
+              : "dark:hover:bg-white dark:hover:bg-opacity-5 hover:transition hover:duration-400 ease-in-out hover:bg-gray-100"
           }`}
           whileHover={{ scale: 0.95 }}
           whileTap={{ scale: 0.95 }}
@@ -112,7 +112,7 @@ const GeneralLeft = () => {
             activePath === "/user/dashboard/services/airtime" ||
             activePath === "/user/dashboard/services/cable subscription"
               ? "bg-white bg-opacity-20"
-              : "dark:hover:bg-white dark:hover:bg-opacity-5 hover:bg-gray-100 transition duration-400 ease-in-out"
+              : "dark:hover:bg-white dark:hover:bg-opacity-5 hover:bg-gray-100 hover:transition hover:duration-400 ease-in-out"
           }`}
           whileHover={{ scale: 0.95 }}
           whileTap={{ scale: 0.95 }}
@@ -171,7 +171,7 @@ const GeneralLeft = () => {
           className={`py-[.7rem] gap-3 rounded-xl max-w-[13rem] flex items-center font-bold text-white px-4 mt-4 ${
             activePath === "/user/dashboard/transactions"
               ? "dark:bg-white dark:bg-opacity-20 bg-gray-300"
-              : "dark:hover:bg-white dark:hover:bg-opacity-5 transition duration-400 ease-in-out hover:bg-gray-100"
+              : "dark:hover:bg-white dark:hover:bg-opacity-5 hover:transition hover:duration-400 ease-in-out hover:bg-gray-100"
           }`}
           onClick={handleDropDownClose}
           whileHover={{ scale: 0.95 }}
@@ -188,7 +188,7 @@ const GeneralLeft = () => {
           className={`py-[.7rem] gap-3 rounded-xl max-w-[13rem] flex items-center font-bold text-white px-4 mt-4 ${
             activePath === "/dashboard/about"
               ? "dark:bg-white dark:bg-opacity-20 bg-gray-300"
-              : "dark:hover:bg-white dark:hover:bg-opacity-5 transition duration-400 ease-in-out hover:bg-gray-100"
+              : "dark:hover:bg-white dark:hover:bg-opacity-5 hover:transition hover:duration-400 ease-in-out hover:bg-gray-100"
           }`}
           onClick={handleDropDownClose}
           whileHover={{ scale: 0.95 }}
@@ -200,7 +200,7 @@ const GeneralLeft = () => {
           </Link>
         </motion.div>
         <motion.div
-          className="dark:hover:bg-white dark:hover:bg-opacity-5 hover:bg-gray-100 max-w-[13rem] transition duration-400 ease-in-out py-[.7rem] gap-3 rounded-xl flex items-center font-bold text-white px-4 mt-4"
+          className="dark:hover:bg-white dark:hover:bg-opacity-5 hover:bg-gray-100 max-w-[13rem] hover:transition hover:duration-400 ease-in-out py-[.7rem] gap-3 rounded-xl flex items-center font-bold text-white px-4 mt-4"
           onClick={logoutUser}
           whileHover={{ scale: 0.95 }}
           whileTap={{ scale: 0.95 }}
