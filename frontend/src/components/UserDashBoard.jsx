@@ -1,4 +1,4 @@
-import React, { useContext, useState, useMemo } from "react";
+import React, { useContext, useState, useMemo, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { FaAngleRight, FaEye, FaEyeSlash } from "react-icons/fa6";
 import GeneralLeft from "./GeneralLeft";
@@ -20,25 +20,37 @@ const UserDashBoard = () => {
 
   const [isBalanceHidden, setIsBalanceHidden] = useState(false);
 
-  const toggleBalanceVisibility = () => {
-    setIsBalanceHidden(!isBalanceHidden);
-  };
+  // Optimize context values with useMemo
+  const capitalizedFirstName = useMemo(() => 
+    user?.first_name
+      ? user.first_name.charAt(0).toUpperCase() + user.first_name.slice(1).toLowerCase()
+      : ""
+  , [user]);
 
-  const capitalizedFirstName = useMemo(() => {
-    return user?.first_name
-      ? user.first_name.charAt(0).toUpperCase() +
-          user.first_name.slice(1).toLowerCase()
-      : "";
-  }, [user]);
-
-  const formattedBalance = useMemo(() => {
-    return walletData?.balance
+  const formattedBalance = useMemo(() => 
+    walletData?.balance
       ? Number(walletData.balance).toLocaleString("en-US", {
           minimumFractionDigits: 2,
           maximumFractionDigits: 2,
         })
-      : "0.00";
-  }, [walletData]);
+      : "0.00"
+  , [walletData]);
+
+  // Memoize toggle function to prevent unnecessary re-renders
+  const toggleBalanceVisibility = useCallback(() => {
+    setIsBalanceHidden(prev => !prev);
+  }, []);
+
+  // Handle transfer with performance optimization
+  const handleTransfer = useCallback((e) => {
+    const isMobile = window.innerWidth < 767;
+    if (isMobile) {
+      handleMobileMenuToggle(e);
+      handleMobileTransferForm(e);
+    } else {
+      handleTransferForm(e);
+    }
+  }, [handleMobileMenuToggle, handleMobileTransferForm, handleTransferForm]);
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
@@ -47,12 +59,15 @@ const UserDashBoard = () => {
     <div className="pt-[6rem] sm:bg-cover px-4 justify-center ss:px-[5rem] sm:px-[1rem] sm:flex gap-5 md:gap-12 lg:mx-[5rem]">
       <GeneralLeft />
       <div className="mx-auto">
+        {/* Mobile Header */}
         <div className="text-primary text-[1.5rem] font-bold dark:text-white py-8 text-center xs:hidden">
           Hi,{" "}
           <span className="bg-gradient-to-r from-purple-400 via-sky-500 to-red-500 text-transparent bg-clip-text">
             {capitalizedFirstName}!
           </span>
         </div>
+        
+        {/* Wallet Balance Card */}
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg mb-6 px-3 py-6 text-primary dark:text-white">
           <div className="flex justify-between items-center mb-4 text-sm sm:text-[.7rem] md:text-[1rem]">
             <h2 className="flex items-center space-x-2">
@@ -76,14 +91,16 @@ const UserDashBoard = () => {
             <p className="text-2xl sm:text-[1.2rem] md:text-[2rem] font-bold">
               ₦ {isBalanceHidden ? "****" : formattedBalance}
             </p>
-            <Link to={"/user/dashboard/fundwallet"}>
+            <Link to="/user/dashboard/fundwallet">
               <button className="bg-green-500 hover:bg-green-600 text-black font-semibold py-1 sm:py-1 md:py-2 px-3 rounded-full transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50">
                 + Fund Wallet
               </button>
             </Link>
           </div>
         </div>
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6  text-primary dark:text-white">
+        
+        {/* Actions Card */}
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 text-primary dark:text-white">
           <p className="mb-4">
             Create shortcuts for frequent activities or transfer atom credit to
             other users with their phone number.
@@ -93,17 +110,7 @@ const UserDashBoard = () => {
               Create Shortcut
             </button>
             <button
-              onClick={(e) => {
-                // Check screen width
-                if (window.innerWidth >= 767) {
-                  // Desktop: Only handle transfer form
-                  handleTransferForm(e);
-                } else {
-                  // Mobile: First toggle mobile menu, then handle transfer form
-                  handleMobileMenuToggle(e);
-                  handleMobileTransferForm(e);
-                }
-              }}
+              onClick={handleTransfer}
               className="border text-[.8rem] border-green-500 text-green-500 font-semibold py-2 px-4 rounded-full transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50"
             >
               Transfer Credit
@@ -111,6 +118,7 @@ const UserDashBoard = () => {
           </div>
         </div>
 
+        {/* Product Grid */}
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 my-6">
           {productData.map((item) => (
             <Link
@@ -119,9 +127,10 @@ const UserDashBoard = () => {
               className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 flex flex-col items-center justify-center hover:transition hover:duration-300 hover:ease-in-out transform hover:scale-105 hover:shadow-xl"
             >
               <img
-                src={`https://madupay.pythonanywhere.com${item.image}`}
-                alt={item.name}
+                src={`http://127.0.0.1:8000/${item.image}`}
+                alt={item.category}
                 className="h-12 w-12 object-contain mb-2"
+                fetchpriority="high" // Prioritize image loading
               />
               <p className="text-sm text-center text-primary dark:text-white">
                 {item.category}
@@ -129,6 +138,8 @@ const UserDashBoard = () => {
             </Link>
           ))}
         </div>
+        
+        {/* Premium Service Button */}
         <div className="flex justify-center mt-[4rem]">
           <button className="dark:bg-white bg-primary py-3 px-12 rounded-[2rem] dark:text-primary text-white font-bold shadow-indigo-500/30">
             Get Premium Service

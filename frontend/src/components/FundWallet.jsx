@@ -2,6 +2,7 @@ import React, { useMemo, useState } from "react";
 import { Copy, CheckCircle } from "lucide-react";
 import GeneralLeft from "./GeneralLeft";
 import GeneralRight from "./GeneralRight";
+import { Link } from "react-router-dom";
 
 const sampleData = {
   requestSuccessful: true,
@@ -80,6 +81,16 @@ const FundWallet = () => {
   return (
     <div className="mt-[6rem] sm:bg-cover bg-center px-4 justify-center ss:px-[5rem] sm:px-[1rem] sm:flex gap-5 md:gap-12 lg:mx-[5rem]">
       <GeneralLeft />
+      <div>
+          <h2 className="font-bold font-heading_two text-primary dark:text-white text-[1.5rem]">
+            Fund Wallet
+          </h2>
+          <div className="flex items-center text-primary dark:text-gray-100 py-4 font-semibold">
+            <Link to={"/user/dashboard"}>Dashboard</Link>{" "}
+            <div className="h-1 w-1 mx-5 bg-white rounded-full"></div>
+            <span className="text-gray-500">Fund Wallet</span>
+          </div>
+        </div>
       <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8">
         <h1 className="text-2xl font-bold text-primary dark:text-white text-center mb-6">
           Linked Bank Accounts for Automated Transfer

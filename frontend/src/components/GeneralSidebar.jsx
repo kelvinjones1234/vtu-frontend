@@ -18,7 +18,6 @@ import dark from "../assets/dark.svg";
 import light from "../assets/light.svg";
 
 const GeneralSidebar = () => {
-  // const [mobileTransferForm, setMobileTransferForm] = useState(false);
   const {
     mobileMenuToggle,
     handleMobileMenuToggle,
@@ -26,6 +25,8 @@ const GeneralSidebar = () => {
     handleGeneralSideBarAuthToggle,
     handleMobileTransferForm,
     mobileTransferForm,
+    handleThemeSettings,
+    darkMode,
   } = useContext(GeneralContext);
 
   useEffect(() => {
@@ -33,9 +34,15 @@ const GeneralSidebar = () => {
   }, [location.pathname]);
 
   const { productData } = useContext(ProductContext);
-  const { handleThemeSettings, darkMode } = useContext(GeneralContext);
   const { logoutUser, user } = useContext(AuthContext);
   const [activePath, setActivePath] = useState(location.pathname);
+
+  // Function to handle menu item click and close the mobile menu
+  const handleMenuItemClick = () => {
+    if (mobileMenuToggle) {
+      handleMobileMenuToggle();
+    }
+  };
 
   return (
     <div>
@@ -53,8 +60,7 @@ const GeneralSidebar = () => {
       >
         <div className="flex items-center justify-between mr-9">
           <div className="flex items-center">
-            {/* <img src={logo} alt="" className="h-7 mb-" /> */}
-            <Link to={"/"}>
+            <Link to={"/"} onClick={handleMenuItemClick}>
               <div className="logo font-heading_one text-transparent bg-clip-text pr-2 text-[.8rem] rounded-[.5rem] font-bold bg-gradient-to-r from-purple-400 via-sky-500 to-red-500 border-white">
                 MaduConnect
               </div>
@@ -71,18 +77,18 @@ const GeneralSidebar = () => {
         </div>
 
         <div className="h-full overflow-y-auto pr-[1rem]">
-          <ul className="w-[13rem] font-bold">
-            <Link to={"/user/dashboard/profile"}>
+          <ul className="w-[13rem]">
+            <Link to={"/user/dashboard/profile"} onClick={handleMenuItemClick}>
               <div className="h-[4rem] w-52 bg-gray-300 hover:bg-opacity-75 dark:hover:bg-opacity-25 hover:transition-all hover:duration-400 ease-in-out dark:bg-white dark:bg-opacity-20 my-12 rounded-xl flex items-center font-bold">
                 <div className="h-10 w-10 bg-sky-500 rounded-full flex justify-center items-center m-3">
                   <p>P</p>
                 </div>
-                <p>
-                  {user.first_name.toUpperCase()} <br />
+                <div className="text-[.8rem]">
+                  <p className="underline">{user.first_name.toUpperCase()}</p>
                   <span className="text-[.7rem] font-light">
                     {user.phone_number}
                   </span>
-                </p>
+                </div>
               </div>
             </Link>
             <ul>
@@ -93,7 +99,11 @@ const GeneralSidebar = () => {
                     : "dark:hover:bg-white dark:hover:bg-opacity-5 hover:transition hover:duration-400 ease-in-out hover:bg-gray-100"
                 }`}
               >
-                <Link to={"/user/dashboard"} className="flex items-center">
+                <Link
+                  to={"/user/dashboard"}
+                  className="flex items-center"
+                  onClick={handleMenuItemClick}
+                >
                   <FaHome
                     className="h-[1.2rem] ml-[.2rem] mr-[1rem]"
                     style={{ color: "#1CCEFF" }}
@@ -107,7 +117,9 @@ const GeneralSidebar = () => {
                     ? "bg-white bg-opacity-20"
                     : "dark:hover:bg-white dark:hover:bg-opacity-5 hover:transition hover:duration-400 ease-in-out hover:bg-gray-100"
                 }`}
-                onClick={handleMobileTransferForm}
+                onClick={() => {
+                  handleMobileTransferForm();
+                }}
               >
                 <FaExchangeAlt
                   className="h-[1.2rem] w-[1.1rem] ml-[.2rem] mr-[1rem]"
@@ -124,7 +136,9 @@ const GeneralSidebar = () => {
                 <Transfer />
               </div>
               <li
-                onClick={handleGeneralSideBarAuthToggle}
+                onClick={() => {
+                  handleGeneralSideBarAuthToggle();
+                }}
                 className={`flex py-3 mt-4 py-3 items-center px-2 rounded-xl cursor-pointer ${
                   activePath === "/user/dashboard/services/data" ||
                   activePath === "/user/dashboard/services/airtime" ||
@@ -165,6 +179,7 @@ const GeneralSidebar = () => {
                     >
                       <Link
                         to={`/user/dashboard/services/${item.category.toLowerCase()}`}
+                        onClick={handleMenuItemClick}
                       >
                         {item.category.toLowerCase()}
                       </Link>
@@ -183,6 +198,7 @@ const GeneralSidebar = () => {
               <Link
                 to={"/user/dashboard/transactions"}
                 className="flex items-center gap-[.9rem]"
+                onClick={handleMenuItemClick}
               >
                 <FaHistory
                   className="h-[1.2rem] ml-[.2rem]"
@@ -192,7 +208,11 @@ const GeneralSidebar = () => {
               </Link>
             </li>
             <li className="mt-4 py-3 px-2 rounded-xl">
-              <Link to={"/dashboard/about"} className="items-center flex">
+              <Link
+                to={"/dashboard/about"}
+                className="items-center flex"
+                onClick={handleMenuItemClick}
+              >
                 <FaInfoCircle
                   className="h-[1.2rem] w-[1.1rem] ml-[.2rem] mr-[1rem]"
                   style={{ color: "#1CCEFF" }}
@@ -201,8 +221,11 @@ const GeneralSidebar = () => {
               </Link>
             </li>
             <li
-              className="mb-10 mt-4 items-center flex  py-3 px-2 rounded-xl cursor-pointer"
-              onClick={logoutUser}
+              className="mb-10 mt-4 items-center flex py-3 px-2 rounded-xl cursor-pointer"
+              onClick={() => {
+                logoutUser();
+                handleMenuItemClick();
+              }}
             >
               <FaSignOutAlt
                 className="h-[1.2rem] w-[1.1rem] ml-[.2rem] mr-[1rem]"

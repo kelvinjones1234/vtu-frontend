@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState, useContext } from "react";
+import { createContext, useEffect, useState, useContext, useMemo, useCallback } from "react";
 import { GeneralContext } from "./GeneralContext";
 import { AuthContext } from "./AuthenticationContext";
 
@@ -18,12 +18,11 @@ const ProductProvider = ({ children }) => {
   const [terms, setTerms] = useState("");
   const [policy, setPolicy] = useState("");
   const [about, setAbout] = useState("");
-
   const [apiSettings, setApiSettings] = useState([]);
   const [activeApi, setActiveApi] = useState(null);
 
   const { api } = useContext(GeneralContext);
-  const { authTokens, loginUser } = useContext(AuthContext);
+  const { authTokens } = useContext(AuthContext);
 
   useEffect(() => {
     if (apiSettings && Array.isArray(apiSettings)) {
@@ -36,7 +35,7 @@ const ProductProvider = ({ children }) => {
     }
   }, [apiSettings, activeApi]);
 
-  const fetchNotifications = async () => {
+  const fetchNotifications = useCallback(async () => {
     if (!authTokens) return; // Exit if authTokens is null
 
     setIsLoading(true);
@@ -58,66 +57,66 @@ const ProductProvider = ({ children }) => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [authTokens, api]);
+
+  const fetchData = useCallback(async () => {
+    try {
+      const response = await api.get("combined-data/");
+      const data = response.data;
+      setDataNetworks(data.dataNetworks);
+      setProductData(data.productData);
+      setAirtimeNetworks(data.airtimeNetworks);
+      setCableCategories(data.cableCategories);
+      setTerms(data.terms);
+      setPolicy(data.policy);
+      setAbout(data.about);
+      setApiSettings(data.apiSettings);
+    } catch (error) {
+      console.error("Error fetching combined data:", error);
+    }
+  }, [api]);
 
   useEffect(() => {
-    const fetchData = async () => {
-      // if (!authTokens) return; // Exit if authTokens is null
-
-      try {
-        const response = await api.get("combined-data/");
-        const data = response.data;
-        setDataNetworks(data.dataNetworks);
-        setProductData(data.productData);
-        setAirtimeNetworks(data.airtimeNetworks);
-        setCableCategories(data.cableCategories);
-        setTerms(data.terms);
-        setPolicy(data.policy);
-        setAbout(data.about);
-        setApiSettings(data.apiSettings);
-      } catch (error) {
-        console.error("Error fetching combined data:", error);
-      }
-    };
-
     fetchData();
     fetchNotifications();
-  }, []); // Now it checks both loginUser and authTokens
+  }, [fetchData, fetchNotifications]);
 
-  console.log(terms);
-  const handleMarkAsRead = async (id) => {
-    if (!authTokens) return; // Exit if authTokens is null
+  const handleMarkAsRead = useCallback(
+    async (id) => {
+      if (!authTokens) return; // Exit if authTokens is null
 
-    try {
-      await api.patch(
-        `notifications/${id}/`,
-        { is_read: true },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${authTokens.access}`,
-          },
-        }
-      );
-      setNotifications((prevNotifications) =>
-        prevNotifications.map((notification) =>
-          notification.id === id
-            ? { ...notification, is_read: true }
-            : notification
-        )
-      );
-      setUnreadCount((prevCount) => prevCount - 1);
-      setAllRead(unreadCount - 1 === 0);
-      setSuccessMessage("Notification marked as read.");
-      clearMessageAfterTimeout(setSuccessMessage);
-    } catch (error) {
-      console.error("Error marking notification as read:", error);
-      setErrorMessage("Failed to mark notification as read.");
-      clearMessageAfterTimeout(setErrorMessage);
-    }
-  };
+      try {
+        await api.patch(
+          `notifications/${id}/`,
+          { is_read: true },
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${authTokens.access}`,
+            },
+          }
+        );
+        setNotifications((prevNotifications) =>
+          prevNotifications.map((notification) =>
+            notification.id === id
+              ? { ...notification, is_read: true }
+              : notification
+          )
+        );
+        setUnreadCount((prevCount) => prevCount - 1);
+        setAllRead(unreadCount - 1 === 0);
+        setSuccessMessage("Notification marked as read.");
+        clearMessageAfterTimeout(setSuccessMessage);
+      } catch (error) {
+        console.error("Error marking notification as read:", error);
+        setErrorMessage("Failed to mark notification as read.");
+        clearMessageAfterTimeout(setErrorMessage);
+      }
+    },
+    [authTokens, api, unreadCount]
+  );
 
-  const handleMarkAllAsRead = async () => {
+  const handleMarkAllAsRead = useCallback(async () => {
     if (!authTokens) return; // Exit if authTokens is null
 
     try {
@@ -154,13 +153,13 @@ const ProductProvider = ({ children }) => {
       setErrorMessage("Failed to mark all notifications as read.");
       clearMessageAfterTimeout(setErrorMessage);
     }
-  };
+  }, [authTokens, api, notifications]);
 
-  const clearMessageAfterTimeout = (setMessage) => {
+  const clearMessageAfterTimeout = useCallback((setMessage) => {
     setTimeout(() => setMessage(""), 3000); // Clear message after 3 seconds
-  };
+  }, []);
 
-  const contextData = {
+  const contextData = useMemo(() => ({
     fetchNotifications,
     handleMarkAsRead,
     handleMarkAllAsRead,
@@ -178,10 +177,25 @@ const ProductProvider = ({ children }) => {
     productData,
     airtimeNetworks,
     cableCategories,
-  };
-
-  console.log("active api", activeApi);
-  console.log(policy);
+  }), [
+    fetchNotifications,
+    handleMarkAsRead,
+    handleMarkAllAsRead,
+    about,
+    activeApi,
+    policy,
+    terms,
+    notifications,
+    unreadCount,
+    allRead,
+    isLoading,
+    errorMessage,
+    successMessage,
+    dataNetworks,
+    productData,
+    airtimeNetworks,
+    cableCategories,
+  ]);
 
   return (
     <ProductContext.Provider value={contextData}>
