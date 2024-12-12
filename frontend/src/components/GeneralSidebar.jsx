@@ -9,9 +9,6 @@ import {
   FaSignOutAlt,
   FaChevronRight,
   FaChevronDown,
-  FaMoon,
-  FaSun,
-  FaUser,
 } from "react-icons/fa";
 import { ProductContext } from "../context/ProductContext";
 import Transfer from "./Transfer";
@@ -20,9 +17,16 @@ import { GeneralContext } from "../context/GeneralContext";
 import dark from "../assets/dark.svg";
 import light from "../assets/light.svg";
 
-const GeneralSidebar = ({ generalMenuToggle, handleGeneralMenuToggle }) => {
-  const [generalSideBarAuthToggle, setGeneralSideBarAuthToggle] =
-    useState(false);
+const GeneralSidebar = () => {
+  // const [mobileTransferForm, setMobileTransferForm] = useState(false);
+  const {
+    mobileMenuToggle,
+    handleMobileMenuToggle,
+    generalSideBarAuthToggle,
+    handleGeneralSideBarAuthToggle,
+    handleMobileTransferForm,
+    mobileTransferForm,
+  } = useContext(GeneralContext);
 
   useEffect(() => {
     setActivePath(location.pathname);
@@ -32,33 +36,18 @@ const GeneralSidebar = ({ generalMenuToggle, handleGeneralMenuToggle }) => {
   const { handleThemeSettings, darkMode } = useContext(GeneralContext);
   const { logoutUser, user } = useContext(AuthContext);
   const [activePath, setActivePath] = useState(location.pathname);
-  const [transferForm, setTransferForm] = useState(false);
-
-  const handleGeneralSideBarAuthToggle = () => {
-    setGeneralSideBarAuthToggle((previous) => !previous);
-    if (transferForm) {
-      setTransferForm(false);
-    }
-  };
-
-  const handleTransferForm = () => {
-    setTransferForm((previous) => !previous);
-    if (generalMenuToggle) {
-      setGeneralSideBarAuthToggle(false);
-    }
-  };
 
   return (
     <div>
-      {generalMenuToggle && (
+      {mobileMenuToggle && (
         <div
           className="overlay fixed top-0 left-0 w-full sm:hidden h-full bg-black bg-opacity-50 pointer-events-auto z-10"
-          onClick={handleGeneralMenuToggle}
+          onClick={handleMobileMenuToggle}
         ></div>
       )}
       <div
         className={`harmburger-dropdown fixed top-0 left-0 h-screen py-2 px-[1rem] pr-0 bg-white dark:bg-primary sm:hidden text-primary dark:text-white transform transition-transform rounded-r-xl duration-200 ease-in-out z-20 ${
-          generalMenuToggle ? "translate-x-0" : "-translate-x-full"
+          mobileMenuToggle ? "translate-x-0" : "-translate-x-full"
         }`}
         onClick={(e) => e.stopPropagation()} // Prevent click event propagation to overlay
       >
@@ -118,7 +107,7 @@ const GeneralSidebar = ({ generalMenuToggle, handleGeneralMenuToggle }) => {
                     ? "bg-white bg-opacity-20"
                     : "dark:hover:bg-white dark:hover:bg-opacity-5 hover:transition hover:duration-400 ease-in-out hover:bg-gray-100"
                 }`}
-                onClick={handleTransferForm}
+                onClick={handleMobileTransferForm}
               >
                 <FaExchangeAlt
                   className="h-[1.2rem] w-[1.1rem] ml-[.2rem] mr-[1rem]"
@@ -127,9 +116,12 @@ const GeneralSidebar = ({ generalMenuToggle, handleGeneralMenuToggle }) => {
                 <div>Transfer</div>
               </li>
               <div
-                className={`relative my-5 ${transferForm ? "block" : "hidden"}`}
+                className={`relative my-5 ${
+                  mobileTransferForm ? "block" : "hidden"
+                }
+                }`}
               >
-                <Transfer setTransferForm={setTransferForm} />
+                <Transfer />
               </div>
               <li
                 onClick={handleGeneralSideBarAuthToggle}

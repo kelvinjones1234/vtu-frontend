@@ -50,7 +50,7 @@ const Notifications = () => {
             Notifications
           </h2>
           <nav className="flex items-center text-primary dark:text-gray-100 pt-4 font-semibold">
-            <Link to="/user/dashboard" className="hover:underline">
+            <Link to="/user/dashboard" className="">
               Dashboard
             </Link>
             <div className="h-1 w-1 mx-5 bg-white rounded-full"></div>

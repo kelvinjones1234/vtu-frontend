@@ -14,11 +14,8 @@ const UserDashBoard = () => {
   const { user } = useContext(AuthContext);
   const {
     handleTransferForm,
-    setTransferForm,
-    transferForm,
-    servicesDropDown,
-    setServicesDropDown,
-    handleServicesDropDowns,
+    handleMobileMenuToggle,
+    handleMobileTransferForm,
   } = useContext(GeneralContext);
 
   const [isBalanceHidden, setIsBalanceHidden] = useState(false);
@@ -96,13 +93,24 @@ const UserDashBoard = () => {
               Create Shortcut
             </button>
             <button
-              onClick={handleTransferForm}
+              onClick={(e) => {
+                // Check screen width
+                if (window.innerWidth >= 767) {
+                  // Desktop: Only handle transfer form
+                  handleTransferForm(e);
+                } else {
+                  // Mobile: First toggle mobile menu, then handle transfer form
+                  handleMobileMenuToggle(e);
+                  handleMobileTransferForm(e);
+                }
+              }}
               className="border text-[.8rem] border-green-500 text-green-500 font-semibold py-2 px-4 rounded-full transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50"
             >
               Transfer Credit
             </button>
           </div>
         </div>
+
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 my-6">
           {productData.map((item) => (
             <Link

@@ -1,23 +1,21 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
 import { RiMenu4Line, RiCloseLargeLine } from "react-icons/ri";
-import logo from "../assets/4.svg";
 import authenticate from "../assets/authenticate.svg";
 import about from "../assets/about.svg";
 import right from "../assets/right_arrow.svg";
 import bottom from "../assets/bottom_arrow.svg";
+import { GeneralContext } from "../context/GeneralContext";
 
-const HomePageNavbar = ({ homeMenuToggle, setHomeMenuToggle }) => {
-  const [sideBarAuthToggle, setSideBarAuthToggle] = useState(false);
+const HomePageNavbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
 
-  const handleSideBarAuthToggle = () => {
-    setSideBarAuthToggle((previous) => !previous);
-  };
-
-  const handleHomeMenuToggle = () => {
-    setHomeMenuToggle((previous) => !previous);
-  };
+  const {
+    handleHomeMenuToggle,
+    sideBarAuthToggle,
+    handleSideBarAuthToggle,
+    homeMenuToggle
+  } = useContext(GeneralContext);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -42,7 +40,6 @@ const HomePageNavbar = ({ homeMenuToggle, setHomeMenuToggle }) => {
         }`}
       >
         <div className="flex items-center">
-          {/* <img src={logo} alt="" className="h-7 mb-1/2" /> */}
           <Link to={"/"}>
             <div className="logo font-heading_one text-transparent bg-clip-text pr-2 text-[.8rem] rounded-[.5rem] font-bold bg-gradient-to-r from-purple-400 via-sky-500 to-red-500 border-white">
               MaduConnect

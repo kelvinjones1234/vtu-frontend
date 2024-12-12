@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import HomePageNavbar from "../components/HomePageNavbar";
 import HomeHero from "../components/HomeHero";
 import AfterHero from "../components/AfterHero";
 import Footer from "../components/Footer";
+import { GeneralContext } from "../context/GeneralContext";
 
 const HomePage = () => {
-  const [homeMenuToggle, setHomeMenuToggle] = useState(false);
+  const { homeMenuToggle } = useContext(GeneralContext);
 
   useEffect(() => {
     if (homeMenuToggle) {
@@ -22,10 +23,7 @@ const HomePage = () => {
   return (
     <>
       <div className="min-w-[273px] bg-dark-custom-gradient w-full z-[-2] absolute top-0 left-0 min-h-screen">
-        <HomePageNavbar
-          homeMenuToggle={homeMenuToggle}
-          setHomeMenuToggle={setHomeMenuToggle}
-        />
+        <HomePageNavbar />
         <HomeHero />
         <AfterHero />
         <Footer />

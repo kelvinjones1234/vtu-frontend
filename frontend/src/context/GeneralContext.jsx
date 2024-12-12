@@ -1,6 +1,5 @@
 import { createContext, useEffect, useContext, react, useState } from "react";
 import axios from "axios";
-
 export const GeneralContext = createContext();
 
 const GeneralProvider = ({ children }) => {
@@ -9,6 +8,51 @@ const GeneralProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
   const [transferForm, setTransferForm] = useState(false);
   const [servicesDropDown, setServicesDropDown] = useState(false);
+  const [homeMenuToggle, setHomeMenuToggle] = useState(false);
+  // For home authentication toggle
+  const [sideBarAuthToggle, setSideBarAuthToggle] = useState(false);
+  // transfer form
+  const [mobileTransferForm, setMobileTransferForm] = useState(false);
+  // for services
+  const [generalSideBarAuthToggle, setGeneralSideBarAuthToggle] =
+    useState(false);
+  // Mobile menu
+  const [mobileMenuToggle, setMobileMenuToggle] = useState(false);
+
+  const handleGeneralSideBarAuthToggle = () => {
+    setGeneralSideBarAuthToggle((previous) => !previous);
+    if (mobileTransferForm) {
+      setMobileTransferForm(false);
+    }
+  };
+
+  const handleMobileTransferForm = () => {
+    setMobileTransferForm((previous) => !previous);
+    if (!mobileMenuToggle) {
+      setMobileTransferForm(true);
+    }
+    if (!mobileTransferForm) {
+      setGeneralSideBarAuthToggle(false);
+    }
+  };
+
+  const handleMobileMenuToggle = () => {
+    setMobileMenuToggle((previous) => !previous);
+    if (mobileTransferForm) {
+      setMobileTransferForm(false);
+    }
+    if (!mobileTransferForm) {
+      setGeneralSideBarAuthToggle(false);
+    }
+  };
+
+  const handleSideBarAuthToggle = () => {
+    setSideBarAuthToggle((previous) => !previous);
+  };
+
+  const handleHomeMenuToggle = () => {
+    setHomeMenuToggle((previous) => !previous);
+  };
 
   const handleServicesDropDowns = () => {
     setServicesDropDown((previous) => !previous);
@@ -51,9 +95,9 @@ const GeneralProvider = ({ children }) => {
     }
   }, [theme]);
   const api = axios.create({
-    baseURL: "https://madupay.pythonanywhere.com/api",
-    // baseURL: "http://127.0.0.1:8000/api",
-    timeout: 10000,
+    // baseURL: "https://madupay.pythonanywhere.com/api",
+    baseURL: "http://127.0.0.1:8000/api",
+    timeout: 20000,
     headers: {
       "Content-Type": "application/json",
     },
@@ -117,11 +161,24 @@ const GeneralProvider = ({ children }) => {
     networkPrefixes: networkPrefixes,
     transferForm,
     servicesDropDown,
+    sideBarAuthToggle,
+    homeMenuToggle,
+    mobileMenuToggle,
+    generalSideBarAuthToggle,
+    setGeneralSideBarAuthToggle,
+    handleGeneralSideBarAuthToggle,
+    handleMobileTransferForm,
+    mobileTransferForm,
+    handleMobileMenuToggle,
+    setMobileMenuToggle,
+    handleHomeMenuToggle,
+    handleSideBarAuthToggle,
+    setSideBarAuthToggle,
     setServicesDropDown,
     handleServicesDropDowns,
     setTransferForm,
     handleTransferForm,
-
+    setHomeMenuToggle,
     detectNetwork: detectNetwork,
     setLoading: setLoading,
     setTheme: setTheme,

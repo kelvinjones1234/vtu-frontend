@@ -1,6 +1,5 @@
 import { useState, useEffect, React, useContext } from "react";
 import { Link } from "react-router-dom";
-import logo from "../assets/4.svg";
 import notification from "../assets/notification.svg";
 import GeneralSidebar from "./GeneralSidebar";
 import dark from "../assets/dark.svg";
@@ -14,14 +13,17 @@ import { ProductContext } from "../context/ProductContext";
 const GeneralNavbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const { user } = useContext(AuthContext);
-  const { darkMode, handleThemeSettings } = useContext(GeneralContext);
+  const {
+    darkMode,
+    handleThemeSettings,
+    mobileMenuToggle,
+    handleMobileMenuToggle,
+  } = useContext(GeneralContext);
 
   const { allRead, unreadCount } = useContext(ProductContext);
 
-  const [generalMenuToggle, setGeneralMenuToggle] = useState(false);
-
   useEffect(() => {
-    if (generalMenuToggle) {
+    if (mobileMenuToggle) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "auto";
@@ -30,11 +32,9 @@ const GeneralNavbar = () => {
     return () => {
       document.body.style.overflow = "auto";
     };
-  }, [generalMenuToggle]);
+  }, [mobileMenuToggle]);
 
-  const handleGeneralMenuToggle = () => {
-    setGeneralMenuToggle((previous) => !previous);
-  };
+
 
   useEffect(() => {
     const handleScroll = () => {
@@ -71,7 +71,7 @@ const GeneralNavbar = () => {
               </Link>
             </div>
             <div className="text-primary font-bold dark:text-white  hidden xs:block">
-            Hi, {user.first_name.toUpperCase()}
+              Hi, {user.first_name.toUpperCase()}
             </div>
           </div>
           <div className="light-dark-mode hidden sm:block">
@@ -97,21 +97,17 @@ const GeneralNavbar = () => {
             </div>
             <div className="hamburger ">
               <div
-                onClick={handleGeneralMenuToggle}
+                onClick={handleMobileMenuToggle}
                 className="text-[25px] text-link"
               >
-                {generalMenuToggle ? <RiCloseLargeLine /> : <RiMenu4Line />}
+                {mobileMenuToggle ? <RiCloseLargeLine /> : <RiMenu4Line />}
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      <GeneralSidebar
-        generalMenuToggle={generalMenuToggle}
-        setGeneralMenuToggle={setGeneralMenuToggle}
-        handleGeneralMenuToggle={handleGeneralMenuToggle}
-      />
+      <GeneralSidebar />
     </>
   );
 };
