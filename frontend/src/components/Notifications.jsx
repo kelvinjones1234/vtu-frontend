@@ -54,7 +54,7 @@ const Notifications = () => {
               Dashboard
             </Link>
             <div className="h-1 w-1 mx-5 bg-white rounded-full"></div>
-            <span className="text-gray-500">All notifications</span>
+            <span className="text-gray-500">Notifications</span>
             <span>
               <button
                 onClick={handleMarkAllAsRead}
@@ -63,7 +63,7 @@ const Notifications = () => {
                   (notification) => notification.is_read
                 )}
               >
-                Mark all as read
+                Read all
               </button>
             </span>
           </nav>
