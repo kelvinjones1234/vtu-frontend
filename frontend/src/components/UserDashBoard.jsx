@@ -100,7 +100,7 @@ const UserDashBoard = () => {
               ₦ {isBalanceHidden ? "****" : formattedBalance}
             </p>
             <Link to="/user/dashboard/fundwallet">
-              <button className="bg-green-500 hover:bg-green-600 text-[.8rem] md:text-[.9rem] text-black font-semibold py-1 sm:py-1 md:py-2 px-3 rounded-full transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50">
+              <button className="bg-green-500 hover:bg-green-600 text-black font-semibold py-1 sm:py-1 md:py-2 px-3 rounded-full transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50">
                 + Fund Wallet
               </button>
             </Link>
