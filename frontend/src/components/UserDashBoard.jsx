@@ -18,39 +18,47 @@ const UserDashBoard = () => {
     handleMobileTransferForm,
   } = useContext(GeneralContext);
 
-  const [isBalanceHidden, setIsBalanceHidden] = useState(false);
+  const [isBalanceHidden, setIsBalanceHidden] = useState(true);
 
   // Optimize context values with useMemo
-  const capitalizedFirstName = useMemo(() => 
-    user?.first_name
-      ? user.first_name.charAt(0).toUpperCase() + user.first_name.slice(1).toLowerCase()
-      : ""
-  , [user]);
+  const capitalizedFirstName = useMemo(
+    () =>
+      user?.first_name
+        ? user.first_name.charAt(0).toUpperCase() +
+          user.first_name.slice(1).toLowerCase()
+        : "",
+    [user]
+  );
 
-  const formattedBalance = useMemo(() => 
-    walletData?.balance
-      ? Number(walletData.balance).toLocaleString("en-US", {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2,
-        })
-      : "0.00"
-  , [walletData]);
+  const formattedBalance = useMemo(
+    () =>
+      walletData?.balance
+        ? Number(walletData.balance).toLocaleString("en-US", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          })
+        : "0.00",
+    [walletData]
+  );
 
   // Memoize toggle function to prevent unnecessary re-renders
   const toggleBalanceVisibility = useCallback(() => {
-    setIsBalanceHidden(prev => !prev);
+    setIsBalanceHidden((prev) => !prev);
   }, []);
 
   // Handle transfer with performance optimization
-  const handleTransfer = useCallback((e) => {
-    const isMobile = window.innerWidth < 767;
-    if (isMobile) {
-      handleMobileMenuToggle(e);
-      handleMobileTransferForm(e);
-    } else {
-      handleTransferForm(e);
-    }
-  }, [handleMobileMenuToggle, handleMobileTransferForm, handleTransferForm]);
+  const handleTransfer = useCallback(
+    (e) => {
+      const isMobile = window.innerWidth < 767;
+      if (isMobile) {
+        handleMobileMenuToggle(e);
+        handleMobileTransferForm(e);
+      } else {
+        handleTransferForm(e);
+      }
+    },
+    [handleMobileMenuToggle, handleMobileTransferForm, handleTransferForm]
+  );
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
@@ -66,7 +74,7 @@ const UserDashBoard = () => {
             {capitalizedFirstName}!
           </span>
         </div>
-        
+
         {/* Wallet Balance Card */}
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg mb-6 px-3 py-6 text-primary dark:text-white">
           <div className="flex justify-between items-center mb-4 text-sm sm:text-[.7rem] md:text-[1rem]">
@@ -92,13 +100,13 @@ const UserDashBoard = () => {
               ₦ {isBalanceHidden ? "****" : formattedBalance}
             </p>
             <Link to="/user/dashboard/fundwallet">
-              <button className="bg-green-500 hover:bg-green-600 text-black font-semibold py-1 sm:py-1 md:py-2 px-3 rounded-full transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50">
+              <button className="bg-green-500 hover:bg-green-600 text-[.8rem] md:text-[.9rem] text-black font-semibold py-1 sm:py-1 md:py-2 px-3 rounded-full transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50">
                 + Fund Wallet
               </button>
             </Link>
           </div>
         </div>
-        
+
         {/* Actions Card */}
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 text-primary dark:text-white">
           <p className="mb-4">
@@ -138,7 +146,7 @@ const UserDashBoard = () => {
             </Link>
           ))}
         </div>
-        
+
         {/* Premium Service Button */}
         <div className="flex justify-center mt-[4rem]">
           <button className="dark:bg-white bg-primary py-3 px-12 rounded-[2rem] dark:text-primary text-white font-bold shadow-indigo-500/30">
