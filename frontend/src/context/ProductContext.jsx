@@ -1,44 +1,112 @@
-import { createContext, useEffect, useState, useContext, useMemo, useCallback } from "react";
+import {
+  createContext,
+  useEffect,
+  useState,
+  useContext,
+  useMemo,
+  useCallback,
+  useRef,
+} from "react";
 import { GeneralContext } from "./GeneralContext";
 import { AuthContext } from "./AuthenticationContext";
 
 export const ProductContext = createContext();
 
+const REFRESH_INTERVAL = 48 * 60 * 60 * 1000; // 1 minute
+const CACHE_KEY = "combinedData";
+const MESSAGE_TIMEOUT = 3000; // 3 seconds for success/error messages
+
 const ProductProvider = ({ children }) => {
-  const [dataNetworks, setDataNetworks] = useState([]);
-  const [productData, setProductData] = useState([]);
-  const [airtimeNetworks, setAirtimeNetworks] = useState([]);
-  const [cableCategories, setCableCategories] = useState([]);
-  const [notifications, setNotifications] = useState([]);
-  const [unreadCount, setUnreadCount] = useState(0);
-  const [allRead, setAllRead] = useState(true);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
-  const [isLoading, setIsLoading] = useState(true);
-  const [terms, setTerms] = useState("");
-  const [policy, setPolicy] = useState("");
-  const [about, setAbout] = useState("");
-  const [apiSettings, setApiSettings] = useState([]);
-  const [activeApi, setActiveApi] = useState(null);
+  const [state, setState] = useState({
+    dataNetworks: [],
+    productData: [],
+    airtimeNetworks: [],
+    cableCategories: [],
+    notifications: [],
+    unreadCount: 0,
+    allRead: true,
+    isLoading: true,
+    terms: "",
+    policy: "",
+    about: "",
+    apiSettings: [],
+    activeApi: null,
+    errorMessage: "",
+    successMessage: "",
+  });
 
   const { api } = useContext(GeneralContext);
   const { authTokens } = useContext(AuthContext);
 
-  useEffect(() => {
-    if (apiSettings && Array.isArray(apiSettings)) {
-      const activeApiKey = apiSettings.find((api) => api.active)?.api_key;
-      if (activeApiKey && activeApiKey !== activeApi) {
-        setActiveApi(activeApiKey);
+  // Memoized update function to reduce unnecessary re-renders
+  const updateState = useCallback((updates) => {
+    setState((prevState) => ({
+      ...prevState,
+      ...updates,
+    }));
+  }, []);
+
+  // Clear messages after a timeout
+  const clearMessage = useCallback(
+    (messageType) => {
+      updateState({ [messageType]: "" });
+    },
+    [updateState]
+  );
+
+  // Optimized data fetching with caching and error handling
+  const fetchCombinedData = useCallback(async () => {
+    try {
+      updateState({ isLoading: true, errorMessage: "" });
+
+      const response = await api.get("combined-data/");
+      const data = response.data;
+
+      // Atomic update of localStorage
+      localStorage.setItem(CACHE_KEY, JSON.stringify(data));
+
+      updateState({
+        dataNetworks: data.dataNetworks || [],
+        productData: data.productData || [],
+        airtimeNetworks: data.airtimeNetworks || [],
+        cableCategories: data.cableCategories || [],
+        terms: data.terms || "",
+        policy: data.policy || "",
+        about: data.about || "",
+        apiSettings: data.apiSettings || [],
+        isLoading: false,
+        activeApi: data.apiSettings?.find((api) => api.active)?.api_key || null,
+      });
+    } catch (error) {
+      console.error("Error fetching combined data:", error);
+
+      // Fallback to cached data if network fails
+      const cachedData = localStorage.getItem(CACHE_KEY);
+      if (cachedData) {
+        try {
+          const parsedData = JSON.parse(cachedData);
+          updateState({
+            ...parsedData,
+            isLoading: false,
+            errorMessage: "Using cached data due to network error",
+          });
+        } catch (parseError) {
+          updateState({
+            isLoading: false,
+            errorMessage: "Failed to fetch and parse data",
+          });
+        }
       }
-    } else {
-      console.error("apiSettings is null or not an array");
+
+      // Clear error message after timeout
+      setTimeout(() => clearMessage("errorMessage"), MESSAGE_TIMEOUT);
     }
-  }, [apiSettings, activeApi]);
+  }, [api, updateState, clearMessage]);
 
+  // Fetch notifications with improved error handling
   const fetchNotifications = useCallback(async () => {
-    if (!authTokens) return; // Exit if authTokens is null
+    if (!authTokens) return;
 
-    setIsLoading(true);
     try {
       const response = await api.get("notifications/", {
         headers: {
@@ -46,44 +114,30 @@ const ProductProvider = ({ children }) => {
           Authorization: `Bearer ${authTokens.access}`,
         },
       });
+
       const notifications = response.data;
-      setNotifications(notifications);
-      setUnreadCount(notifications.filter((n) => !n.is_read).length);
-      setAllRead(notifications.every((n) => n.is_read));
-      setErrorMessage("");
+      updateState({
+        notifications,
+        unreadCount: notifications.filter((n) => !n.is_read).length,
+        allRead: notifications.every((n) => n.is_read),
+        errorMessage: "",
+      });
     } catch (error) {
       console.error("Error fetching notifications:", error);
-      setErrorMessage("Failed to load notifications.");
-    } finally {
-      setIsLoading(false);
+      updateState({
+        errorMessage: "Failed to load notifications",
+        notifications: [],
+      });
+
+      // Clear error message after timeout
+      setTimeout(() => clearMessage("errorMessage"), MESSAGE_TIMEOUT);
     }
-  }, [authTokens, api]);
+  }, [authTokens, api, updateState, clearMessage]);
 
-  const fetchData = useCallback(async () => {
-    try {
-      const response = await api.get("combined-data/");
-      const data = response.data;
-      setDataNetworks(data.dataNetworks);
-      setProductData(data.productData);
-      setAirtimeNetworks(data.airtimeNetworks);
-      setCableCategories(data.cableCategories);
-      setTerms(data.terms);
-      setPolicy(data.policy);
-      setAbout(data.about);
-      setApiSettings(data.apiSettings);
-    } catch (error) {
-      console.error("Error fetching combined data:", error);
-    }
-  }, [api]);
-
-  useEffect(() => {
-    fetchData();
-    fetchNotifications();
-  }, [fetchData, fetchNotifications]);
-
+  // Mark a single notification as read
   const handleMarkAsRead = useCallback(
     async (id) => {
-      if (!authTokens) return; // Exit if authTokens is null
+      if (!authTokens) return;
 
       try {
         await api.patch(
@@ -96,33 +150,47 @@ const ProductProvider = ({ children }) => {
             },
           }
         );
-        setNotifications((prevNotifications) =>
-          prevNotifications.map((notification) =>
-            notification.id === id
-              ? { ...notification, is_read: true }
-              : notification
-          )
-        );
-        setUnreadCount((prevCount) => prevCount - 1);
-        setAllRead(unreadCount - 1 === 0);
-        setSuccessMessage("Notification marked as read.");
-        clearMessageAfterTimeout(setSuccessMessage);
+
+        updateState((prevState) => {
+          const updatedNotifications = prevState.notifications.map(
+            (notification) =>
+              notification.id === id
+                ? { ...notification, is_read: true }
+                : notification
+          );
+
+          return {
+            notifications: updatedNotifications,
+            unreadCount: prevState.unreadCount - 1,
+            allRead: updatedNotifications.every((n) => n.is_read),
+            successMessage: "Notification marked as read.",
+          };
+        });
+
+        // Clear success message after timeout
+        setTimeout(() => clearMessage("successMessage"), MESSAGE_TIMEOUT);
       } catch (error) {
         console.error("Error marking notification as read:", error);
-        setErrorMessage("Failed to mark notification as read.");
-        clearMessageAfterTimeout(setErrorMessage);
+        updateState({
+          errorMessage: "Failed to mark notification as read.",
+        });
+
+        // Clear error message after timeout
+        setTimeout(() => clearMessage("errorMessage"), MESSAGE_TIMEOUT);
       }
     },
-    [authTokens, api, unreadCount]
+    [authTokens, api, updateState, clearMessage]
   );
 
+  // Mark all notifications as read
   const handleMarkAllAsRead = useCallback(async () => {
-    if (!authTokens) return; // Exit if authTokens is null
+    if (!authTokens) return;
 
     try {
-      const unreadNotifications = notifications.filter(
+      const unreadNotifications = state.notifications.filter(
         (notification) => !notification.is_read
       );
+
       const markAllReadPromises = unreadNotifications.map((notification) =>
         api.patch(
           `notifications/${notification.id}/`,
@@ -138,64 +206,81 @@ const ProductProvider = ({ children }) => {
 
       await Promise.all(markAllReadPromises);
 
-      setNotifications((prevNotifications) =>
-        prevNotifications.map((notification) => ({
+      updateState({
+        notifications: state.notifications.map((notification) => ({
           ...notification,
           is_read: true,
-        }))
-      );
-      setUnreadCount(0);
-      setAllRead(true);
-      setSuccessMessage("All notifications marked as read.");
-      clearMessageAfterTimeout(setSuccessMessage);
+        })),
+        unreadCount: 0,
+        allRead: true,
+        successMessage: "All notifications marked as read.",
+      });
+
+      // Clear success message after timeout
+      setTimeout(() => clearMessage("successMessage"), MESSAGE_TIMEOUT);
     } catch (error) {
       console.error("Error marking all notifications as read:", error);
-      setErrorMessage("Failed to mark all notifications as read.");
-      clearMessageAfterTimeout(setErrorMessage);
+      updateState({
+        errorMessage: "Failed to mark all notifications as read.",
+      });
+
+      // Clear error message after timeout
+      setTimeout(() => clearMessage("errorMessage"), MESSAGE_TIMEOUT);
     }
-  }, [authTokens, api, notifications]);
+  }, [authTokens, api, state.notifications, updateState, clearMessage]);
 
-  const clearMessageAfterTimeout = useCallback((setMessage) => {
-    setTimeout(() => setMessage(""), 3000); // Clear message after 3 seconds
-  }, []);
+  // Initial data load and periodic updates
+  useEffect(() => {
+    // Fetch initial data from local storage if exists
+    const cachedData = localStorage.getItem(CACHE_KEY);
+    if (cachedData) {
+      try {
+        const parsedData = JSON.parse(cachedData);
+        updateState({
+          ...parsedData,
+          isLoading: false,
+        });
+      } catch (error) {
+        console.error("Error parsing cached data:", error);
+      }
 
-  const contextData = useMemo(() => ({
-    fetchNotifications,
-    handleMarkAsRead,
-    handleMarkAllAsRead,
-    about,
-    activeApi,
-    policy,
-    terms,
-    notifications,
-    unreadCount,
-    allRead,
-    isLoading,
-    errorMessage,
-    successMessage,
-    dataNetworks,
-    productData,
-    airtimeNetworks,
-    cableCategories,
-  }), [
-    fetchNotifications,
-    handleMarkAsRead,
-    handleMarkAllAsRead,
-    about,
-    activeApi,
-    policy,
-    terms,
-    notifications,
-    unreadCount,
-    allRead,
-    isLoading,
-    errorMessage,
-    successMessage,
-    dataNetworks,
-    productData,
-    airtimeNetworks,
-    cableCategories,
-  ]);
+      // Trigger an immediate refresh to check for updates
+      fetchCombinedData();
+    } else {
+      // If no cached data, fetch immediately
+      fetchCombinedData();
+    }
+
+    // Fetch notifications
+    fetchNotifications();
+
+    // Set up interval for periodic updates
+    const intervalId = setInterval(() => {
+      fetchCombinedData();
+      fetchNotifications();
+    }, REFRESH_INTERVAL);
+
+    // Cleanup interval on unmount
+    return () => clearInterval(intervalId);
+  }, [fetchCombinedData, fetchNotifications]);
+
+  // Context value memoized to prevent unnecessary re-renders
+  const contextData = useMemo(
+    () => ({
+      ...state,
+      fetchCombinedData,
+      fetchNotifications,
+      handleMarkAsRead,
+      handleMarkAllAsRead,
+    }),
+    [
+      state,
+      fetchCombinedData,
+      fetchNotifications,
+      handleMarkAsRead,
+      handleMarkAllAsRead,
+    ]
+  );
 
   return (
     <ProductContext.Provider value={contextData}>

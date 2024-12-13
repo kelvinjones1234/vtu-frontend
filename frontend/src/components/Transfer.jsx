@@ -8,30 +8,30 @@ const inputStyle =
   "transition duration-450 font-normal ease-in-out my-2 w-full text-primary dark:text-white py-1 px-3 h-[2.8rem] text-[1.2rem] rounded-2xl outline-0 dark:bg-[#18202F] bg-white border border-[#1CCEFF] dark:border-gray-700 dark:hover:border-gray-500 dark:hover:border-black dark:focus:border-[#1CCEFF]";
 
 const Transfer = () => {
-  const { api, setLoading, mobileTransferForm, setMobileTransferForm } = useContext(GeneralContext);
+  const { api, setLoading, setMobileTransferForm } = useContext(GeneralContext);
   const { authTokens, user } = useContext(AuthContext);
-  const { walletData, updateWalletBalance } = useWallet();
+  const { updateWalletBalance } = useWallet();
 
   const [username, setUsername] = useState("");
   const [amount, setAmount] = useState("");
   const [pin, setPin] = useState("");
-  const [message, setMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState({});
   const [showMessage, setShowMessage] = useState(false);
+  const [successMessage, setSuccessMessage] = useState(null);
 
   const validateInputs = () => {
+    const newError = {};
     if (!username) {
-      setMessage("Please enter the recipient's username");
-      return false;
+      newError.usernameError = "Please enter the recipient's username";
     }
     if (!amount || isNaN(amount) || parseFloat(amount) <= 0) {
-      setMessage("Please enter a valid amount");
-      return false;
+      newError.amountError = "Please enter a valid amount";
     }
     if (!pin) {
-      setMessage("Please enter your PIN");
-      return false;
+      newError.pinError = "Please enter your PIN";
     }
-    return true;
+    setErrorMessage(newError);
+    return Object.keys(newError).length === 0;
   };
 
   const transfer = async (e) => {
@@ -58,7 +58,7 @@ const Transfer = () => {
 
       // Check if the balance is sufficient
       if (walletData.balance < parseFloat(amount)) {
-        setMessage("Insufficient funds");
+        setErrorMessage({ balanceError: "Insufficient funds" });
         setShowMessage(true);
         setTimeout(() => setShowMessage(false), 3000);
         return;
@@ -66,14 +66,14 @@ const Transfer = () => {
 
       // Check if the provided PIN matches the stored PIN
       if (walletData.wallet_name.transaction_pin !== pin) {
-        setMessage("Incorrect PIN");
+        setErrorMessage({ pinError: "Incorrect PIN" });
         setShowMessage(true);
         setTimeout(() => setShowMessage(false), 3000);
         return;
       }
 
       if (walletData.wallet_name.username === username.toLowerCase()) {
-        setMessage("Cannot transfer to yourself");
+        setErrorMessage({ usernameError: "Cannot transfer to yourself" });
         setShowMessage(true);
         setTimeout(() => setShowMessage(false), 3000);
         return;
@@ -95,14 +95,15 @@ const Transfer = () => {
         }
       );
 
-      setMessage("Transfer successful!");
+      // Success message
+      setSuccessMessage("Transfer Successful!");
       setShowMessage(true);
       setTimeout(() => {
         setShowMessage(false);
+        setSuccessMessage(null);
         if (setMobileTransferForm) {
           setMobileTransferForm(false);
         }
-        // setTransferForm(false);
       }, 1500);
 
       // Update wallet balance in context
@@ -114,9 +115,10 @@ const Transfer = () => {
       setPin("");
     } catch (error) {
       console.error("Transfer Error:", error);
-      setMessage(
-        error.response?.data?.error || "An error occurred during the transfer"
-      );
+      setErrorMessage({
+        anonymousError:
+          error.response?.data?.error || "An error occurred during the transfer",
+      });
       setShowMessage(true);
       setTimeout(() => setShowMessage(false), 3000);
     } finally {
@@ -128,10 +130,66 @@ const Transfer = () => {
     <div className="bg-primary bg-opacity-0 max-w-[208px]">
       <div className="flex flex-col justify-center border-[0.01rem] border-link dark:border-gray-700 p-5 rounded-[1.5rem] bg-opacity-15 shadow-lg shadow-indigo-950/10">
         {showMessage && (
-          <div className="text-white mt-2 text-center transition-opacity duration-1000 ease-in-out opacity-100">
-            {message}
+          <div
+            className={`mb-4 p-4 rounded-lg shadow-md flex items-start border-l-4 ${
+              successMessage
+                ? "bg-green-50 border-green-500"
+                : "bg-red-50 border-red-500"
+            }`}
+          >
+            <div className="flex-shrink-0 mr-3 mt-0.5">
+              {successMessage ? (
+                <svg
+                  className="h-5 w-5 text-green-400"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              ) : (
+                <svg
+                  className="h-5 w-5 text-red-400"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              )}
+            </div>
+            <div className="flex-1">
+              <p
+                className={`font-medium ${
+                  successMessage ? "text-green-800" : "text-red-800"
+                }`}
+              >
+                {successMessage ? "Success" : "Error"}
+              </p>
+              <ul className="mt-1 text-sm">
+                {successMessage ? (
+                  <li className="text-green-800">{successMessage}</li>
+                ) : (
+                  Object.values(errorMessage).map(
+                    (error, index) =>
+                      error && (
+                        <li key={index} className="text-red-800">
+                          {error}
+                        </li>
+                      )
+                  )
+                )}
+              </ul>
+            </div>
           </div>
         )}
+
         <form onSubmit={transfer}>
           <input
             value={username}

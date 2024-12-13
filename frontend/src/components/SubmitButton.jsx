@@ -1,22 +1,32 @@
-import { useContext, React } from "react";
+import React, { useContext } from "react";
 import { GeneralContext } from "../context/GeneralContext";
 
-
-const SubmitButton = ({ label }) => {
+const SubmitButton = ({ label, className = "", ...props }) => {
   const { loading } = useContext(GeneralContext);
 
+  // Base styles for the button
+  const baseButtonStyles =
+    "text-[1rem] my-2 w-full outline-none text-white p-1 h-[3.2rem] bg-link text-black rounded-2xl bg-opacity-[90%] font-semibold hover:bg-blue-500 transition duration-400 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed";
+
+  // Styles for the loading spinner container
+  const loadingContainerStyles = "grid justify-center";
+
+  // Styles for the spinner svg
+  const spinnerStyles =
+    "w-5 h-5 text-gray-200 animate-spin dark:text-link fill-white";
 
   return (
     <button
-      className="text-[1rem] my-2 w-full outline-none text-white p-1 h-[3.2rem] bg-link text-black rounded-2xl bg-opacity-[90%] font-semibold hover:bg-blue-500 transition duration-400 ease-in-out"
+      className={`${baseButtonStyles} ${className}`}
       type="submit"
-      disabled={loading} // Disable button while loading
+      disabled={loading}
+      {...props}
     >
       {loading ? (
-        <div role="status" className="grid justify-center">
+        <div role="status" className={loadingContainerStyles}>
           <svg
             aria-hidden="true"
-            className="w-5 h-5 text-gray-200 animate-spin dark:text-link fill-white"
+            className={spinnerStyles}
             viewBox="0 0 100 101"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"

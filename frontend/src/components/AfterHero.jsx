@@ -7,6 +7,28 @@ import available from "../assets/available.svg";
 import easy from "../assets/easy.svg";
 import services from "../assets/services.svg";
 
+// Using React.memo to prevent unnecessary re-renders of FeatureCard
+const FeatureCard = React.memo(
+  ({ feature, index, animationVariants, transition }) => {
+    return (
+      <motion.div
+        key={index}
+        className="py-10 bg-primary bg-opacity-90 px-4 rounded-xl text-white text-center shadow-lg shadow-indigo-900/10"
+        variants={animationVariants}
+        transition={transition}
+      >
+        <div className="icon grid justify-center pb-[2rem]">
+          <img src={feature.icon} alt={feature.title} className="h-[2rem]" />
+        </div>
+        <h3 className="text-[1rem] uppercase pb-4 font-heading_two">
+          {feature.title}
+        </h3>
+        <p className="max-w-[450px] mx-auto">{feature.description}</p>
+      </motion.div>
+    );
+  }
+);
+
 const features = [
   {
     icon: fast,
@@ -42,11 +64,26 @@ const features = [
 
 const AfterHero = () => {
   const [ref, inView] = useInView({
-    triggerOnce: true, // Only trigger the animation once
-    threshold: 0.1, // Percentage of the element in view to trigger the animation
+    triggerOnce: true,
+    threshold: 0.1,
   });
 
-  return ( 
+  const containerVariants = {
+    visible: { transition: { staggerChildren: 0.2 } },
+    hidden: {},
+  };
+
+  const itemVariants = {
+    visible: { opacity: 1, y: 0 },
+    hidden: { opacity: 0, y: 50 },
+  };
+
+  const buttonVariants = {
+    whileHover: { scale: 1.05 },
+    whileTap: { scale: 0.95 },
+  };
+
+  return (
     <div className="px-[1rem] ss:px-[6rem] mt-[2vh] font-body_two">
       <div className="image flex justify-center">
         <h1 className="text-link py-4 sm:pb-8 text-[1.2rem] font-bold font-heading_two">
@@ -58,33 +95,16 @@ const AfterHero = () => {
         className="grid md:grid-cols-2 gap-5"
         initial="hidden"
         animate={inView ? "visible" : "hidden"}
-        variants={{
-          visible: { transition: { staggerChildren: 0.5 } },
-          hidden: {},
-        }}
+        variants={containerVariants}
       >
         {features.map((feature, index) => (
-          <motion.div
+          <FeatureCard
             key={index}
-            className="py-10 bg-primary bg-opacity-90 px-4 rounded-xl text-white text-center shadow-lg shadow-indigo-900/10"
-            variants={{
-              visible: { opacity: 1, y: 0 },
-              hidden: { opacity: 0, y: 50 },
-            }}
+            feature={feature}
+            index={index}
+            animationVariants={itemVariants}
             transition={{ duration: 0.5 }}
-          >
-            <div className="icon grid justify-center pb-[2rem]">
-              <img
-                src={feature.icon}
-                alt={feature.title}
-                className="h-[2rem]"
-              />
-            </div>
-            <h3 className="text-[1rem] uppercase pb-4 font-heading_two">
-              {feature.title}
-            </h3>
-            <p className="max-w-[450px] mx-auto">{feature.description}</p>
-          </motion.div>
+          />
         ))}
       </motion.div>
       <div className="contact-us text-center mt-[13vh] text-white">
@@ -99,8 +119,7 @@ const AfterHero = () => {
         </div>
         <div className="register p-3">
           <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+            {...buttonVariants}
             className="transition text-black duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-lg bg-link rounded-2xl hover:bg-sky-500 py-[.46rem] transition duration-500 ease-in-out mx-4 px-6"
           >
             Contact Us

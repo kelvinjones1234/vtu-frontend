@@ -19,7 +19,7 @@ const Notifications = () => {
   } = useContext(ProductContext);
 
   const [currentPage, setCurrentPage] = useState(1);
-  const notificationsPerPage = 3;
+  const notificationsPerPage = 10;
 
   useEffect(() => {
     fetchNotifications();
