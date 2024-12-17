@@ -46,6 +46,8 @@ const AuthProvider = ({ children }) => {
         setAuthTokens(data);
         setUser(jwtDecode(data.access));
 
+        localStorage.removeItem("fundingData");
+
         // Always store in sessionStorage
         sessionStorage.setItem("authTokens", JSON.stringify(data));
 

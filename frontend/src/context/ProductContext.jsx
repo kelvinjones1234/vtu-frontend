@@ -5,14 +5,13 @@ import {
   useContext,
   useMemo,
   useCallback,
-  useRef,
 } from "react";
 import { GeneralContext } from "./GeneralContext";
 import { AuthContext } from "./AuthenticationContext";
 
 export const ProductContext = createContext();
 
-const REFRESH_INTERVAL = 48 * 60 * 60 * 1000; // 1 minute
+const REFRESH_INTERVAL = 48 * 60 * 60 * 1000; // 48hrs
 const CACHE_KEY = "combinedData";
 const MESSAGE_TIMEOUT = 3000; // 3 seconds for success/error messages
 
@@ -54,8 +53,7 @@ const ProductProvider = ({ children }) => {
     [updateState]
   );
 
-  // Optimized data fetching with caching and error handling
-  const fetchCombinedData = useCallback(async () => {
+  const fetchFromAPI = async () => {
     try {
       updateState({ isLoading: true, errorMessage: "" });
 
@@ -79,7 +77,6 @@ const ProductProvider = ({ children }) => {
       });
     } catch (error) {
       console.error("Error fetching combined data:", error);
-
       // Fallback to cached data if network fails
       const cachedData = localStorage.getItem(CACHE_KEY);
       if (cachedData) {
@@ -100,6 +97,29 @@ const ProductProvider = ({ children }) => {
 
       // Clear error message after timeout
       setTimeout(() => clearMessage("errorMessage"), MESSAGE_TIMEOUT);
+    }
+  };
+
+  // Optimized data fetching with caching
+  const fetchCombinedData = useCallback(async () => {
+    const cachedData = localStorage.getItem(CACHE_KEY);
+
+    // If no cached data, fetch from API
+    if (!cachedData) {
+      await fetchFromAPI();
+      return;
+    }
+
+    // Use cached data first
+    try {
+      const parsedData = JSON.parse(cachedData);
+      updateState({
+        ...parsedData,
+        isLoading: false,
+      });
+    } catch (error) {
+      console.error("Error parsing cached data:", error);
+      await fetchFromAPI();
     }
   }, [api, updateState, clearMessage]);
 
@@ -231,32 +251,15 @@ const ProductProvider = ({ children }) => {
 
   // Initial data load and periodic updates
   useEffect(() => {
-    // Fetch initial data from local storage if exists
-    const cachedData = localStorage.getItem(CACHE_KEY);
-    if (cachedData) {
-      try {
-        const parsedData = JSON.parse(cachedData);
-        updateState({
-          ...parsedData,
-          isLoading: false,
-        });
-      } catch (error) {
-        console.error("Error parsing cached data:", error);
-      }
-
-      // Trigger an immediate refresh to check for updates
-      fetchCombinedData();
-    } else {
-      // If no cached data, fetch immediately
-      fetchCombinedData();
-    }
+    // Fetch initial data
+    fetchCombinedData();
 
     // Fetch notifications
     fetchNotifications();
 
     // Set up interval for periodic updates
     const intervalId = setInterval(() => {
-      fetchCombinedData();
+      fetchFromAPI();
       fetchNotifications();
     }, REFRESH_INTERVAL);
 

@@ -40,6 +40,7 @@ function AppContent() {
     <Routes>
       <Route path="*" element={<PageNotFoundPage />} />
       <Route path="/" element={<HomePage />} />
+      {/* <Route path="/price-list" element={<PriceListPage />} /> */}
       <Route
         path="/user/get-password-reset-link"
         element={<PasswordResetRequestPage />}
@@ -86,7 +87,6 @@ function AppContent() {
           path="/user/dashboard/transactions"
           element={<TransactionHistoryPage />}
         />
-        {/* <Route path="/dashboard/price-list" element={<PriceListPage />} /> */}
       </Route>
     </Routes>
   );

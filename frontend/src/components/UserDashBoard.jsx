@@ -68,10 +68,10 @@ const UserDashBoard = () => {
       <GeneralLeft />
       <div className="mx-auto">
         {/* Mobile Header */}
-        <div className="text-primary text-[1.5rem] font-bold dark:text-white py-8 text-center xs:hidden">
+        <div className="text-primary text-[1.5rem] font-bold dark:text-white pb-8 text-center xs:hidden">
           Hi,{" "}
-          <span className="bg-gradient-to-r from-purple-400 via-sky-500 to-red-500 text-transparent bg-clip-text">
-            {capitalizedFirstName}!
+          <span className="bg-gradient-to-r uppercase from-purple-400 via-sky-500 to-red-500 text-transparent bg-clip-text">
+            {user.username}
           </span>
         </div>
 
@@ -135,7 +135,8 @@ const UserDashBoard = () => {
               className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 flex flex-col items-center justify-center hover:transition hover:duration-300 hover:ease-in-out transform hover:scale-105 hover:shadow-xl"
             >
               <img
-                src={`https://madupay.pythonanywhere.com${item.image}`}
+                // src={`https://madupay.pythonanywhere.com${item.image}`}
+                src={`http://127.0.0.1:8000${item.image}`}
                 alt={item.category}
                 className="h-12 w-12 object-contain mb-2"
                 fetchpriority="high" // Prioritize image loading

@@ -3,7 +3,6 @@ import { AuthContext } from "../context/AuthenticationContext";
 import { Link } from "react-router-dom";
 import SubmitButton from "../components/SubmitButton";
 import { GeneralContext } from "../context/GeneralContext";
-import logo from "../assets/4.svg";
 import LeftSide from "../components/LeftSide";
 
 const LoginPage = () => {
