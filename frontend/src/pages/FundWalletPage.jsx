@@ -3,21 +3,20 @@ import FundWallet from "../components/FundWallet";
 import GeneralNavbar from "../components/GeneralNavbar";
 import Footer from "../components/Footer";
 import Bvn from "../components/Bvn";
-import axios from "axios";
 import { AuthContext } from "../context/AuthenticationContext";
+import { GeneralContext } from "../context/GeneralContext";
 
 const FundWalletPage = () => {
   const { user } = useContext(AuthContext);
   const [showBvn, setShowBvn] = useState(false);
   const [loading, setLoading] = useState(true);
   const [fundingDetails, setFundingDetails] = useState(null);
+  const { api } = useState(GeneralContext);
 
   useEffect(() => {
     const fetchFundingDetails = async () => {
       try {
-        const response = await axios.get(
-          `http://127.0.0.1:8000/api/funding-details/${user.username}/`
-        );
+        const response = await api.get(`funding-details/${user.username}/`);
 
         // Check if the response data is empty or null
         if (!response.data || Object.keys(response.data).length === 0) {
