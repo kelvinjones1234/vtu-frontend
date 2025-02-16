@@ -135,7 +135,7 @@ const UserDashBoard = () => {
               className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 flex flex-col items-center justify-center hover:transition hover:duration-300 hover:ease-in-out transform hover:scale-105 hover:shadow-xl"
             >
               <img
-                src={`https://madupay.pythonanywhere.com${item.image}`}
+                src={`https://host-test-sable.vercel.app/${item.image}`}
                 // src={`http://127.0.0.1:8000${item.image}`}
                 alt={item.category}
                 className="h-12 w-12 object-contain mb-2"
