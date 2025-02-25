@@ -41,19 +41,17 @@ const Notifications = () => {
   const handlePageChange = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
-    <div className="mt-[20vh] sm:bg-cover bg-center px-4 justify-center ss:px-[5rem] sm:px-[1rem] sm:flex gap-5 md:gap-12 lg:mx-[5rem]">
+    <div className="pt-[15vh] sm:bg-cover bg-center px-4 justify-center ss:px-[5rem] sm:px-[1rem] sm:flex gap-5 md:gap-12 lg:mx-[5rem]">
       <GeneralLeft />
 
-      <div className="w-full">
-        <header className="mb-6">
-          <h2 className="font-bold text-2xl text-primary dark:text-white">
+      <div className="mx-auto w-full max-w-[800px]">
+        <header className="mb-8">
+          <h2 className="font-bold font-heading_two text-primary dark:text-white text-3xl mb-4">
             Notifications
           </h2>
-          <nav className="flex items-center text-primary dark:text-gray-100 pt-4 font-semibold">
-            <Link to="/user/dashboard" className="">
-              Dashboard
-            </Link>
-            <div className="h-1 w-1 mx-5 bg-white rounded-full"></div>
+          <nav className="flex items-center text-primary dark:text-gray-100 py-4 font-semibold">
+            <Link to="/user/dashboard">Dashboard</Link>
+            <div className="h-1 w-1 mx-5 bg-primary dark:bg-white rounded-full"></div>
             <span className="text-gray-500">Notifications</span>
             <span>
               <button
@@ -74,7 +72,7 @@ const Notifications = () => {
           )}
         </header>
 
-        <section className="flex flex-col justify-center border-[0.01rem] border-gray-200 dark:border-gray-900 p-5 rounded-[1.5rem] dark:bg-opacity-15 shadow-lg shadow-indigo-950/10">
+        <section className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
           {successMessage && (
             <div className="bg-green-500 text-white p-2 rounded mb-4">
               {successMessage}

@@ -7,7 +7,7 @@ import { AuthContext } from "../context/AuthenticationContext";
 import { GeneralContext } from "../context/GeneralContext";
 
 const inputStyle =
-  "dark:bg-[#18202F] bg-white sm:w-[40vw] transition duration-450 ease-in-out mb-2 w-full text-primary dark:text-white py-1 px-4 h-[3.5rem] text-[1.2rem] rounded-2xl outline-0 border border-[#1CCEFF] dark:border-gray-700 dark:hover:border-gray-500 dark:hover:border-black dark:focus:border-[#1CCEFF]";
+  "dark:bg-[#18202F] bg-white w-full transition duration-450 ease-in-out mb-2 text-primary dark:text-white py-1 px-4 h-[3.5rem] text-[1.2rem] rounded-2xl outline-0 border border-[#1CCEFF] dark:border-gray-700 dark:hover:border-gray-500 dark:hover:border-black dark:focus:border-[#1CCEFF]";
 
 const Profile = () => {
   const { authTokens } = useContext(AuthContext);
@@ -85,26 +85,26 @@ const Profile = () => {
   };
 
   return (
-    <div className="mt-[6rem] sm:bg-cover bg-center px-4 justify-center ss:px-[5rem] sm:px-[1rem] sm:flex gap-5 md:gap-12 lg:mx-[5rem]">
+    <div className="pt-[15vh] sm:bg-cover bg-center px-4 justify-center ss:px-[5rem] sm:px-[1rem] sm:flex gap-5 md:gap-12 lg:mx-[5rem]">
       <GeneralLeft />
-      <div>
+      <div className="mx-auto w-full max-w-[800px]">
         <div>
-          <h2 className="font-bold font-heading_two text-primary dark:text-white text-[1.5rem]">
+          <h2 className="font-bold font-heading_two text-primary dark:text-white text-3xl mb-4">
             Profile
           </h2>
           <div className="flex items-center text-primary dark:text-gray-100 py-4 font-semibold">
             <Link to={"/user/dashboard"}>Dashboard</Link>{" "}
-            <div className="h-1 w-1 mx-5 bg-white rounded-full"></div>
+            <div className="h-1 w-1 mx-5 bg-primary dark:bg-white rounded-full"></div>
             <span className="text-gray-500">Edit Profile</span>
           </div>
         </div>
-        <div className="flex flex-col justify-center border-[0.01rem] border-gray-200 dark:border-gray-900 p-5 rounded-[1.5rem] dark:bg-opacity-15 shadow-lg shadow-indigo-950/10">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
           {successMessage && (
             <div className="transition-opacity duration-1000 ease-in-out bg-green-500 text-white p-2 rounded mb-4">
               {successMessage}
             </div>
           )}
-          <form onSubmit={handleSubmit} className="">
+          <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <input
                 disabled

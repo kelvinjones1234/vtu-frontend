@@ -19,12 +19,12 @@ import SuccessPopup from "./SuccessPopup";
 import { useWallet } from "../context/WalletContext";
 
 const selectStyle =
-  "custom-select dark:bg-[#18202F] bg-white sm:w-[40vw] hover:transition hover:duration-450 ease-in-out mb-3 w-full text-primary dark:text-white py-1 px-4 h-[3.5rem] text-[1.2rem] rounded-2xl outline-0 border border-[#1CCEFF] dark:border-gray-700 dark:hover:border-black dark:focus:border-[#1CCEFF]";
+  "custom-select dark:bg-[#18202F] bg-white w-full hover:transition hover:duration-450 ease-in-out mb-3 text-primary dark:text-white py-1 px-4 h-[3.5rem] text-[1.2rem] rounded-2xl outline-0 border border-[#1CCEFF] dark:border-gray-700 dark:hover:border-black dark:focus:border-[#1CCEFF]";
 
 const errorInputStyle = "border-red-500 dark:border-red-700";
 
 const inputStyle =
-  "dark:bg-[#18202F] bg-white sm:w-[40vw] hover:transition hover:duration-450 ease-in-out mb-3 w-full text-primary dark:text-white py-1 px-4 h-[3.5rem] text-[1.2rem] rounded-2xl outline-0 border border-[#1CCEFF] dark:border-gray-700 dark:hover:border-gray-500 dark:hover:border-black dark:focus:border-[#1CCEFF]";
+  "dark:bg-[#18202F] bg-white w-full hover:transition hover:duration-450 ease-in-out mb-3 text-primary dark:text-white py-1 px-4 h-[3.5rem] text-[1.2rem] rounded-2xl outline-0 border border-[#1CCEFF] dark:border-gray-700 dark:hover:border-gray-500 dark:hover:border-black dark:focus:border-[#1CCEFF]";
 
 const CableSub = () => {
   const { cableCategories } = useContext(ProductContext);
@@ -92,9 +92,6 @@ const CableSub = () => {
     }));
   };
 
-  console.log("selected:", formData);
-  console.log("selected cable cat:", selectedCableCatId);
-
   const validInputs = () => {
     const newError = {};
     if (!formData.uicNumber) newError.uicNumber = "A UIC number is required";
@@ -107,8 +104,6 @@ const CableSub = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    console.log(formData);
 
     if (validInputs()) {
       if (rememberMe) {
@@ -268,11 +263,11 @@ const CableSub = () => {
   }, [formData.selectedCableCategory, api]);
 
   return (
-    <div className="bg-bg_on h-auto bg-contain bg-no-repeat justify-center pt-[6rem] sm:bg-cover bg-center px-4 ss:px-[5rem] sm:px-[1rem] sm:flex gap-5 md:gap-12 lg:mx-[5rem]">
+    <div className="pt-[15vh] sm:bg-cover bg-center px-4 justify-center ss:px-[5rem] sm:px-[1rem] sm:flex gap-5 md:gap-12 lg:mx-[5rem]">
       <GeneralLeft />
-      <div className="">
+      <div className="mx-auto w-full max-w-[800px]">
         <div>
-          <h2 className="font-bold font-heading_two text-primary dark:text-white text-[1.5rem]">
+          <h2 className="font-bold font-heading_two text-primary dark:text-white text-3xl mb-4">
             Buy Cable Subscription
           </h2>
           <div className="flex items-center text-primary dark:text-gray-100 py-4 font-semibold">
@@ -281,8 +276,8 @@ const CableSub = () => {
             <span className="text-gray-500">Cable Subscription</span>
           </div>
         </div>
-        <div className="flex flex-col justify-center border-[0.01rem] border-gray-200 dark:border-gray-900 p-5 rounded-[1.5rem] dark:bg-opacity-15 shadow-lg shadow-indigo-950/10">
-          <form onSubmit={handleSubmit}>
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
+          <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <select
                 name="selectedCableCategory"
@@ -306,7 +301,6 @@ const CableSub = () => {
               </select>
             </div>
             <div>
-              {console.log(cablePlans)}
               <select
                 name="selectedCablePlan"
                 aria-label="Cable Plan"
@@ -321,7 +315,6 @@ const CableSub = () => {
                 {cablePlans.map((item) => (
                   <option value={item.plan_id} key={item.id}>
                     {item.cable_plan}
-                    {console.log(item.plan_id)}
                   </option>
                 ))}
               </select>
@@ -378,7 +371,7 @@ const CableSub = () => {
             )}
             <div className="flex flex-wrap w-full text-white justify-between text-[1rem] py-5">
               <p
-                className="dark:text-white text-primary opacity-80 font-semibold"
+                className="dark:text-white text-primary opacity-80 font-semibold cursor-pointer"
                 onClick={handleBypass}
               >
                 Bypass UIC Number
