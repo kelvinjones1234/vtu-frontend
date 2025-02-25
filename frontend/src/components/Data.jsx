@@ -1,22 +1,15 @@
-import React, {
-  useContext,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import GeneralLeft from "./GeneralLeft";
 import GeneralRight from "./GeneralRight";
 import { ProductContext } from "../context/ProductContext";
 import { GeneralContext } from "../context/GeneralContext";
-import { useWallet } from "../context/WalletContext";
 import { AuthContext } from "../context/AuthenticationContext";
 import SubmitButton from "./SubmitButton";
 import ConfirmationPopup from "./ConfirmationPopup";
 import ErrorPopup from "./ErrorPopup";
 import SuccessPopup from "./SuccessPopup";
-import axios from "axios";
+import { useTransactionSubmit } from "./UserTransactionSubmit";
 
 const selectStyle =
   "custom-select dark:bg-[#18202F] bg-white sm:w-[40vw] hover:transition hoveer:duration-450 hover:ease-in-out mb-3 w-full text-primary dark:text-white py-1 px-4 h-[3.5rem] text-[1.2rem] rounded-2xl outline-none border border-[#1CCEFF] dark:border-gray-700 dark:hover:border-black dark:focus:border-[#1CCEFF]";
@@ -27,10 +20,9 @@ const inputStyle =
 const errorInputStyle = "border-red-500 dark:border-red-700";
 
 const Data = () => {
-  const { dataNetworks, activeApi } = useContext(ProductContext);
-  const { api, detectNetwork, setLoading } = useContext(GeneralContext);
-  const { user, authTokens, logoutUser, rememberMe } = useContext(AuthContext);
-  const { walletData, setWalletData } = useWallet();
+  const { dataNetworks } = useContext(ProductContext);
+  const { api, detectNetwork } = useContext(GeneralContext);
+  const { user } = useContext(AuthContext);
 
   const [formData, setFormData] = useState({
     selectedNetwork: "",
@@ -56,8 +48,6 @@ const Data = () => {
     successMessage: "",
     errorPopupMessage: "",
   });
-
-  const memoizedApi = useMemo(() => api, [api]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -168,150 +158,24 @@ const Data = () => {
     return Object.keys(newError).length === 0;
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    if (validInputs()) {
-      if (rememberMe) {
-        const token = localStorage.getItem("authTokens");
-        const parsedToken = token ? JSON.parse(token) : null;
-
-        if (parsedToken) {
-          const storedAccessToken = parsedToken.access;
-          if (storedAccessToken !== authTokens.access) {
-            console.log("Token altered or empty");
-            logoutUser();
-          } else {
-            setPopupState((prev) => ({ ...prev, isConfirmOpen: true }));
-          }
-        } else {
-          console.log("No parsed token found");
-          logoutUser();
-        }
-      } else {
-        // If rememberMe is false, proceed without checking local storage
-        setPopupState((prev) => ({ ...prev, isConfirmOpen: true }));
-      }
-    }
+  const generateUniqueId = (length = 16) => {
+    const array = new Uint8Array(length / 2);
+    window.crypto.getRandomValues(array);
+    return Array.from(array, (byte) => byte.toString(16).padStart(2, "0")).join(
+      ""
+    );
   };
 
-  const handleConfirm = useCallback(async () => {
-    setPopupState((prev) => ({ ...prev, isConfirmOpen: false }));
-    setLoading(true);
+  const productType = "data";
 
-    const generateUniqueId = (length = 16) => {
-      const array = new Uint8Array(length / 2);
-      window.crypto.getRandomValues(array);
-      return Array.from(array, (byte) =>
-        byte.toString(16).padStart(2, "0")
-      ).join("");
-    };
-
-    try {
-      const walletResponse = await memoizedApi.get(`wallet/${user.username}/`, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${authTokens.access}`,
-        },
-      });
-
-      if (walletResponse.data.balance < formData.price) {
-        throw new Error(
-          `Insufficient Funds ₦${walletResponse.data.balance}.00`
-        );
-      }
-
-      const payload = {
-        network: formData.networkId,
-        phone: formData.phone,
-        data_plan: formData.selectedDataPlanId,
-        bypass: bypassPhoneNumber,
-        "request-id": `Data_${generateUniqueId()}`,
-      };
-
-      const response = await axios.post(
-        "https://kusosub.com/api/data",
-        payload,
-        {
-          headers: {
-            Authorization: `Token ${activeApi}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      const newBalance = Number(walletData.balance) - formData.price;
-      const deduct = -formData.price;
-
-      await memoizedApi.put(
-        `fund-wallet/${user.username}/`,
-        { balance: deduct },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${authTokens.access}`,
-          },
-        }
-      );
-
-      setWalletData((prevData) => ({ ...prevData, balance: newBalance }));
-
-      await memoizedApi.post(
-        "transactions/",
-        {
-          transaction_ref_no: response.data.transid,
-          wallet: user.user_id,
-          transaction_type: "DATA",
-          product: formData.planName,
-          price: formData.price,
-          status: response.data.status,
-          new_bal: newBalance,
-          phone: formData.phone,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${authTokens.access}`,
-          },
-        }
-      );
-
-      setPopupState((prev) => ({
-        ...prev,
-        successMessage: "Transaction successful!",
-        isSuccessOpen: true,
-      }));
-    } catch (error) {
-      const errorMsg = error.response
-        ? error.response.data.message
-        : error.message;
-
-      if (errorMsg.includes("Insufficient Account")) {
-        setPopupState((prev) => ({
-          ...prev,
-          errorPopupMessage: "Network error occurred!",
-          isErrorOpen: true,
-        }));
-      } else {
-        setPopupState((prev) => ({
-          ...prev,
-          errorPopupMessage: errorMsg,
-          isErrorOpen: true,
-        }));
-      }
-    } finally {
-      setLoading(false);
-    }
-  }, [
-    memoizedApi,
-    user.username,
-    authTokens.access,
-    walletData,
+  const { handleSubmit, handleConfirm } = useTransactionSubmit({
+    validInputs,
+    setPopupState,
+    generateUniqueId,
+    productType,
     formData,
     bypassPhoneNumber,
-    setWalletData,
-    setLoading,
-  ]);
+  });
 
   const handleCancel = () =>
     setPopupState((prev) => ({ ...prev, isConfirmOpen: false }));
@@ -538,3 +402,5 @@ const Data = () => {
 };
 
 export default Data;
+
+

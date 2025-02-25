@@ -18,6 +18,7 @@ import ConfirmationPopup from "./ConfirmationPopup";
 import ErrorPopup from "./ErrorPopup";
 import SuccessPopup from "./SuccessPopup";
 import { useWallet } from "../context/WalletContext";
+import { useTransactionSubmit } from "./UserTransactionSubmit";
 
 const selectStyle =
   "custom-select dark:bg-[#18202F] bg-white sm:w-[40vw] hover:transition hover:duration-450 ease-in-out mb-3 w-full text-primary dark:text-white py-1 px-4 h-[3.5rem] text-[1.2rem] rounded-2xl outline-0 border border-[#1CCEFF] dark:border-gray-700 dark:hover:border-black dark:focus:border-[#1CCEFF]";
@@ -30,7 +31,7 @@ const errorInputStyle = "border-red-500 dark:border-red-700";
 const Airtime = () => {
   const { api, detectNetwork, setLoading } = useContext(GeneralContext);
   const { airtimeNetworks, activeApi } = useContext(ProductContext);
-  const { user, authTokens, rememberMe} = useContext(AuthContext);
+  const { user, authTokens, rememberMe } = useContext(AuthContext);
   const { walletData, setWalletData } = useWallet();
 
   const [formData, setFormData] = useState({
@@ -43,11 +44,8 @@ const Airtime = () => {
   });
 
   const [airtimeTypes, setAirtimeTypes] = useState([]);
-  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [isErrorOpen, setIsErrorOpen] = useState(false);
   const [errorPopupMessage, setErrorPopupMessage] = useState("");
-  const [isSuccessOpen, setIsSuccessOpen] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
   const [errors, setErrors] = useState({});
   const [bypassPhoneNumber, setBypassPhoneNumber] = useState(false);
   const [networkMessage, setNetworkMessage] = useState("");
@@ -127,33 +125,6 @@ const Airtime = () => {
     return Object.keys(newErrors).length === 0;
   }, [formData, user.transaction_pin]);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    if (validInputs()) {
-      if (rememberMe) {
-        const token = localStorage.getItem("authTokens");
-        const parsedToken = token ? JSON.parse(token) : null;
-
-        if (parsedToken) {
-          const storedAccessToken = parsedToken.access;
-          if (storedAccessToken !== authTokens.access) {
-            console.log("Token altered or empty");
-            logoutUser();
-          } else {
-            setPopupState((prev) => ({ ...prev, isConfirmOpen: true }));
-          }
-        } else {
-          console.log("No parsed token found");
-          logoutUser();
-        }
-      } else {
-        // If rememberMe is false, proceed without checking local storage
-        setPopupState((prev) => ({ ...prev, isConfirmOpen: true }));
-      }
-    }
-  };
-
   const generateUniqueId = useCallback((length = 16) => {
     const array = new Uint8Array(length / 2);
     window.crypto.getRandomValues(array);
@@ -162,114 +133,13 @@ const Airtime = () => {
     );
   }, []);
 
-  const handleConfirm = useCallback(async () => {
-    setPopupState((prev) => ({ ...prev, isConfirmOpen: false }));
-    setLoading(true);
-    try {
-      const walletResponse = await api.get(`wallet/${user.username}/`, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${authTokens.access}`,
-        },
-      });
-
-      if (walletResponse.data.balance < formData.amount) {
-        throw new Error("Insufficient Funds");
-      }
-
-      const payload = {
-        network: formData.networkId,
-        phone: formData.phone,
-        amount: formData.amount,
-        plan_type: formData.selectedAirtimeType.toUpperCase(),
-        bypass: bypassPhoneNumber,
-        "request-id": `Airtime_${generateUniqueId()}`,
-      };
-
-      const response = await axios.post(
-        "https://kusosub.com/api/topup/",
-        payload,
-        {
-          headers: {
-            Authorization: `Token ${activeApi}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      const newBalance = Number(walletData.balance) - formData.amount;
-      const deduct = -formData.amount;
-
-      await api.put(
-        `fund-wallet/${user.username}/`,
-        { balance: deduct },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${authTokens.access}`,
-          },
-        }
-      );
-
-      setWalletData((prevData) => ({ ...prevData, balance: newBalance }));
-      productDes = `₦${formData.amount} ${formData.selectedNetwork} airtime`;
-      await api.post(
-        "transactions/",
-        {
-          transaction_ref_no: response.data.transid,
-          wallet: user.user_id,
-          transaction_type: "AIRTIME",
-          product: productDes.toUpperCase(),
-          price: formData.amount,
-          status: response.data.status,
-          new_bal: newBalance,
-          phone: formData.phone,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: "Bearer " + String(authTokens.access),
-          },
-        }
-      );
-
-      setPopupState((prev) => ({
-        ...prev,
-        successMessage: "Transaction successful!",
-        isSuccessOpen: true,
-      }));
-    } catch (error) {
-      const errorMsg = error.response
-        ? error.response.data.message
-        : error.message;
-
-      if (errorMsg.includes("Insufficient Account")) {
-        setPopupState((prev) => ({
-          ...prev,
-          errorPopupMessage: "Network error occurred!",
-          isErrorOpen: true,
-        }));
-      } else {
-        setPopupState((prev) => ({
-          ...prev,
-          errorPopupMessage: errorMsg,
-          isErrorOpen: true,
-        }));
-      }
-    } finally {
-      setLoading(false);
-    }
-  }, [
-    api,
-    authTokens.access,
-    bypassPhoneNumber,
-    formData,
+  const { handleSubmit, handleConfirm } = useTransactionSubmit({
+    validInputs,
+    setPopupState,
     generateUniqueId,
-    setLoading,
-    user.username,
-    user.user_id,
-    walletData.balance,
-  ]);
+    formData,
+    bypassPhoneNumber,
+  });
 
   const handleCancel = () =>
     setPopupState((prev) => ({ ...prev, isConfirmOpen: false }));

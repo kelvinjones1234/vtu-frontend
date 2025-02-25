@@ -97,9 +97,9 @@ const GeneralProvider = ({ children }) => {
   const api = axios.create({
     // baseURL: "https://madupay.pythonanywhere.com/api",
     // baseURL: "https://host-test-sable.vercel.app/api",
-    baseURL: "https://host-test-sable.vercel.app/api",
+    baseURL: "http://127.0.0.1:8000/api",
 
-    timeout: 20000,
+    timeout: 1000 * 60,
     headers: {
       "Content-Type": "application/json",
     },
