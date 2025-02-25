@@ -162,7 +162,7 @@ const RegistrationPage = () => {
       </header>
 
       <main className="pt-[5.2rem] px-4 md:px-16 lg:px-32">
-        <div className="max-w-6xl mx-auto sm:flex justify-between items-start">
+        <div className="max-w-6xl mx-auto sm:flex justify-between items-start sm:mt-[15vh]">
           <LeftSide />
           <div className="sm:w-1/2 max-w-md mx-auto sm:mx-0">
             <div className="mb-8">

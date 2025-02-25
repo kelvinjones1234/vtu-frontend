@@ -235,9 +235,9 @@ const TransactionHistory = () => {
   };
 
   return (
-    <div className="bg-bg_on h-auto bg-contain bg-no-repeat mt-[6rem] sm:bg-cover bg-center px-4 justify-center ss:px-[5rem] sm:px-[1rem] sm:flex gap-5 md:gap-12 lg:mx-[5rem]">
+    <div className="pt-[15vh] sm:bg-cover bg-center px-4 justify-center ss:px-[5rem] sm:px-[1rem] sm:flex gap-5 md:gap-12 lg:mx-[5rem]">
       <GeneralLeft />
-      <div className="min-w-[349.20px] pr-2 mx-auto">
+      <div className="mx-auto w-full max-w-[800px]">
         <div className="mb-8">
           <h2 className="font-bold font-heading_two text-primary dark:text-white text-3xl mb-4">
             Transaction History
@@ -252,14 +252,14 @@ const TransactionHistory = () => {
           <input
             type="search"
             placeholder="Search for transaction"
-            className="w-full px-4 py-1 text-primary dark:text-white bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-4 py-1 text-primary dark:text-white bg-white dark:bg-gray-800 rounded-xl border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-transparent"
             onChange={(e) => setSearchTerm(e.target.value)}
           />
           <div className="flex flex-wrap gap-4">
             <select
               name="category"
               id="category"
-              className="custom-select flex-grow px-4 py-1 text-primary dark:text-white bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-transparent"
+              className="custom-select flex-grow px-4 py-1 text-primary dark:text-white bg-white dark:bg-gray-800 rounded-xl border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-transparent"
               onChange={(e) => setCategory(e.target.value)}
             >
               <option value="">All categories</option>
@@ -272,7 +272,7 @@ const TransactionHistory = () => {
             <select
               name="status"
               id="status"
-              className="custom-select flex-grow px-4 py-1 text-primary dark:text-white bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-transparent"
+              className="custom-select flex-grow px-4 py-1 text-primary dark:text-white bg-white dark:bg-gray-800 rounded-xl border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-transparent"
               onChange={(e) => setStatus(e.target.value)}
             >
               <option value="">All Status</option>
@@ -283,18 +283,18 @@ const TransactionHistory = () => {
           <div className="flex gap-4">
             <input
               type="date"
-              className="flex-grow px-4 py-1 text-primary dark:text-white bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-transparent"
+              className="flex-grow px-4 py-1 text-primary dark:text-white bg-white dark:bg-gray-800 rounded-xl border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-transparent"
               onChange={(e) => setStartDate(e.target.value)}
             />
             <input
               type="date"
-              className="flex-grow px-4 py-1 text-primary dark:text-white bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-transparent"
+              className="flex-grow px-4 py-1 text-primary dark:text-white bg-white dark:bg-gray-800 rounded-xl border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-transparent"
               onChange={(e) => setEndDate(e.target.value)}
             />
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>

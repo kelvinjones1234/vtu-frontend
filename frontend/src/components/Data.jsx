@@ -12,10 +12,10 @@ import SuccessPopup from "./SuccessPopup";
 import { useTransactionSubmit } from "./UserTransactionSubmit";
 
 const selectStyle =
-  "custom-select dark:bg-[#18202F] bg-white sm:w-[40vw] hover:transition hoveer:duration-450 hover:ease-in-out mb-3 w-full text-primary dark:text-white py-1 px-4 h-[3.5rem] text-[1.2rem] rounded-2xl outline-none border border-[#1CCEFF] dark:border-gray-700 dark:hover:border-black dark:focus:border-[#1CCEFF]";
+  "custom-select dark:bg-[#18202F] bg-white w-full hover:transition hover:duration-450 hover:ease-in-out mb-3 text-primary dark:text-white py-1 px-4 h-[3.5rem] text-[1.2rem] rounded-2xl outline-none border border-[#1CCEFF] dark:border-gray-700 dark:hover:border-black dark:focus:border-[#1CCEFF]";
 
 const inputStyle =
-  "dark:bg-[#18202F] bg-white sm:w-[40vw] hover:transition hoveer:duration-450 hover:ease-in-out mb-3 w-full text-primary dark:text-white py-1 px-4 h-[3.5rem] text-[1.2rem] rounded-2xl outline-none border border-[#1CCEFF] dark:border-gray-700 dark:hover:border-gray-500 dark:hover:border-black dark:focus:border-[#1CCEFF]";
+  "dark:bg-[#18202F] bg-white w-full hover:transition hover:duration-450 hover:ease-in-out mb-3 text-primary dark:text-white py-1 px-4 h-[3.5rem] text-[1.2rem] rounded-2xl outline-none border border-[#1CCEFF] dark:border-gray-700 dark:hover:border-gray-500 dark:hover:border-black dark:focus:border-[#1CCEFF]";
 
 const errorInputStyle = "border-red-500 dark:border-red-700";
 
@@ -184,11 +184,11 @@ const Data = () => {
   const handleBypass = () => setBypassPhoneNumber((prev) => !prev);
 
   return (
-    <div className="pt-[6rem] sm:bg-cover bg-center px-4 justify-center ss:px-[5rem] sm:px-[1rem] sm:flex gap-5 md:gap-12 lg:mx-[5rem]">
+    <div className="pt-[15vh] sm:bg-cover bg-center px-4 justify-center ss:px-[5rem] sm:px-[1rem] sm:flex gap-5 md:gap-12 lg:mx-[5rem]">
       <GeneralLeft />
-      <div>
+      <div className="mx-auto w-full max-w-[800px]">
         <div>
-          <h2 className="font-bold font-heading_two text-primary dark:text-white text-[1.5rem]">
+          <h2 className="font-bold font-heading_two text-primary dark:text-white text-[1.5rem] mb-4">
             Buy Data
           </h2>
           <div className="flex items-center text-primary dark:text-gray-100 py-4 font-semibold">
@@ -197,7 +197,7 @@ const Data = () => {
             <span className="text-gray-500">Data</span>
           </div>
         </div>
-        <div className="flex flex-col justify-center border-[0.01rem] dark:border-gray-900 p-5 rounded-[1.5rem] shadow-lg shadow-indigo-950/10">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
           <form onSubmit={handleSubmit}>
             <div>
               {errorMessage.selectedNetwork && (
@@ -353,13 +353,13 @@ const Data = () => {
               </p>
               <div className="flex items-center mr-3">
                 <div
-                  className={`h-5 w-10 rounded-full flex items-center relative cursor-pointer hover:transition-colors hoveer:duration-300 hover:ease-in-out ${
+                  className={`h-5 w-10 rounded-full flex items-center relative cursor-pointer hover:transition-colors hover:duration-300 hover:ease-in-out ${
                     bypassPhoneNumber ? "bg-gray-600" : "bg-primary"
                   }`}
                   onClick={handleBypass}
                 >
                   <div
-                    className={`h-6 w-6 bg-white bg-gray-400 rounded-full absolute transform hover:transition-transform hoveer:duration-300 hover:ease-in-out ${
+                    className={`h-6 w-6 bg-white bg-gray-400 rounded-full absolute transform hover:transition-transform hover:duration-300 hover:ease-in-out ${
                       bypassPhoneNumber
                         ? "translate-x-5"
                         : "translate-x-[-0.1rem]"
@@ -402,5 +402,3 @@ const Data = () => {
 };
 
 export default Data;
-
-

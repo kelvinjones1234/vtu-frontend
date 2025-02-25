@@ -4,15 +4,6 @@ import SubmitButton from "../components/SubmitButton";
 import axios from "axios";
 import { GeneralContext } from "../context/GeneralContext";
 import LeftSide from "../components/LeftSide";
-import logo from "../assets/4.svg";
-
-// const LeftSide = () => (
-//   <div className="left leading-[3rem] relative hidden justify-center items-center sm:flex h-[364px] shadow-lg shadow-indigo-900/20 bg-opacity-50 rounded-2xl w-[20rem] bg-black text-white">
-//     <div className="atom-logo text-[6vw] font-bold text-gradient absolute">
-//       Atom <br /> <span className="text-[1.5vw]">Virtual Top Up</span>
-//     </div>
-//   </div>
-// );
 
 const PasswordResetRequestPage = () => {
   const { setLoading } = useContext(GeneralContext);
@@ -45,48 +36,52 @@ const PasswordResetRequestPage = () => {
   };
 
   return (
-    <div className="min-w-[150px] z-[-1] font-body_two h-screen bg-dark-custom-gradient">
-      <div className="authentication bg-bg_one bg-contain md:bg-cover bg-center w-full min-h-screen bg-no-repeat">
-        <div className="authenticationnavbar flex justify-between py-[1.18rem] px-4 lg:px-[6rem]">
+    <div className="min-h-screen bg-dark-custom-gradient font-body_two">
+      <div className="authentication bg-bg_one bg-contain md:bg-cover bg-center min-h-screen bg-no-repeat">
+        <nav className="flex justify-between px-4 lg:px-24 py-[.75rem]">
           <div className="flex items-center">
-            {/* <img src={logo} alt="" className="h-7 mb-1" /> */}
             <Link to={"/"}>
               <div className="logo font-heading_one text-transparent bg-clip-text pr-2 text-[.8rem] rounded-[.5rem] font-bold bg-gradient-to-r from-purple-400 via-sky-500 to-red-500 border-white">
                 MaduConnect
               </div>
             </Link>
           </div>
-          <div className="hidden ss:block text-gray-300">
+          <div className="hidden sm:block text-gray-300">
             Don't have an account?
-            <span className="text-link font-bold cursor-pointer hover:text-sky-400 transition duration-450 ease-in-out">
-              <Link to="/authentication/register"> Get started</Link>
-            </span>
+            <Link
+              to="/authentication/register"
+              className="ml-1 text-link font-bold hover:text-sky-400 transition duration-300 ease-in-out"
+            >
+              Get started
+            </Link>
           </div>
-        </div>
-        <form
-          onSubmit={reset}
-          className="font-poppins mt-[3rem] sm:flex justify-between login mx-auto px-4 w-full md:px-[4rem] lg:px-[8rem]"
-        >
-          <LeftSide />
-          <div className="right sm:w-[50%] max-w-[550px] mx-auto sm:mx-0">
-            <div className="top-text pb-6">
-              <h5 className="font-bold leading-9 mb-5 font-heading_two text-[2rem] text-gray-300">
-                Request Password Reset
-              </h5>
-              <p className="text-gray-300 text-[1.2rem]">
-                Enter your registered email to reset your password
-              </p>
-            </div>
-            <div className="pb-3">
+        </nav>
+
+        <div className="mt-[1.8rem] px-4 md:px-16 lg:px-32 sm:mt-[20vh]">
+          <form
+            onSubmit={reset}
+            className="font-poppins sm:flex justify-between max-w-6xl mx-auto"
+          >
+            <LeftSide />
+            <div className="sm:w-1/2 max-w-md mx-auto sm:mx-0">
+              <div className="mb-8">
+                <h1 className="font-bold font-heading_two text-4xl text-gray-300 mb-2">
+                  Request Password Reset
+                </h1>
+                <p className="text-gray-300 text-lg">
+                  Enter your registered email to reset your password
+                </p>
+              </div>
+
               {(error || message) && (
                 <div
-                  className={`p-4 rounded-lg shadow-md flex items-center ${
+                  className={`mb-4 p-4 rounded-lg shadow-md flex items-start ${
                     error
-                      ? "bg-red-50 text-red-800 border-l-4 border-red-500"
-                      : "bg-green-50 text-green-800 border-l-4 border-green-500"
+                      ? "bg-red-50 border-l-4 border-red-500"
+                      : "bg-green-50 border-l-4 border-green-500"
                   }`}
                 >
-                  <div className="flex-shrink-0 mr-3 mb-4">
+                  <div className="flex-shrink-0 mr-3 mt-0.5">
                     {error ? (
                       <svg
                         className="h-5 w-5 text-red-400"
@@ -119,37 +114,34 @@ const PasswordResetRequestPage = () => {
                   </div>
                 </div>
               )}
-            </div>
-            <div className="relative w-full py-2">
-              <input
-                type="email"
-                placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                aria-label="Email"
-                className="w-full text-white py-3 px-4 bg-[#18202F] text-lg rounded-xl outline-none border border-gray-700 hover:border-gray-500 focus:border-link transition duration-300 ease-in-out"
-              />
-            </div>
-            <SubmitButton label="Get Password Reset Link" />
 
-            <div className="text-center text-[1rem] text-gray-300 py-4 ss:hidden">
-              <p>
-                Already have an account?{" "}
-                <span className="text-link font-semibold cursor-pointer">
-                  <Link to={"/authentication/login"}>Login</Link>
-                </span>
-              </p>
-            </div>
-            <div className="text-center text-[1rem] text-gray-300 py-4 ss:hidden">
-              <p>
+              <div className="mb-3">
+                <div>
+                  <input
+                    type="email"
+                    placeholder="Email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    aria-label="Email"
+                    className="w-full text-white py-3 px-4 bg-[#18202F] text-lg rounded-xl outline-none border border-gray-700 hover:border-gray-500 focus:border-link transition duration-300 ease-in-out"
+                  />
+                </div>
+              </div>
+
+              <SubmitButton label="Get Password Reset Link" />
+
+              <p className="text-center text-gray-300 mt-6 sm:hidden">
                 Don't have an account?{" "}
-                <span className="text-link font-semibold cursor-pointer">
-                  <Link to={"/authentication/register"}>Get started</Link>
-                </span>
+                <Link
+                  to="/authentication/register"
+                  className="text-link font-semibold"
+                >
+                  Get started
+                </Link>
               </p>
             </div>
-          </div>
-        </form>
+          </form>
+        </div>
       </div>
     </div>
   );

@@ -145,18 +145,18 @@ export const useTransactionSubmit = ({
       setLoading(false);
     }
   }, [
-    api,
-    authTokens.access,
+    setPopupState,
     bypassPhoneNumber,
     formData,
     generateUniqueId,
+    productType,
+    api,
     setLoading,
+    authTokens.access,
     user.username,
     user.user_id,
     walletData.balance,
-    productType,
     setWalletData,
-    setPopupState,
   ]);
 
   return { handleSubmit, handleConfirm };

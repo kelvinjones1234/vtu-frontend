@@ -10,32 +10,38 @@ const PrivacyPolicy = () => {
   const { policy } = useContext(ProductContext);
 
   return (
-    <div
-      className={`bg-bg_on ${
-        !user && "lg:px-[6rem]"
-      } min-h-screen bg-contain bg-no-repeat justify-center mt-[6rem] sm:bg-cover bg-center px-4 sm:px-6 lg:px-8 xl:px-16 lg:mx-[4rem] ${
-        user ? "" : "dark" // Apply dark mode if no user is logged in
-      }`}
-    >
-      <div className="max-w-7xl mx-auto sm:flex gap-8">
+    <div className={`${!user && "lg:px-[6rem]"} ${user ? "" : "dark"}`}>
+      <div className="pt-[15vh] sm:bg-cover px-4 justify-center ss:px-[5rem] sm:px-[1rem] sm:flex gap-5 md:gap-12 lg:mx-[5rem]">
         {user && <GeneralLeft />}
-        <div className="min-w-[349.20px] pr-2 mx-auto">
+        <div className="mx-auto w-full max-w-[800px]">
+          {/* Mobile Header */}
+          {user && (
+            <div className="text-primary text-[1.5rem] font-bold dark:text-white pb-8 text-center xs:hidden">
+              Hi,{" "}
+              <span className="bg-gradient-to-r uppercase from-purple-400 via-sky-500 to-red-500 text-transparent bg-clip-text">
+                {user.username}
+              </span>
+            </div>
+          )}
+
+          {/* Privacy Policy Content */}
           <div className="mb-8">
             <h2 className="font-bold font-heading_two text-primary dark:text-white text-3xl mb-4">
               Privacy Policy
             </h2>
             <div className="flex items-center text-primary dark:text-gray-100 py-4 font-semibold">
-              <Link to={"/user/dashboard"}>Dashboard</Link>{" "}
+              <Link to={"/user/dashboard"}>Dashboard</Link>
               <div className="h-1 w-1 mx-5 bg-primary dark:bg-white rounded-full"></div>
               <span className="text-gray-500">Legal</span>
             </div>
           </div>
 
+          {/* Privacy Policy Details */}
           {policy && policy.length > 0 ? (
             policy.map((pol, index) => (
               <div
                 key={index}
-                className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6"
+                className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 mb-6"
               >
                 <div
                   dangerouslySetInnerHTML={{
@@ -45,7 +51,7 @@ const PrivacyPolicy = () => {
               </div>
             ))
           ) : (
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
               <p>No privacy policy available.</p>
             </div>
           )}

@@ -10,16 +10,21 @@ const About = ({ style }) => {
   const { about } = useContext(ProductContext);
 
   return (
-    <div
-      className={`${
-        !user && "lg:px-[6rem]"
-      } min-h-screen bg-contain lg:px-[6rem] bg-no-repeat justify-center mt-[6rem] sm:bg-cover bg-center px-4 sm:px-6 lg:px-8 xl:px-16 ${
-        user ? "" : "dark"
-      }`} // Force dark mode if no user
-    >
-      <div className="max-w-7xl mx-auto sm:flex gap-8">
+    <div className={`${!user && "lg:px-[6rem]"} ${user ? "" : "dark"}`}>
+      <div className="pt-[15vh] sm:bg-cover px-4 justify-center ss:px-[5rem] sm:px-[1rem] sm:flex gap-5 md:gap-12 lg:mx-[5rem]">
         {user && <GeneralLeft />}
-        <div className="min-w-[349.20px] pr-2 mx-auto">
+        <div className="mx-auto w-full max-w-[800px]">
+          {/* Mobile Header */}
+          {user && (
+            <div className="text-primary text-[1.5rem] font-bold dark:text-white pb-8 text-center xs:hidden">
+              Hi,{" "}
+              <span className="bg-gradient-to-r uppercase from-purple-400 via-sky-500 to-red-500 text-transparent bg-clip-text">
+                {user.username}
+              </span>
+            </div>
+          )}
+
+          {/* About Content */}
           <div className="mb-8">
             <h2
               className={`${
@@ -37,11 +42,12 @@ const About = ({ style }) => {
             </div>
           </div>
 
+          {/* About Details */}
           {about && about.length > 0 ? (
             about.map((abt, index) => (
               <div
                 key={index}
-                className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 mb-6"
+                className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 mb-6"
               >
                 <div
                   className={`${style}`}
@@ -52,7 +58,7 @@ const About = ({ style }) => {
               </div>
             ))
           ) : (
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
               <p>No information available at the moment.</p>
             </div>
           )}

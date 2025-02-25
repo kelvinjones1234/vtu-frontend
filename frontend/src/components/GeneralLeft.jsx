@@ -92,7 +92,8 @@ const GeneralLeft = () => {
           <Transfer />
         </motion.div>
         <motion.div
-          className={`py-[.7rem] rounded-xl max-w-[13rem] flex items-center text-white px-4 mt-4  
+          onClick={handleServicesDropDowns}
+          className={`py-[.7rem] rounded-xl max-w-[13rem] flex items-center text-white px-4 mt-4 cursor-pointer 
           ${
             activePath === "/user/dashboard/services/data" ||
             activePath === "/user/dashboard/services/airtime" ||
@@ -103,25 +104,19 @@ const GeneralLeft = () => {
           whileHover={{ scale: 0.95 }}
           whileTap={{ scale: 0.95 }}
         >
-          <div
-            className="flex items-center relative gap-5 cursor-pointer"
-            onClick={handleServicesDropDowns}
-          >
-            <div className="flex items-center gap-3">
-              <FaCog className="w-4" style={{ color: "#1CCEFF" }} />
-              <div className="dark:text-white text-primary">Services</div>
-            </div>
+          <div className="relative flex items-center gap-3">
             <div className="">
+              <FaCog className="w-4" style={{ color: "#1CCEFF" }} />
+              
+            </div>
+            <div className="dark:text-white text-primary mr-[5rem]">
+                Services
+              </div>
+            <div className="absolute right-3">
               {servicesDropDown ? (
-                <FaChevronDown
-                  className="w-4 absolute top-[.3rem]"
-                  style={{ color: "#1CCEFF" }}
-                />
+                <FaChevronDown style={{ color: "#1CCEFF" }} />
               ) : (
-                <FaChevronRight
-                  className="w-4 absolute top-[.3rem]"
-                  style={{ color: "#1CCEFF" }}
-                />
+                <FaChevronRight style={{ color: "#1CCEFF" }} />
               )}
             </div>
           </div>

@@ -75,7 +75,7 @@ const LoginPage = () => {
           </div>
         </nav>
 
-        <div className="mt-[1.8rem] px-4 md:px-16 lg:px-32">
+        <div className="mt-[1.8rem] px-4 md:px-16 lg:px-32 sm:mt-[20vh]">
           <form
             onSubmit={login}
             className="font-poppins sm:flex justify-between max-w-6xl mx-auto"

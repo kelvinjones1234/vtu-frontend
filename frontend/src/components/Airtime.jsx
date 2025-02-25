@@ -21,18 +21,17 @@ import { useWallet } from "../context/WalletContext";
 import { useTransactionSubmit } from "./UserTransactionSubmit";
 
 const selectStyle =
-  "custom-select dark:bg-[#18202F] bg-white sm:w-[40vw] hover:transition hover:duration-450 ease-in-out mb-3 w-full text-primary dark:text-white py-1 px-4 h-[3.5rem] text-[1.2rem] rounded-2xl outline-0 border border-[#1CCEFF] dark:border-gray-700 dark:hover:border-black dark:focus:border-[#1CCEFF]";
+  "custom-select dark:bg-[#18202F] bg-white w-full hover:transition hover:duration-450 ease-in-out mb-3 text-primary dark:text-white py-1 px-4 h-[3.5rem] text-[1.2rem] rounded-2xl outline-0 border border-[#1CCEFF] dark:border-gray-700 dark:hover:border-black dark:focus:border-[#1CCEFF]";
 
 const inputStyle =
-  "dark:bg-[#18202F] bg-white sm:w-[40vw] hover:transition hover:duration-450 ease-in-out mb-3 w-full text-primary dark:text-white py-1 px-4 h-[3.5rem] text-[1.2rem] rounded-2xl outline-0 border border-[#1CCEFF] dark:border-gray-700 dark:hover:border-gray-500 dark:hover:border-black dark:focus:border-[#1CCEFF]";
+  "dark:bg-[#18202F] bg-white w-full hover:transition hover:duration-450 ease-in-out mb-3 text-primary dark:text-white py-1 px-4 h-[3.5rem] text-[1.2rem] rounded-2xl outline-0 border border-[#1CCEFF] dark:border-gray-700 dark:hover:border-gray-500 dark:hover:border-black dark:focus:border-[#1CCEFF]";
 
 const errorInputStyle = "border-red-500 dark:border-red-700";
 
 const Airtime = () => {
-  const { api, detectNetwork, setLoading } = useContext(GeneralContext);
-  const { airtimeNetworks, activeApi } = useContext(ProductContext);
-  const { user, authTokens, rememberMe } = useContext(AuthContext);
-  const { walletData, setWalletData } = useWallet();
+  const { api, detectNetwork } = useContext(GeneralContext);
+  const { airtimeNetworks } = useContext(ProductContext);
+  const { user } = useContext(AuthContext);
 
   const [formData, setFormData] = useState({
     selectedNetwork: "",
@@ -133,10 +132,13 @@ const Airtime = () => {
     );
   }, []);
 
+  const productType = "airtime";
+
   const { handleSubmit, handleConfirm } = useTransactionSubmit({
     validInputs,
     setPopupState,
     generateUniqueId,
+    productType,
     formData,
     bypassPhoneNumber,
   });
@@ -151,11 +153,11 @@ const Airtime = () => {
   const memoizedGeneralRight = useMemo(() => <GeneralRight />, []);
 
   return (
-    <div className="h-auto bg-contain bg-no-repeat pt-[6rem] justify-center sm:bg-cover bg-center px-4 ss:px-[5rem] sm:px-[1rem] sm:flex gap-5 md:gap-12 lg:mx-[5rem] font-body_two">
+    <div className="pt-[15vh] sm:bg-cover bg-center px-4 justify-center ss:px-[5rem] sm:px-[1rem] sm:flex gap-5 md:gap-12 lg:mx-[5rem]">
       {memoizedGeneralLeft}
-      <div>
+      <div className="mx-auto w-full max-w-[800px]">
         <div>
-          <h2 className="font-bold font-heading_two text-primary dark:text-white text-[1.5rem]">
+          <h2 className="font-bold font-heading_two text-primary dark:text-white text-[1.5rem] mb-4">
             Buy Airtime
           </h2>
           <div className="flex items-center text-primary dark:text-gray-100 py-4 font-semibold">
@@ -164,7 +166,7 @@ const Airtime = () => {
             <span className="text-gray-500">Airtime</span>
           </div>
         </div>
-        <div className="flex flex-col justify-center border-[0.01rem] border-gray-200 dark:border-gray-900 p-5 rounded-[1.5rem] dark:bg-opacity-15 shadow-lg shadow-indigo-950/10">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
           <form onSubmit={handleSubmit}>
             <div>
               <select
@@ -183,11 +185,11 @@ const Airtime = () => {
                   </option>
                 ))}
               </select>
-              {/* {errors.selectedNetwork && (
+              {errors.selectedNetwork && (
                 <p className="text-red-500 text-sm mt-1">
                   {errors.selectedNetwork}
                 </p>
-              )} */}
+              )}
             </div>
             <div>
               <select
@@ -214,11 +216,11 @@ const Airtime = () => {
                   </option>
                 ))}
               </select>
-              {/* {errors.selectedAirtimeType && (
+              {errors.selectedAirtimeType && (
                 <p className="text-red-500 text-sm mt-1">
                   {errors.selectedAirtimeType}
                 </p>
-              )} */}
+              )}
             </div>
 
             <div>
@@ -275,7 +277,7 @@ const Airtime = () => {
             </div>
             <div className="flex flex-wrap w-full text-white justify-between text-[1rem] py-3">
               <p
-                className="dark:text-white text-primary opacity-80 font-semibold"
+                className="dark:text-white text-primary opacity-80 font-semibold cursor-pointer"
                 onClick={handleBypass}
               >
                 Bypass Phone Number

@@ -64,7 +64,7 @@ const UserDashBoard = () => {
   if (error) return <div>Error: {error}</div>;
 
   return (
-    <div className="pt-[6rem] sm:bg-cover px-4 justify-center ss:px-[5rem] sm:px-[1rem] sm:flex gap-5 md:gap-12 lg:mx-[5rem]">
+    <div className="pt-[15vh] sm:bg-cover px-4 justify-center ss:px-[5rem] sm:px-[1rem] sm:flex gap-5 md:gap-12 lg:mx-[5rem]">
       <GeneralLeft />
       <div className="mx-auto">
         {/* Mobile Header */}
