@@ -21,13 +21,17 @@ const AuthProvider = ({ children }) => {
   const [rememberMe, setRememberMe] = useState(false);
 
   const getStoredTokens = () => {
+    // Check localStorage first, then sessionStorage
     const tokens =
-      sessionStorage.getItem("authTokens") ||
-      localStorage.getItem("authTokens");
+      localStorage.getItem("authTokens") ||
+      sessionStorage.getItem("authTokens");
     return tokens ? JSON.parse(tokens) : null;
   };
 
-  const [authTokens, setAuthTokens] = useState(getStoredTokens);
+  // Define authTokens state and initialize it with getStoredTokens
+  const [authTokens, setAuthTokens] = useState(getStoredTokens());
+
+  // Define user state and initialize it with the decoded token
   const [user, setUser] = useState(() => {
     const tokens = getStoredTokens();
     return tokens ? jwtDecode(tokens.access) : null;
@@ -48,12 +52,12 @@ const AuthProvider = ({ children }) => {
 
         localStorage.removeItem("fundingData");
 
-        // Always store in sessionStorage
-        sessionStorage.setItem("authTokens", JSON.stringify(data));
+        // Store in localStorage by default
+        localStorage.setItem("authTokens", JSON.stringify(data));
 
-        // Store in localStorage only if rememberMe is true
-        if (rememberMe) {
-          localStorage.setItem("authTokens", JSON.stringify(data));
+        // If rememberMe is false, also store in sessionStorage for temporary session
+        if (!rememberMe) {
+          sessionStorage.setItem("authTokens", JSON.stringify(data));
         }
 
         navigate("/user/dashboard");
@@ -119,12 +123,12 @@ const AuthProvider = ({ children }) => {
         setAuthTokens(data);
         setUser(jwtDecode(data.access));
 
-        // Always update sessionStorage
-        sessionStorage.setItem("authTokens", JSON.stringify(data));
+        // Update localStorage by default
+        localStorage.setItem("authTokens", JSON.stringify(data));
 
-        // Update localStorage only if it already contains authTokens
-        if (localStorage.getItem("authTokens")) {
-          localStorage.setItem("authTokens", JSON.stringify(data));
+        // If rememberMe is false, also update sessionStorage
+        if (!rememberMe) {
+          sessionStorage.setItem("authTokens", JSON.stringify(data));
         }
       } else {
         logoutUser();
@@ -136,7 +140,7 @@ const AuthProvider = ({ children }) => {
       );
       logoutUser();
     }
-  }, [authTokens?.refresh, memoizedApi]);
+  }, [authTokens?.refresh, memoizedApi, rememberMe]);
 
   useEffect(() => {
     if (authTokens) {
@@ -144,7 +148,7 @@ const AuthProvider = ({ children }) => {
       if (decodedToken.exp * 1000 < Date.now()) {
         logoutUser();
       } else {
-        const interval = setInterval(refreshToken, 17 * 60 * 1000);
+        const interval = setInterval(refreshToken, 17 * 60 * 1000); // Refresh token every 17 minutes
         return () => clearInterval(interval);
       }
     }

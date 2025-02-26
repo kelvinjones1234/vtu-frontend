@@ -53,6 +53,7 @@ export const useTransactionSubmit = ({
       let payload = {
         payload_data: {},
         price: formData.price,
+        transaction_type: productType,
       };
 
       // Construct payload dynamically based on product type
@@ -101,7 +102,10 @@ export const useTransactionSubmit = ({
       }
 
       const response = await api.post("post_payment/", payload, {
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${authTokens?.access}`,
+        },
       });
 
       // Handle different response statuses
