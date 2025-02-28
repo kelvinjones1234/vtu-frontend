@@ -70,24 +70,25 @@ const GeneralProvider = ({ children }) => {
 
   const handleThemeSettings = () => {
     const newTheme = theme === "dark" ? "light" : "dark";
-    setDarkMode(newTheme === "dark");
-    setTheme(newTheme);
-    localStorage.setItem("theme", newTheme);
+    setTheme(newTheme); // Update theme state
+    localStorage.setItem("theme", newTheme); // Save theme to localStorage
   };
 
   useEffect(() => {
+    // Retrieve theme from localStorage or default to "dark"
     const storedTheme = localStorage.getItem("theme");
-    if (storedTheme) {
-      setTheme(storedTheme);
-      setDarkMode(storedTheme === "dark");
-    } else {
-      // If no theme is stored, default to "dark"
-      document.documentElement.classList.add("dark");
-      setDarkMode(true);
-    }
+    const prefersDarkMode = window.matchMedia(
+      "(prefers-color-scheme: dark)"
+    ).matches;
+
+    // Set the initial theme
+    const initialTheme = storedTheme || (prefersDarkMode ? "dark" : "light");
+    setTheme(initialTheme); // Update theme state
+    localStorage.setItem("theme", initialTheme); // Save initial theme to localStorage
   }, []);
 
   useEffect(() => {
+    // Apply or remove the "dark" class from the root element based on the theme
     if (theme === "dark") {
       document.documentElement.classList.add("dark");
     } else {

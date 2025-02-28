@@ -63,7 +63,7 @@ export const useTransactionSubmit = ({
             network: formData.networkId,
             phone: formData.phone,
             data_plan: formData.selectedDataPlanId,
-            bypass: bypassPhoneNumber,
+            Ported_number: bypassPhoneNumber,
             description: formData.planName,
             "request-id": `Data_${generateUniqueId()}`,
           };
@@ -74,7 +74,8 @@ export const useTransactionSubmit = ({
             network: formData.networkId,
             phone: formData.phone,
             amount: formData.amount,
-            pin: formData.pin, // Required for security
+            pin: formData.pin, 
+            airtime_type: formData.selectedAirtimeType,
             "request-id": `Airtime_${generateUniqueId()}`,
           };
           break;
@@ -109,39 +110,63 @@ export const useTransactionSubmit = ({
       });
 
       // Handle different response statuses
-      switch (response.data.status) {
-        case "success":
-          setPopupState((prev) => ({
-            ...prev,
-            successMessage: "Transaction successful!",
-            isSuccessOpen: true,
-          }));
-          break;
+      if (response.data && response.data.status) {
+        switch (response.data.status) {
+          case "success":
+            setPopupState((prev) => ({
+              ...prev,
+              successMessage: "Transaction successful!",
+              isSuccessOpen: true,
+            }));
+            break;
 
-        case "fail":
-          setPopupState((prev) => ({
-            ...prev,
-            errorPopupMessage: response.data.response || "Transaction Failed",
-            isErrorOpen: true,
-          }));
-          break;
+          case "fail":
+            setPopupState((prev) => ({
+              ...prev,
+              errorPopupMessage: response.data.response || "Transaction Failed",
+              isErrorOpen: true,
+            }));
+            break;
 
-        default:
-          setPopupState((prev) => ({
-            ...prev,
-            errorPopupMessage: response.data.message || "An error occurred",
-            isErrorOpen: true,
-          }));
+          default:
+            setPopupState((prev) => ({
+              ...prev,
+              errorPopupMessage:
+                response.data.message || "Something went wrong!",
+              isErrorOpen: true,
+            }));
+        }
+      } else if (response.data && response.data.error) {
+        // Handle error response
+        setPopupState((prev) => ({
+          ...prev,
+          errorPopupMessage: response.data.error || "Something went wrong!",
+          isErrorOpen: true,
+        }));
+      } else {
+        // Handle unexpected response structure
+        setPopupState((prev) => ({
+          ...prev,
+          errorPopupMessage: "Unexpected response from the server",
+          isErrorOpen: true,
+        }));
       }
     } catch (error) {
-      const errorMsg = error.response
-        ? error.response.data.message
-        : error.message;
+      const errorMsg =
+        error.response &&
+        error.response.data.error &&
+        String(error.response.data.error).toLowerCase().includes("insufficient") // Convert to string first
+          ? "An error occurred. If error persists, please contact admin!" // Replace the entire message if it contains "insufficient"
+          : error.response
+          ? error.response.data.message ||
+            error.response.data.error ||
+            error.message
+          : error.message;
 
       setPopupState((prev) => ({
         ...prev,
         errorPopupMessage: errorMsg.includes("Insufficient Account")
-          ? "An error occurred. If it persists, please contact admin!"
+          ? "An error occurred. If error persists, please contact admin!"
           : errorMsg,
         isErrorOpen: true,
       }));

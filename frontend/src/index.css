@@ -162,7 +162,6 @@ select:-moz-autofill {
   color: #000000 !important; /* Text color */
 }
 
-
 /* Dark mode autofill styles */
 .dark input:-webkit-autofill,
 .dark input:-webkit-autofill:hover,
@@ -174,17 +173,16 @@ select:-moz-autofill {
 .dark select:-webkit-autofill:hover,
 .dark select:-webkit-autofill:focus {
   -webkit-text-fill-color: #ffffff !important; /* Text color */
-  -webkit-box-shadow: 0 0 0px 1000px #18202F inset !important; /* Background color */
+  -webkit-box-shadow: 0 0 0px 1000px #18202f inset !important; /* Background color */
 }
 
 /* Firefox dark mode autofill styles */
 .dark input:-moz-autofill,
 .dark textarea:-moz-autofill,
 .dark select:-moz-autofill {
-  background-color: #18202F !important; /* Background color */
-  color: #ffffff !important; /* Text color */
+  background-color: #18202f !important; /* Background color */
+  color: #ffffff !important; /* Text color */  
 }
-
 
 
 

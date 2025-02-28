@@ -1,4 +1,3 @@
-import axios from "axios";
 import { ProductContext } from "../context/ProductContext";
 import GeneralLeft from "./GeneralLeft";
 import GeneralRight from "./GeneralRight";
@@ -17,14 +16,12 @@ import SubmitButton from "./SubmitButton";
 import ConfirmationPopup from "./ConfirmationPopup";
 import ErrorPopup from "./ErrorPopup";
 import SuccessPopup from "./SuccessPopup";
-import { useWallet } from "../context/WalletContext";
 import { useTransactionSubmit } from "./UserTransactionSubmit";
 
 const selectStyle =
   "custom-select dark:bg-[#18202F] bg-white w-full hover:transition hover:duration-450 hover:ease-in-out mb-3 text-primary dark:text-white py-1 px-4 h-[3.5rem] text-[1.2rem] rounded-2xl outline-none border border-[#1CCEFF] dark:border-gray-700 hover:border-[#1CCEFF] dark:hover:border-[#1CCEFF] focus:border-[#1CCEFF] dark:focus:border-[#1CCEFF]";
 
-
-  const inputStyle =
+const inputStyle =
   "dark:bg-[#18202F] bg-white w-full hover:transition hover:duration-450 hover:ease-in-out mb-3 text-primary dark:text-white py-1 px-4 h-[3.5rem] text-[1.2rem] rounded-2xl outline-none border border-[#1CCEFF] dark:border-gray-700 dark:hover:border-[#1CCEFF] dark:hover:border-[#1CCEFF] dark:focus:border-[#1CCEFF]";
 
 const errorInputStyle = "border-red-500 dark:border-red-700";
@@ -112,9 +109,12 @@ const Airtime = () => {
       newErrors.selectedAirtimeType = "Please select an airtime type";
     if (!formData.phone) {
       newErrors.phone = "A phone number is required";
+    } else if (!/^\d+$/.test(formData.phone)) {
+      newErrors.phone = "Phone number must contain only digits";
     } else if (formData.phone.length !== 11) {
       newErrors.phone = "Enter a valid 11-digit phone number";
     }
+
     if (!formData.amount) newErrors.amount = "Please enter an amount";
     if (!formData.pin) {
       newErrors.pin = "PIN is required";
@@ -167,7 +167,7 @@ const Airtime = () => {
             <span className="text-gray-500">Airtime</span>
           </div>
         </div>
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-[1.5rem] shadow-lg p-6">
           <form onSubmit={handleSubmit}>
             <div>
               <select
@@ -312,7 +312,7 @@ const Airtime = () => {
         isOpen={popupState.isConfirmOpen}
         onConfirm={handleConfirm}
         onCancel={handleCancel}
-        message={`Are you sure you want to proceed with transferring ${formData.planName} to ${formData.phone}?`}
+        message={`Are you sure you want to proceed with transferring ₦${formData.amount} airtime to ${formData.phone}?`}
       />
 
       <ErrorPopup

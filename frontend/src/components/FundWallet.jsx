@@ -1,83 +1,28 @@
-import React, { useState, useEffect, useContext, useMemo } from "react";
+import React, { useState, useMemo } from "react";
 import { Copy, CheckCircle } from "lucide-react";
 import GeneralLeft from "./GeneralLeft";
 import GeneralRight from "./GeneralRight";
 import { Link } from "react-router-dom";
-import { GeneralContext } from "../context/GeneralContext";
-import { AuthContext } from "../context/AuthenticationContext";
 
-const FundWallet = () => {
-  const [fundingData, setFundingData] = useState(null);
+const FundWallet = ({ fundingData }) => {
   const [copiedAccount, setCopiedAccount] = useState(null);
-  const { api } = useContext(GeneralContext);
-  const { user } = useContext(AuthContext);
-  const localStorageKey = "fundingData"; // Key for local storage
 
-  useEffect(() => {
-    async function fetchFundingDetails() {
-      const apiUrl = `funding-details/${user.username}`;
-
-      try {
-        const response = await api.get(apiUrl, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-
-        const data = response.data[0]; // Assuming data is an array and you're fetching the first object
-        setFundingData(data); // Update state with the fetched data
-        localStorage.setItem(localStorageKey, JSON.stringify(data)); // Store in local storage
-      } catch (error) {
-        console.error(
-          "Error fetching data from API:",
-          error.response?.status,
-          error.response?.statusText
-        );
-      }
-    }
-
-    const storedData = localStorage.getItem(localStorageKey);
-    if (storedData) {
-      setFundingData(JSON.parse(storedData));
-    } else {
-      fetchFundingDetails();
-    }
-  }, [api]);
-
-  // Destructure funding data
+  // Destructure funding data with default values
   const {
     account_details: accounts = [], // Default to an empty array if accounts are not available
     created_at: createdOn,
-  } = fundingData || {}; // Handle null initial state gracefully
-
-  // Format the date dynamically
-  const formattedDate = useMemo(() => {
-    return createdOn
-      ? new Date(createdOn).toLocaleString("en-US", {
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-        })
-      : "N/A";
-  }, [createdOn]);
+  } = fundingData || {};
 
   // Function to handle copying account number
   const handleCopyAccount = (accountNumber) => {
     navigator.clipboard.writeText(accountNumber).then(() => {
       setCopiedAccount(accountNumber);
-
-      // Reset copied state after 2 seconds
-      setTimeout(() => {
-        setCopiedAccount(null);
-      }, 1000);
+      setTimeout(() => setCopiedAccount(null), 1000);
     });
   };
 
   return (
-    <div className="mt-[6rem] sm:bg-cover bg-center px-4 justify-center ss:px-[5rem] sm:px-[1rem] sm:flex gap-5 md:gap-12 lg:mx-[5rem]">
+    <div className="mt-[15vh] sm:bg-cover bg-center px-4 justify-center ss:px-[5rem] sm:px-[1rem] sm:flex gap-5 md:gap-12 lg:mx-[5rem]">
       <GeneralLeft />
       <div>
         <div>
@@ -95,24 +40,11 @@ const FundWallet = () => {
             Linked Bank Accounts for Automated Transfer
           </h1>
 
-          {fundingData ? (
+          {fundingData && accounts.length > 0 ? (
             <>
               <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
                 Seamless Wallet Funding: Automated Bank Transfer
               </p>
-              <div className="bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500 p-3 mb-4">
-                <p className="text-sm text-gray-700 dark:text-gray-200">
-                  Fund your wallet instantly by transferring to any of the
-                  accounts below. Transfers are automated and credited in
-                  real-time.
-                </p>
-              </div>
-              <div className="bg-green-50 dark:bg-green-900/20 border-l-4 border-green-500 p-3 mb-4">
-                <p className="text-sm text-gray-700 dark:text-gray-200">
-                  <strong>Note:</strong> Use your account for transfers to
-                  ensure instant processing. Funds reflect immediately.
-                </p>
-              </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {accounts.map((account, index) => (
                   <div
@@ -125,7 +57,6 @@ const FundWallet = () => {
                     <p className="text-lg font-bold text-primary dark:text-white">
                       {account.bankName}
                     </p>
-
                     <p className="text-sm font-medium text-gray-600 dark:text-gray-300 mt-2">
                       Account Number:
                     </p>
@@ -145,7 +76,6 @@ const FundWallet = () => {
                         )}
                       </button>
                     </div>
-
                     <p className="text-sm font-medium text-gray-600 dark:text-gray-300 mt-2">
                       Account Name:
                     </p>
@@ -158,7 +88,7 @@ const FundWallet = () => {
             </>
           ) : (
             <p className="text-center text-gray-500">
-              Loading funding details...
+              No funding details available.
             </p>
           )}
         </div>

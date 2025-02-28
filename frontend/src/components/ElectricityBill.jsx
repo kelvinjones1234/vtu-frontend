@@ -56,7 +56,7 @@ const ElectricityBill = () => {
             <span className="text-gray-500">Electricity Bill</span>
           </div>
         </div>
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-[1.5rem] shadow-lg p-6">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <select

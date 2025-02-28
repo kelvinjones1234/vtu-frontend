@@ -150,9 +150,14 @@ const Data = () => {
 
   const validInputs = () => {
     const newError = {};
-    if (!formData.phone) newError.phone = "A phone number is required";
-    else if (formData.phone.length !== 11)
+    if (!formData.phone) {
+      newError.phone = "A phone number is required";
+    } else if (!/^\d+$/.test(formData.phone)) {
+      newError.phone = "Phone number must contain only digits";
+    } else if (formData.phone.length !== 11) {
       newError.phone = "Enter a valid 11-digit phone number";
+    }
+
     if (formData.pin !== user.transaction_pin) newError.pin = "Incorrect pin";
     setErrorMessage(newError);
     return Object.keys(newError).length === 0;
@@ -197,7 +202,7 @@ const Data = () => {
             <span className="text-gray-500">Data</span>
           </div>
         </div>
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-[1.5rem] shadow-lg p-6">
           <form onSubmit={handleSubmit}>
             <div>
               {errorMessage.selectedNetwork && (
@@ -253,7 +258,7 @@ const Data = () => {
                     value={type.id}
                     disabled={!type.is_active}
                   >
-                    {type.plan_type}
+                    {type.plan_type.toUpperCase()}
                   </option>
                 ))}
               </select>

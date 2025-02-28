@@ -134,7 +134,7 @@ const RegistrationPage = () => {
   }, [errorMessage]);
 
   return (
-    <div className="min-h-screen bg-dark-custom-gradient font-body_two z-5 pb-[3rem]">
+    <div className="min-h-screen bg-white dark:bg-dark-custom-gradient font-body_two z-5 pb-[3rem]">
       <div className="fixed inset-0 bg-bg_one bg-contain md:bg-cover bg-center bg-no-repeat"></div>
 
       <header
@@ -150,7 +150,7 @@ const RegistrationPage = () => {
             </div>
           </Link>
         </div>
-        <div className="hidden sm:block text-gray-300">
+        <div className="hidden sm:block dark:text-gray-300 text-primary">
           Already have an account?
           <Link
             to="/authentication/login"
@@ -165,14 +165,14 @@ const RegistrationPage = () => {
         <div className="max-w-6xl mx-auto sm:flex justify-between items-start sm:mt-[15vh]">
           <LeftSide />
           <div className="sm:w-1/2 max-w-md mx-auto sm:mx-0">
-            <div className="mb-8">
-              <h1 className="font-bold text-4xl text-gray-300 font-heading_two mb-2">
+            <div className="mb-4">
+              <h1 className="font-bold text-4xl dark:text-gray-300 font-heading_two mb-2 text-primary">
                 Sign up with{" "}
                 <span className="bg-gradient-to-r from-purple-400 via-sky-500 to-red-500 text-transparent bg-clip-text">
                   MaduConnect
                 </span>
               </h1>
-              <p className="text-gray-300 text-lg">
+              <p className="dark:text-gray-300 text-lg text-priamry mt-12">
                 Create a MaduConnect account for free
               </p>
             </div>
@@ -252,7 +252,7 @@ const RegistrationPage = () => {
                       placeholder={field.placeholder}
                       value={formData[field.name]}
                       onChange={handleChange}
-                      className="w-full text-white py-3 px-4 bg-[#18202F] text-lg rounded-xl outline-none border border-gray-700 hover:border-gray-500 focus:border-link transition duration-300 ease-in-out"
+                      className="w-full py-3 px-4 text-lg rounded-xl outline-none dark:bg-[#18202F] bg-white hover:transition hover:duration-450 hover:ease-in-out text-primary dark:text-white border border-[#1CCEFF] dark:border-gray-700 dark:hover:border-[#1CCEFF] dark:hover:border-[#1CCEFF] dark:focus:border-[#1CCEFF]"
                     />
 
                     {field.toggleShow && (
@@ -269,7 +269,7 @@ const RegistrationPage = () => {
               </div>
 
               <div className="relative">
-                <p className="text-center text-gray-300 text-sm py-5">
+                <p className="text-center dark:text-gray-300 text-priamry text-sm py-5">
                   By signing up, you agree to our{" "}
                   <Link
                     to="/terms-and-conditions"
