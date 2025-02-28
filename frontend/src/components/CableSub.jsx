@@ -5,7 +5,6 @@ import React, {
   useEffect,
   useState,
 } from "react";
-import axios from "axios";
 import SubmitButton from "./SubmitButton";
 import { AuthContext } from "../context/AuthenticationContext";
 import GeneralLeft from "./GeneralLeft";
@@ -16,26 +15,23 @@ import { GeneralContext } from "../context/GeneralContext";
 import ConfirmationPopup from "./ConfirmationPopup";
 import ErrorPopup from "./ErrorPopup";
 import SuccessPopup from "./SuccessPopup";
-import { useWallet } from "../context/WalletContext";
+import { useTransactionSubmit } from "./UserTransactionSubmit";
 
 const selectStyle =
   "custom-select dark:bg-[#18202F] bg-white w-full hover:transition hover:duration-450 hover:ease-in-out mb-3 text-primary dark:text-white py-1 px-4 h-[3.5rem] text-[1.2rem] rounded-2xl outline-none border border-[#1CCEFF] dark:border-gray-700 hover:border-[#1CCEFF] dark:hover:border-[#1CCEFF] focus:border-[#1CCEFF] dark:focus:border-[#1CCEFF]";
 
-
-  const inputStyle =
+const inputStyle =
   "dark:bg-[#18202F] bg-white w-full hover:transition hover:duration-450 hover:ease-in-out mb-3 text-primary dark:text-white py-1 px-4 h-[3.5rem] text-[1.2rem] rounded-2xl outline-none border border-[#1CCEFF] dark:border-gray-700 dark:hover:border-[#1CCEFF] dark:hover:border-[#1CCEFF] dark:focus:border-[#1CCEFF]";
 
 const errorInputStyle = "border-red-500 dark:border-red-700";
 
-
 const CableSub = () => {
   const { cableCategories } = useContext(ProductContext);
-  const { user, authTokens, rememberMe, logoutUser } = useContext(AuthContext);
-  const { walletData, setWalletData } = useWallet();
-  const { api, setLoading } = useContext(GeneralContext);
+  const { user } = useContext(AuthContext);
+  const { api } = useContext(GeneralContext);
 
   const [bypassUicNumber, setBypassUicNumber] = useState(false);
-  const [errorMessage, setErrorMessage] = useState({});
+  const [errors, setErrors] = useState({}); // Renamed from errorMessage to errors for consistency
   const [selectedCableCatId, setSelectedCableCatId] = useState("");
 
   const [cablePlans, setCablePlans] = useState([]);
@@ -56,11 +52,10 @@ const CableSub = () => {
     planName: "",
   });
 
-  const memoizedApi = useMemo(() => api, [api]);
-
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    setErrors((prev) => ({ ...prev, [name]: "" })); // Clear the error when the input changes
   };
 
   const handleSelectedCableCategory = (e) => {
@@ -95,157 +90,46 @@ const CableSub = () => {
   };
 
   const validInputs = () => {
-    const newError = {};
-    if (!formData.uicNumber) newError.uicNumber = "A UIC number is required";
-    else if (formData.uicNumber.length !== 10)
-      newError.uicNumber = "Enter a valid 10-digit UIC number";
-    if (formData.pin !== user.transaction_pin) newError.pin = "Incorrect pin";
-    setErrorMessage(newError);
-    return Object.keys(newError).length === 0;
+    const newErrors = {};
+    if (!formData.selectedCableCategory) {
+      newErrors.selectedCableCategory = "Please select a cable category";
+    }
+    if (!formData.selectedCablePlan) {
+      newErrors.selectedCablePlan = "Please select a cable plan";
+    }
+    if (!formData.uicNumber) {
+      newErrors.uicNumber = "A UIC number is required";
+    } else if (formData.uicNumber.length !== 10) {
+      newErrors.uicNumber = "Enter a valid 10-digit UIC number";
+    }
+    if (!formData.pin) {
+      newErrors.pin = "PIN is required";
+    } else if (formData.pin !== user.transaction_pin) {
+      newErrors.pin = "Incorrect PIN";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    if (validInputs()) {
-      if (rememberMe) {
-        const token = localStorage.getItem("authTokens");
-        const parsedToken = token ? JSON.parse(token) : null;
-
-        if (parsedToken) {
-          const storedAccessToken = parsedToken.access;
-          if (storedAccessToken !== authTokens.access) {
-            console.log("Token altered or empty");
-            logoutUser();
-          } else {
-            setPopupState((prev) => ({ ...prev, isConfirmOpen: true }));
-          }
-        } else {
-          console.log("No parsed token found");
-          logoutUser();
-        }
-      } else {
-        setPopupState((prev) => ({ ...prev, isConfirmOpen: true }));
-      }
-    }
+  const generateUniqueId = (length = 16) => {
+    const array = new Uint8Array(length / 2);
+    window.crypto.getRandomValues(array);
+    return Array.from(array, (byte) => byte.toString(16).padStart(2, "0")).join(
+      ""
+    );
   };
 
-  const handleConfirm = useCallback(async () => {
-    setPopupState((prev) => ({ ...prev, isConfirmOpen: false }));
-    setLoading(true);
+  const productType = "cable";
 
-    const generateUniqueId = (length = 16) => {
-      const array = new Uint8Array(length / 2);
-      window.crypto.getRandomValues(array);
-      return Array.from(array, (byte) =>
-        byte.toString(16).padStart(2, "0")
-      ).join("");
-    };
-
-    try {
-      const walletResponse = await memoizedApi.get(`wallet/${user.username}/`, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${authTokens.access}`,
-        },
-      });
-
-      if (walletResponse.data.balance < formData.price) {
-        throw new Error(
-          `Insufficient Funds ₦${walletResponse.data.balance}.00`
-        );
-      }
-
-      const payload = {
-        bypass: bypassUicNumber,
-        "request-id": `Cable_${generateUniqueId()}`,
-        // Add other necessary payload fields
-      };
-
-      const response = await axios.post(
-        "https://kusosub.com/api/cable", // Update this URL
-        payload,
-        {
-          headers: {
-            Authorization: `Token ${process.env.REACT_APP_API_KEY}`, // Use environment variable for API key
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      const newBalance = Number(walletData.balance) - formData.price;
-      const deduct = -formData.price;
-
-      await memoizedApi.put(
-        `fund-wallet/${user.username}/`,
-        { balance: deduct },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${authTokens.access}`,
-          },
-        }
-      );
-
-      setWalletData((prevData) => ({ ...prevData, balance: newBalance }));
-
-      await memoizedApi.post(
-        "transactions/",
-        {
-          transaction_ref_no: response.data.transid,
-          wallet: user.user_id,
-          transaction_type: "CABLE",
-          product: formData.planName,
-          price: formData.price,
-          status: response.data.status,
-          new_bal: newBalance,
-          uicNumber: formData.uicNumber,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${authTokens.access}`,
-          },
-        }
-      );
-
-      setPopupState((prev) => ({
-        ...prev,
-        successMessage: "Transaction successful!",
-        isSuccessOpen: true,
-      }));
-    } catch (error) {
-      const errorMsg = error.response
-        ? error.response.data.message
-        : error.message;
-
-      if (errorMsg.includes("Insufficient Account")) {
-        setPopupState((prev) => ({
-          ...prev,
-          errorPopupMessage: "Network error occurred!",
-          isErrorOpen: true,
-        }));
-      } else {
-        setPopupState((prev) => ({
-          ...prev,
-          errorPopupMessage: errorMsg,
-          isErrorOpen: true,
-        }));
-      }
-    } finally {
-      setLoading(false);
-    }
-  }, [
-    memoizedApi,
-    user.username,
-    user.user_id,
-    authTokens.access,
-    walletData,
+  const { handleSubmit, handleConfirm } = useTransactionSubmit({
+    validInputs,
+    setPopupState,
+    generateUniqueId,
+    productType,
     formData,
     bypassUicNumber,
-    setWalletData,
-    setLoading,
-  ]);
+  });
 
   const handleCancel = () =>
     setPopupState((prev) => ({ ...prev, isConfirmOpen: false }));
@@ -280,11 +164,19 @@ const CableSub = () => {
         </div>
         <div className="bg-white dark:bg-gray-800 rounded-[1.5rem] shadow-lg p-6">
           <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Cable Category Selection */}
             <div>
+              {errors.selectedCableCategory && (
+                <p className="text-red-500 text-sm mb-1">
+                  {errors.selectedCableCategory}
+                </p>
+              )}
               <select
                 name="selectedCableCategory"
                 aria-label="Cable Name"
-                className={selectStyle}
+                className={`${selectStyle} ${
+                  errors.selectedCableCategory ? errorInputStyle : ""
+                }`}
                 value={formData.selectedCableCategory}
                 onChange={handleSelectedCableCategory}
               >
@@ -302,11 +194,20 @@ const CableSub = () => {
                 ))}
               </select>
             </div>
+
+            {/* Cable Plan Selection */}
             <div>
+              {errors.selectedCablePlan && (
+                <p className="text-red-500 text-sm mb-1">
+                  {errors.selectedCablePlan}
+                </p>
+              )}
               <select
                 name="selectedCablePlan"
                 aria-label="Cable Plan"
-                className={selectStyle}
+                className={`${selectStyle} ${
+                  errors.selectedCablePlan ? errorInputStyle : ""
+                }`}
                 value={formData.selectedCablePlan}
                 onChange={handleSelectedCablePlan}
                 disabled={!selectedCableCatId}
@@ -321,11 +222,11 @@ const CableSub = () => {
                 ))}
               </select>
             </div>
+
+            {/* UIC Number Input */}
             <div>
-              {errorMessage.uicNumber && (
-                <div className="text-red-500 text-sm mb-1">
-                  {errorMessage.uicNumber}
-                </div>
+              {errors.uicNumber && (
+                <p className="text-red-500 text-sm mb-1">{errors.uicNumber}</p>
               )}
               <input
                 type="text"
@@ -333,18 +234,17 @@ const CableSub = () => {
                 placeholder="UIC Number"
                 aria-label="UIC Number"
                 className={`${inputStyle} ${
-                  errorMessage.pin ? errorInputStyle : ""
+                  errors.uicNumber ? errorInputStyle : ""
                 }`}
                 value={formData.uicNumber}
                 onChange={handleInputChange}
               />
             </div>
 
+            {/* PIN Input */}
             <div>
-              {errorMessage.pin && (
-                <div className="text-red-500 text-sm mb-1">
-                  {errorMessage.pin}
-                </div>
+              {errors.pin && (
+                <p className="text-red-500 text-sm mb-1">{errors.pin}</p>
               )}
               <input
                 type="password"
@@ -352,13 +252,13 @@ const CableSub = () => {
                 placeholder="Pin"
                 aria-label="Password"
                 autoComplete="current-password"
-                className={`${inputStyle} ${
-                  errorMessage.pin ? errorInputStyle : ""
-                }`}
+                className={`${inputStyle} ${errors.pin ? errorInputStyle : ""}`}
                 value={formData.pin}
                 onChange={handleInputChange}
               />
             </div>
+
+            {/* Price Display */}
             {formData.price && (
               <div>
                 <input
@@ -371,11 +271,10 @@ const CableSub = () => {
                 />
               </div>
             )}
+
+            {/* Bypass UIC Number Toggle */}
             <div className="flex flex-wrap w-full text-white justify-between text-[1rem] py-5">
-              <p
-                className="dark:text-white text-primary opacity-80 font-semibold cursor-pointer"
-                onClick={handleBypass}
-              >
+              <p className="dark:text-white text-primary opacity-80 font-semibold">
                 Bypass UIC Number
               </p>
               <div className="flex items-center mr-3">
@@ -395,13 +294,17 @@ const CableSub = () => {
                 </div>
               </div>
             </div>
+
+            {/* Submit Button */}
             <div>
-              <SubmitButton label="Purchase" />
+              <SubmitButton label="Verify IUC Number" />
             </div>
           </form>
         </div>
       </div>
       <GeneralRight />
+
+      {/* Confirmation Popup */}
       <ConfirmationPopup
         isOpen={popupState.isConfirmOpen}
         onConfirm={handleConfirm}
@@ -409,12 +312,14 @@ const CableSub = () => {
         message={`Are you sure you want to proceed with subscribing ${formData.planName} to ${formData.uicNumber}?`}
       />
 
+      {/* Error Popup */}
       <ErrorPopup
         isOpen={popupState.isErrorOpen}
         message={popupState.errorPopupMessage}
         onClose={handleErrorClose}
       />
 
+      {/* Success Popup */}
       <SuccessPopup
         isOpen={popupState.isSuccessOpen}
         message={popupState.successMessage}

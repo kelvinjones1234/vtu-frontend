@@ -38,7 +38,7 @@ const Data = () => {
 
   const [planTypes, setPlanTypes] = useState([]);
   const [dataPlans, setDataPlans] = useState([]);
-  const [errorMessage, setErrorMessage] = useState({});
+  const [errors, setErrors] = useState({});
   const [bypassPhoneNumber, setBypassPhoneNumber] = useState(false);
   const [networkMessage, setNetworkMessage] = useState("");
   const [popupState, setPopupState] = useState({
@@ -52,6 +52,7 @@ const Data = () => {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    setErrors((prev) => ({ ...prev, [name]: "" })); // Clear the error when the input changes
 
     if (name === "phone") {
       handlePhoneChange(value);
@@ -149,18 +150,31 @@ const Data = () => {
   }, [formData.selectedPlanType, formData.selectedNetwork, api]);
 
   const validInputs = () => {
-    const newError = {};
+    const newErrors = {};
+    if (!formData.selectedNetwork) {
+      newErrors.selectedNetwork = "Please select a network";
+    }
+    if (!formData.selectedPlanType) {
+      newErrors.selectedPlanType = "Please select a plan type";
+    }
+    if (!formData.selectedDataPlan) {
+      newErrors.selectedDataPlan = "Please select a data plan";
+    }
     if (!formData.phone) {
-      newError.phone = "A phone number is required";
+      newErrors.phone = "A phone number is required";
     } else if (!/^\d+$/.test(formData.phone)) {
-      newError.phone = "Phone number must contain only digits";
+      newErrors.phone = "Phone number must contain only digits";
     } else if (formData.phone.length !== 11) {
-      newError.phone = "Enter a valid 11-digit phone number";
+      newErrors.phone = "Enter a valid 11-digit phone number";
+    }
+    if (!formData.pin) {
+      newErrors.pin = "PIN is required";
+    } else if (formData.pin !== user.transaction_pin) {
+      newErrors.pin = "Incorrect PIN";
     }
 
-    if (formData.pin !== user.transaction_pin) newError.pin = "Incorrect pin";
-    setErrorMessage(newError);
-    return Object.keys(newError).length === 0;
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   const generateUniqueId = (length = 16) => {
@@ -204,11 +218,12 @@ const Data = () => {
         </div>
         <div className="bg-white dark:bg-gray-800 rounded-[1.5rem] shadow-lg p-6">
           <form onSubmit={handleSubmit}>
+            {/* Network Selection */}
             <div>
-              {errorMessage.selectedNetwork && (
-                <div className="text-red-500 text-sm mb-1">
-                  {errorMessage.selectedNetwork}
-                </div>
+              {errors.selectedNetwork && (
+                <p className="text-red-500 text-sm mb-1">
+                  {errors.selectedNetwork}
+                </p>
               )}
               <select
                 name="selectedNetwork"
@@ -216,7 +231,7 @@ const Data = () => {
                 value={formData.selectedNetwork}
                 onChange={handleInputChange}
                 className={`${selectStyle} ${
-                  errorMessage.selectedNetwork ? "border-red-500" : ""
+                  errors.selectedNetwork ? errorInputStyle : ""
                 }`}
               >
                 <option value="" disabled>
@@ -230,11 +245,12 @@ const Data = () => {
               </select>
             </div>
 
+            {/* Plan Type Selection */}
             <div>
-              {errorMessage.selectedPlanType && (
-                <div className="text-red-500 text-sm mb-1">
-                  {errorMessage.selectedPlanType}
-                </div>
+              {errors.selectedPlanType && (
+                <p className="text-red-500 text-sm mb-1">
+                  {errors.selectedPlanType}
+                </p>
               )}
               <select
                 name="selectedPlanType"
@@ -242,7 +258,7 @@ const Data = () => {
                 value={formData.selectedPlanType}
                 onChange={handleInputChange}
                 className={`${selectStyle} ${
-                  errorMessage.selectedPlanType ? "border-red-500" : ""
+                  errors.selectedPlanType ? errorInputStyle : ""
                 }`}
                 disabled={
                   !formData.selectedNetwork ||
@@ -264,11 +280,12 @@ const Data = () => {
               </select>
             </div>
 
+            {/* Data Plan Selection */}
             <div>
-              {errorMessage.selectedDataPlan && (
-                <div className="text-red-500 text-sm mb-1">
-                  {errorMessage.selectedDataPlan}
-                </div>
+              {errors.selectedDataPlan && (
+                <p className="text-red-500 text-sm mb-1">
+                  {errors.selectedDataPlan}
+                </p>
               )}
               <select
                 name="selectedDataPlan"
@@ -276,7 +293,7 @@ const Data = () => {
                 value={formData.selectedDataPlan}
                 onChange={handleInputChange}
                 className={`${selectStyle} ${
-                  errorMessage.selectedDataPlan ? errorInputStyle : ""
+                  errors.selectedDataPlan ? errorInputStyle : ""
                 }`}
                 disabled={!formData.selectedPlanType}
               >
@@ -291,11 +308,10 @@ const Data = () => {
               </select>
             </div>
 
+            {/* Phone Number Input */}
             <div>
-              {errorMessage.phone && (
-                <div className="text-red-500 text-sm mb-1">
-                  {errorMessage.phone}
-                </div>
+              {errors.phone && (
+                <p className="text-red-500 text-sm mb-1">{errors.phone}</p>
               )}
               <input
                 type="text"
@@ -306,7 +322,7 @@ const Data = () => {
                 value={formData.phone}
                 onChange={handleInputChange}
                 className={`${inputStyle} ${
-                  errorMessage.phone ? errorInputStyle : ""
+                  errors.phone ? errorInputStyle : ""
                 }`}
               />
               {networkMessage && (
@@ -317,11 +333,10 @@ const Data = () => {
               )}
             </div>
 
+            {/* PIN Input */}
             <div>
-              {errorMessage.pin && (
-                <div className="text-red-500 text-sm mb-1">
-                  {errorMessage.pin}
-                </div>
+              {errors.pin && (
+                <p className="text-red-500 text-sm mb-1">{errors.pin}</p>
               )}
               <input
                 type="password"
@@ -332,12 +347,11 @@ const Data = () => {
                 autoComplete="current-password"
                 value={formData.pin}
                 onChange={handleInputChange}
-                className={`${inputStyle} ${
-                  errorMessage.pin ? errorInputStyle : ""
-                }`}
+                className={`${inputStyle} ${errors.pin ? errorInputStyle : ""}`}
               />
             </div>
 
+            {/* Price Display */}
             {formData.price && (
               <input
                 type="text"
@@ -349,6 +363,7 @@ const Data = () => {
               />
             )}
 
+            {/* Bypass Phone Number Toggle */}
             <div className="flex flex-wrap w-full text-white justify-between text-[1rem] py-3">
               <p
                 className="dark:text-white text-primary opacity-80 font-semibold cursor-pointer"
@@ -374,6 +389,7 @@ const Data = () => {
               </div>
             </div>
 
+            {/* Submit Button */}
             <div>
               <SubmitButton label="Purchase" />
             </div>
@@ -382,6 +398,7 @@ const Data = () => {
       </div>
       <GeneralRight />
 
+      {/* Confirmation Popup */}
       <ConfirmationPopup
         isOpen={popupState.isConfirmOpen}
         onConfirm={handleConfirm}
@@ -389,12 +406,14 @@ const Data = () => {
         message={`Are you sure you want to proceed with transferring ${formData.planName} to ${formData.phone}?`}
       />
 
+      {/* Error Popup */}
       <ErrorPopup
         isOpen={popupState.isErrorOpen}
         message={popupState.errorPopupMessage}
         onClose={handleErrorClose}
       />
 
+      {/* Success Popup */}
       <SuccessPopup
         isOpen={popupState.isSuccessOpen}
         message={popupState.successMessage}

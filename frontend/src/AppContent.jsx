@@ -79,7 +79,7 @@ function AppContent() {
           element={<CableSubPage />}
         />
         <Route
-          path="/user/dashboard/services/electricity bill"
+          path="/user/dashboard/services/electricity"
           element={<ElectricityBillPage />}
         />
         <Route path="/user/dashboard/profile" element={<ProfilePage />} />

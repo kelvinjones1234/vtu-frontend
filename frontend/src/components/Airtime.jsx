@@ -41,8 +41,6 @@ const Airtime = () => {
   });
 
   const [airtimeTypes, setAirtimeTypes] = useState([]);
-  const [isErrorOpen, setIsErrorOpen] = useState(false);
-  const [errorPopupMessage, setErrorPopupMessage] = useState("");
   const [errors, setErrors] = useState({});
   const [bypassPhoneNumber, setBypassPhoneNumber] = useState(false);
   const [networkMessage, setNetworkMessage] = useState("");
@@ -59,7 +57,7 @@ const Airtime = () => {
     (e) => {
       const { name, value } = e.target;
       setFormData((prev) => ({ ...prev, [name]: value }));
-      setErrors((prev) => ({ ...prev, [name]: "" }));
+      setErrors((prev) => ({ ...prev, [name]: "" })); // Clear the error when the input changes
 
       if (name === "phone") {
         const detectedNetwork = detectNetwork(value);
@@ -93,10 +91,12 @@ const Airtime = () => {
         .then((response) => setAirtimeTypes(response.data))
         .catch((error) => {
           console.error("Error fetching plan types:", error);
-          setErrorPopupMessage(
-            "Failed to fetch airtime types. Please try again."
-          );
-          setIsErrorOpen(true);
+          setPopupState((prev) => ({
+            ...prev,
+            errorPopupMessage:
+              "Failed to fetch airtime types. Please try again.",
+            isErrorOpen: true,
+          }));
         });
     }
   }, [formData.selectedNetwork, api]);
@@ -169,11 +169,19 @@ const Airtime = () => {
         </div>
         <div className="bg-white dark:bg-gray-800 rounded-[1.5rem] shadow-lg p-6">
           <form onSubmit={handleSubmit}>
+            {/* Network Selection */}
             <div>
+              {errors.selectedNetwork && (
+                <p className="text-red-500 text-sm mb-1">
+                  {errors.selectedNetwork}
+                </p>
+              )}
               <select
                 name="selectedNetwork"
                 aria-label="Network"
-                className={`${selectStyle}`}
+                className={`${selectStyle} ${
+                  errors.selectedNetwork ? errorInputStyle : ""
+                }`}
                 value={formData.selectedNetwork}
                 onChange={handleInputChange}
               >
@@ -186,17 +194,21 @@ const Airtime = () => {
                   </option>
                 ))}
               </select>
-              {errors.selectedNetwork && (
-                <p className="text-red-500 text-sm mt-1">
-                  {errors.selectedNetwork}
+            </div>
+
+            {/* Airtime Type Selection */}
+            <div>
+              {errors.selectedAirtimeType && (
+                <p className="text-red-500 text-sm mb-1">
+                  {errors.selectedAirtimeType}
                 </p>
               )}
-            </div>
-            <div>
               <select
                 name="selectedAirtimeType"
                 aria-label="Plan Type"
-                className={`${selectStyle}`}
+                className={`${selectStyle} ${
+                  errors.selectedAirtimeType ? errorInputStyle : ""
+                }`}
                 value={formData.selectedAirtimeType}
                 onChange={handleInputChange}
                 disabled={
@@ -217,29 +229,25 @@ const Airtime = () => {
                   </option>
                 ))}
               </select>
-              {errors.selectedAirtimeType && (
-                <p className="text-red-500 text-sm mt-1">
-                  {errors.selectedAirtimeType}
-                </p>
-              )}
             </div>
 
+            {/* Phone Number Input */}
             <div>
               {errors.phone && (
-                <p className="text-red-500 text-sm mt-1">{errors.phone}</p>
+                <p className="text-red-500 text-sm mb-1">{errors.phone}</p>
               )}
               <input
                 type="text"
                 name="phone"
                 placeholder="Phone Number"
                 aria-label="Phone number"
+                disabled={!formData.selectedAirtimeType}
                 value={formData.phone}
                 onChange={handleInputChange}
                 className={`${inputStyle} ${
                   errors.phone ? errorInputStyle : ""
                 }`}
               />
-
               {networkMessage && (
                 <p
                   className="text-sm ml-2 mb-4 italic font-bold text-gray-600 dark:text-white"
@@ -247,28 +255,34 @@ const Airtime = () => {
                 />
               )}
             </div>
+
+            {/* Amount Input */}
             <div>
               {errors.amount && (
-                <p className="text-red-500 text-sm mt-1">{errors.amount}</p>
+                <p className="text-red-500 text-sm mb-1">{errors.amount}</p>
               )}
               <input
                 type="text"
                 name="amount"
                 placeholder="Amount"
+                disabled={!formData.phone}
                 className={`${inputStyle} ${
                   errors.amount ? errorInputStyle : ""
                 }`}
                 onChange={handleInputChange}
               />
             </div>
+
+            {/* PIN Input */}
             <div>
               {errors.pin && (
-                <p className="text-red-500 text-sm mt-1">{errors.pin}</p>
+                <p className="text-red-500 text-sm mb-1">{errors.pin}</p>
               )}
               <input
                 type="password"
                 name="pin"
                 placeholder="Pin"
+                disabled={!formData.amount}
                 aria-label="Pin"
                 autoComplete="current-password"
                 value={formData.pin}
@@ -276,6 +290,8 @@ const Airtime = () => {
                 className={`${inputStyle} ${errors.pin ? errorInputStyle : ""}`}
               />
             </div>
+
+            {/* Bypass Phone Number Toggle */}
             <div className="flex flex-wrap w-full text-white justify-between text-[1rem] py-3">
               <p
                 className="dark:text-white text-primary opacity-80 font-semibold cursor-pointer"
@@ -300,6 +316,8 @@ const Airtime = () => {
                 </div>
               </div>
             </div>
+
+            {/* Submit Button */}
             <div>
               <SubmitButton label="Purchase" />
             </div>
@@ -308,6 +326,7 @@ const Airtime = () => {
       </div>
       {memoizedGeneralRight}
 
+      {/* Confirmation Popup */}
       <ConfirmationPopup
         isOpen={popupState.isConfirmOpen}
         onConfirm={handleConfirm}
@@ -315,12 +334,14 @@ const Airtime = () => {
         message={`Are you sure you want to proceed with transferring ₦${formData.amount} airtime to ${formData.phone}?`}
       />
 
+      {/* Error Popup */}
       <ErrorPopup
         isOpen={popupState.isErrorOpen}
         message={popupState.errorPopupMessage}
         onClose={handleErrorClose}
       />
 
+      {/* Success Popup */}
       <SuccessPopup
         isOpen={popupState.isSuccessOpen}
         message={popupState.successMessage}

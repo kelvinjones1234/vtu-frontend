@@ -10,6 +10,7 @@ export const useTransactionSubmit = ({
   formData,
   generateUniqueId,
   bypassPhoneNumber,
+  bypassUicNumber,
   productType,
 }) => {
   const { user, authTokens, rememberMe, logoutUser } = useContext(AuthContext);
@@ -74,18 +75,21 @@ export const useTransactionSubmit = ({
             network: formData.networkId,
             phone: formData.phone,
             amount: formData.amount,
+            Ported_number: bypassPhoneNumber,
             pin: formData.pin, 
             airtime_type: formData.selectedAirtimeType,
             "request-id": `Airtime_${generateUniqueId()}`,
           };
           break;
 
-        case "tv_subscription":
+        case "cable":
           payload.payload_data = {
-            provider: formData.providerId,
-            smartCardNumber: formData.smartCardNumber,
-            package: formData.selectedPackage,
-            "request-id": `TV_${generateUniqueId()}`,
+            provider: formData.selectedCableCategory,
+            plan: formData.selectedCablePlan,
+            uic: formData.uicNumber,
+            plan_name: formData.planName,
+            bypass_uic: bypassUicNumber,
+            "request-id": `Cable_${generateUniqueId()}`,
           };
           break;
 
@@ -176,6 +180,7 @@ export const useTransactionSubmit = ({
   }, [
     setPopupState,
     bypassPhoneNumber,
+    bypassUicNumber,
     formData,
     generateUniqueId,
     productType,
