@@ -9,6 +9,7 @@ export const useTransactionSubmit = ({
   setPopupState,
   formData,
   generateUniqueId,
+  bypassMeterNumber,
   bypassPhoneNumber,
   bypassUicNumber,
   productType,
@@ -76,7 +77,7 @@ export const useTransactionSubmit = ({
             phone: formData.phone,
             amount: formData.amount,
             Ported_number: bypassPhoneNumber,
-            pin: formData.pin, 
+            pin: formData.pin,
             airtime_type: formData.selectedAirtimeType,
             "request-id": `Airtime_${generateUniqueId()}`,
           };
@@ -95,9 +96,11 @@ export const useTransactionSubmit = ({
 
         case "electricity":
           payload.payload_data = {
-            disco: formData.discoId,
+            disco: formData.selectedDisco,
             meterNumber: formData.meterNumber,
-            meterType: formData.meterType,
+            meterType: formData.selectedMeterType,
+            amount: formData.amount,
+            bypass_meter_number: bypassMeterNumber,
             "request-id": `Electricity_${generateUniqueId()}`,
           };
           break;
@@ -184,6 +187,7 @@ export const useTransactionSubmit = ({
     formData,
     generateUniqueId,
     productType,
+    bypassMeterNumber,
     api,
     setLoading,
     authTokens.access,

@@ -31,21 +31,38 @@ const ElectricityBill = () => {
     amount: "",
     selectedDisco: "",
     selectedMeterType: "",
+    selectedDiscoId: "", // Add selectedDiscoId to the formData state
   });
 
   const { user } = useContext(AuthContext);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData((prev) => {
+      const updatedFormData = { ...prev, [name]: value };
+
+      // If the selectedDisco changes, find the corresponding plan_id
+      if (name === "selectedDisco") {
+        const selectedDisco = discos.find(
+          (disco) => disco.disco_name === value
+        );
+        if (selectedDisco) {
+          updatedFormData.selectedDiscoId = selectedDisco.plan_id;
+        } else {
+          updatedFormData.selectedDiscoId = ""; // Reset if no matching Disco is found
+        }
+      }
+
+      return updatedFormData;
+    });
+
     setErrors((prev) => ({ ...prev, [name]: "" })); // Clear the error when the input changes
   };
 
-  const [electricitySettings, setElectricitySettings] = useState([]);
-  const [errors, setErrors] = useState({}); // Renamed from errorMessage to errors for consistency
+  const [errors, setErrors] = useState({});
   const [discos, setDiscos] = useState([]);
   const { api } = useContext(GeneralContext);
-  const [bypassPhoneNumber, setBypassPhoneNumber] = useState(false);
+  const [bypassMeterNumber, setBypassMeterNumber] = useState(false);
 
   const [popupState, setPopupState] = useState({
     isConfirmOpen: false,
@@ -56,7 +73,7 @@ const ElectricityBill = () => {
   });
 
   const handleBypass = () => {
-    setBypassPhoneNumber(!bypassPhoneNumber);
+    setBypassMeterNumber(!bypassMeterNumber);
   };
 
   useEffect(() => {
@@ -66,12 +83,19 @@ const ElectricityBill = () => {
       .catch((error) => console.error("Error Fetching Discos", error));
   }, [api]);
 
-  useEffect(() => {
-    api
-      .get("electricity-settings/")
-      .then((response) => setElectricitySettings(response.data))
-      .catch((error) => console.error("Error Meter Type", error));
-  }, [api]);
+  // Get unique Disco names
+  const uniqueDiscos = useMemo(() => {
+    const discoNames = discos.map((disco) => disco.disco_name);
+    return [...new Set(discoNames)]; // Remove duplicates using Set
+  }, [discos]);
+
+  // Filter meter types based on selected Disco
+  const filteredMeterTypes = useMemo(() => {
+    if (!formData.selectedDisco) return [];
+    return discos.filter(
+      (disco) => disco.disco_name === formData.selectedDisco
+    );
+  }, [formData.selectedDisco, discos]);
 
   const validInputs = () => {
     const newErrors = {};
@@ -124,8 +148,9 @@ const ElectricityBill = () => {
     generateUniqueId,
     productType,
     formData,
-    bypassPhoneNumber,
+    bypassMeterNumber,
   });
+
 
   const memoizedGeneralLeft = useMemo(() => <GeneralLeft />, []);
   const memoizedGeneralRight = useMemo(() => <GeneralRight />, []);
@@ -165,9 +190,9 @@ const ElectricityBill = () => {
                 <option value="" disabled>
                   Disco Name
                 </option>
-                {discos.map((item) => (
-                  <option key={item.id} value={item.disco_name}>
-                    {item.disco_name}
+                {uniqueDiscos.map((discoName, index) => (
+                  <option key={index} value={discoName}>
+                    {discoName}
                   </option>
                 ))}
               </select>
@@ -192,7 +217,7 @@ const ElectricityBill = () => {
                 <option value="" disabled>
                   Meter Type
                 </option>
-                {electricitySettings.map((item) => (
+                {filteredMeterTypes.map((item) => (
                   <option
                     key={item.id}
                     value={item.meter_type}
@@ -264,17 +289,17 @@ const ElectricityBill = () => {
                 className="dark:text-white text-primary opacity-80 font-semibold cursor-pointer"
                 onClick={handleBypass}
               >
-                Bypass IUC Number
+                Bypass Meter Number
               </p>
               <div className="flex items-center mr-3">
                 <div
                   className={`h-4 w-9 rounded-2xl flex items-center relative ${
-                    bypassPhoneNumber ? "bg-gray-600" : "bg-primary"
+                    bypassMeterNumber ? "bg-gray-600" : "bg-primary"
                   }`}
                 >
                   <div
                     className={`button h-5 w-5 bg-white rounded-full absolute hover:transition-all hover:duration-450 ease-in-out ${
-                      bypassPhoneNumber ? "right-0" : "left-0"
+                      bypassMeterNumber ? "right-0" : "left-0"
                     }`}
                     onClick={handleBypass}
                   ></div>
