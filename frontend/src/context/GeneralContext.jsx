@@ -100,7 +100,7 @@ const GeneralProvider = ({ children }) => {
     // baseURL: "https://host-test-sable.vercel.app/api",
     baseURL: "http://127.0.0.1:8000/api",
 
-    timeout: 1000 * 60,
+    timeout: 1000 * 60 * 2,
     headers: {
       "Content-Type": "application/json",
     },

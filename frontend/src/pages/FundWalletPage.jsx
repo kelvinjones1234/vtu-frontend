@@ -34,7 +34,7 @@ const FundWalletPage = () => {
         } else {
           // Fetch data from API if not in local storage
           const response = await axios.get(
-            `http://127.0.0.1:8000/api/funding-details/${user.username}/`,
+            `http://127.0.0.1:8000/api/funding-details/`,
             {
               headers: {
                 "Content-Type": "application/json",

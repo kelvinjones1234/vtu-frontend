@@ -10,72 +10,68 @@ const inputStyle =
 const Transfer = () => {
   const { api, setLoading, setMobileTransferForm } = useContext(GeneralContext);
   const { authTokens, user } = useContext(AuthContext);
-  const { updateWalletBalance } = useWallet();
+  const { walletData, updateWalletBalance } = useWallet();
 
-  const [username, setUsername] = useState("");
-  const [amount, setAmount] = useState("");
-  const [pin, setPin] = useState("");
-  const [errorMessage, setErrorMessage] = useState({});
-  const [showMessage, setShowMessage] = useState(false);
-  const [successMessage, setSuccessMessage] = useState(null);
+  const [formData, setFormData] = useState({
+    username: "",
+    amount: "",
+    pin: "",
+  });
+  const [message, setMessage] = useState({ type: "", text: "" });
 
+  // Validate inputs
   const validateInputs = () => {
-    const newError = {};
+    const { username, amount, pin } = formData;
+
     if (!username) {
-      newError.usernameError = "Please enter the recipient's username";
+      setMessage({
+        type: "error",
+        text: "Please enter the recipient's username",
+      });
+      return false;
     }
     if (!amount || isNaN(amount) || parseFloat(amount) <= 0) {
-      newError.amountError = "Please enter a valid amount";
+      setMessage({ type: "error", text: "Please enter a valid amount" });
+      return false;
     }
     if (!pin) {
-      newError.pinError = "Please enter your PIN";
+      setMessage({ type: "error", text: "Please enter your PIN" });
+      return false;
     }
-    setErrorMessage(newError);
-    return Object.keys(newError).length === 0;
+    if (username.toLowerCase() === user.username.toLowerCase()) {
+      setMessage({ type: "error", text: "Cannot transfer to yourself" });
+      return false;
+    }
+    if (walletData.balance < parseFloat(amount)) {
+      setMessage({ type: "error", text: "Insufficient funds" });
+      return false;
+    }
+    return true;
   };
 
-  const transfer = async (e) => {
+  // Handle form submission
+  const handleTransfer = async (e) => {
     e.preventDefault();
 
     if (!validateInputs()) {
-      setShowMessage(true);
-      setTimeout(() => setShowMessage(false), 3000);
       return;
     }
 
     try {
       setLoading(true);
 
-      // Fetch the wallet data
-      const walletResponse = await api.get(`wallet/${user.username}/`, {
+      // Check if the provided PIN matches the stored PIN
+      const walletResponse = await api.get(`wallet/`, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${authTokens.access}`,
         },
       });
 
-      const walletData = walletResponse.data;
+      const wallet = walletResponse.data;
 
-      // Check if the balance is sufficient
-      if (walletData.balance < parseFloat(amount)) {
-        setErrorMessage({ balanceError: "Insufficient funds" });
-        setShowMessage(true);
-        setTimeout(() => setShowMessage(false), 3000);
-        return;
-      }
-
-      // Check if the provided PIN matches the stored PIN
-      if (walletData.wallet_name.transaction_pin !== pin) {
-        setErrorMessage({ pinError: "Incorrect PIN" });
-        setShowMessage(true);
-        setTimeout(() => setShowMessage(false), 3000);
-        return;
-      }
-
-      if (walletData.wallet_name.username === username.toLowerCase()) {
-        setErrorMessage({ usernameError: "Cannot transfer to yourself" });
-        setShowMessage(true);
-        setTimeout(() => setShowMessage(false), 3000);
+      if (wallet.wallet_name.transaction_pin !== formData.pin) {
+        setMessage({ type: "error", text: "Incorrect PIN" });
         return;
       }
 
@@ -83,9 +79,9 @@ const Transfer = () => {
       await api.post(
         "transfer/",
         {
-          username: username.toLowerCase(),
-          amount: parseFloat(amount),
-          transaction_pin: pin,
+          username: formData.username.toLowerCase(),
+          amount: parseFloat(formData.amount),
+          transaction_pin: formData.pin,
         },
         {
           headers: {
@@ -95,50 +91,52 @@ const Transfer = () => {
         }
       );
 
-      // Success message
-      setSuccessMessage("Transfer Successful!");
-      setShowMessage(true);
-      setTimeout(() => {
-        setShowMessage(false);
-        setSuccessMessage(null);
-        if (setMobileTransferForm) {
-          setMobileTransferForm(false);
-        }
-      }, 1500);
-
       // Update wallet balance in context
-      updateWalletBalance(walletData.balance - parseFloat(amount));
+      updateWalletBalance(walletData.balance - parseFloat(formData.amount));
+
+      // Success message
+      setMessage({ type: "success", text: "Transfer Successful!" });
 
       // Reset form fields
-      setUsername("");
-      setAmount("");
-      setPin("");
+      setFormData({ username: "", amount: "", pin: "" });
+
+      // Close mobile transfer form if applicable
+      if (setMobileTransferForm) {
+        setTimeout(() => setMobileTransferForm(false), 1500);
+      }
     } catch (error) {
       console.error("Transfer Error:", error);
-      setErrorMessage({
-        anonymousError:
-          error.response?.data?.error || "An error occurred during the transfer",
+      setMessage({
+        type: "error",
+        text:
+          error.response?.data?.error ||
+          "An error occurred during the transfer",
       });
-      setShowMessage(true);
-      setTimeout(() => setShowMessage(false), 3000);
     } finally {
       setLoading(false);
     }
   };
 
+  // Handle input changes
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
   return (
     <div className="bg-primary bg-opacity-0 max-w-[208px]">
       <div className="flex flex-col justify-center border-[0.01rem] border-link dark:border-gray-700 p-5 rounded-[1.5rem] bg-opacity-15 shadow-lg shadow-indigo-950/10">
-        {showMessage && (
+        {/* Message Banner */}
+        {message.text && (
           <div
             className={`mb-4 p-4 rounded-lg shadow-md flex items-start border-l-4 ${
-              successMessage
+              message.type === "success"
                 ? "bg-green-50 border-green-500"
                 : "bg-red-50 border-red-500"
             }`}
           >
             <div className="flex-shrink-0 mr-3 mt-0.5">
-              {successMessage ? (
+              {message.type === "success" ? (
                 <svg
                   className="h-5 w-5 text-green-400"
                   viewBox="0 0 20 20"
@@ -167,33 +165,28 @@ const Transfer = () => {
             <div className="flex-1">
               <p
                 className={`font-medium ${
-                  successMessage ? "text-green-800" : "text-red-800"
+                  message.type === "success" ? "text-green-800" : "text-red-800"
                 }`}
               >
-                {successMessage ? "Success" : "Error"}
+                {message.type === "success" ? "Success" : "Error"}
               </p>
-              <ul className="mt-1 text-sm">
-                {successMessage ? (
-                  <li className="text-green-800">{successMessage}</li>
-                ) : (
-                  Object.values(errorMessage).map(
-                    (error, index) =>
-                      error && (
-                        <li key={index} className="text-red-800">
-                          {error}
-                        </li>
-                      )
-                  )
-                )}
-              </ul>
+              <p
+                className={`mt-1 text-sm ${
+                  message.type === "success" ? "text-green-800" : "text-red-800"
+                }`}
+              >
+                {message.text}
+              </p>
             </div>
           </div>
         )}
 
-        <form onSubmit={transfer}>
+        {/* Transfer Form */}
+        <form onSubmit={handleTransfer}>
           <input
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            name="username"
+            value={formData.username}
+            onChange={handleInputChange}
             type="text"
             placeholder="Username"
             aria-label="Username"
@@ -201,23 +194,26 @@ const Transfer = () => {
           />
 
           <input
+            name="amount"
+            value={formData.amount}
+            onChange={handleInputChange}
             type="text"
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
             placeholder="Amount"
             aria-label="Amount"
             className={`${inputStyle}`}
           />
 
           <input
-            onChange={(e) => setPin(e.target.value)}
-            value={pin}
+            name="pin"
+            value={formData.pin}
+            onChange={handleInputChange}
             type="password"
             placeholder="Pin"
             aria-label="Pin"
             autoComplete="current-password"
             className={`${inputStyle}`}
           />
+
           <SubmitButton label="Transfer" />
         </form>
       </div>

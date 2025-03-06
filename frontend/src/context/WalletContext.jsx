@@ -8,33 +8,37 @@ import React, {
 } from "react";
 import { AuthContext } from "./AuthenticationContext";
 import { GeneralContext } from "./GeneralContext";
+import { debounce } from "lodash"; // For debouncing API calls
 
 const WalletContext = createContext();
 
 export const WalletProvider = ({ children }) => {
   const [walletData, setWalletData] = useState({ balance: 0 });
-  const { user, authTokens, logoutUser } = useContext(AuthContext);
+  const { logoutUser } = useContext(AuthContext);
   const { api } = useContext(GeneralContext);
   const memoizedApi = useMemo(() => api, [api]);
 
-  const handleError = (error) => {
-    if (error.response?.status === 401) {
-      logoutUser();
-    } else {
-      console.error("Error:", error.response?.data || error.message);
-    }
-  };
+  // Handle errors (e.g., unauthorized access, network issues)
+  const handleError = useCallback(
+    (error) => {
+      if (error.response?.status === 401) {
+        logoutUser(); // Log out user if token is invalid
+      } else {
+        console.error("Error:", error.response?.data || error.message);
+      }
+    },
+    [logoutUser]
+  );
 
+  // Fetch wallet data from the server
   const fetchWalletData = useCallback(
-    async ({ signal }) => {
-      if (!user?.username || !authTokens?.access) return;
-
+    async ({ signal } = {}) => {
       try {
-        const response = await memoizedApi.get(`wallet/${user.username}/`, {
+        const response = await memoizedApi.get("wallet/", {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${authTokens.access}`,
           },
+          withCredentials: true,
           signal,
         });
         setWalletData(response.data);
@@ -44,47 +48,82 @@ export const WalletProvider = ({ children }) => {
         }
       }
     },
-    [user, authTokens, memoizedApi]
+    [memoizedApi, handleError]
   );
 
+  // Fetch wallet data on component mount
   useEffect(() => {
-    const controller = new AbortController();
+    const controller = new AbortController(); // For aborting the request if the component unmounts
     fetchWalletData({ signal: controller.signal });
-    return () => controller.abort();
+
+    // Cleanup function to abort the request if the component unmounts
+    return () => {
+      controller.abort();
+    };
   }, [fetchWalletData]);
 
+  console.log("Wallet data:", walletData);
+
+  // Optimistically update wallet balance and sync with the server
   const updateWalletBalance = useCallback(
-    async (newBalance, amount) => {
+    async (amount) => {
+      if (amount <= 0) {
+        console.error("Invalid amount: Amount must be greater than 0.");
+        return;
+      }
+
+      const previousBalance = walletData.balance;
+      const newBalance = previousBalance + amount;
+
+      // Optimistic update
+      setWalletData((prevData) => ({ ...prevData, balance: newBalance }));
+
       try {
         const response = await memoizedApi.put(
-          `fund-wallet/${user.username}/`,
-          { balance: amount },
+          "fund-wallet/",
+
+          { amount },
           {
             headers: {
               "Content-Type": "application/json",
-              Authorization: `Bearer ${authTokens.access}`,
             },
+            withCredentials: true,
           }
         );
 
-        if (response.status === 200) {
-          setWalletData((prevData) => ({ ...prevData, balance: newBalance }));
+        // If the server responds with an error, revert the optimistic update
+        if (response.status !== 200) {
+          setWalletData((prevData) => ({
+            ...prevData,
+            balance: previousBalance,
+          }));
+          console.error("Failed to update wallet balance on the server.");
         }
       } catch (error) {
-        console.error("Error updating user data:", error);
+        // Revert optimistic update on error
+        setWalletData((prevData) => ({
+          ...prevData,
+          balance: previousBalance,
+        }));
+        handleError(error);
       }
     },
-    [user, authTokens, memoizedApi]
+    [memoizedApi, walletData.balance, handleError]
   );
 
+  // Debounced version of updateWalletBalance to prevent rapid API calls
+  const debouncedUpdateWalletBalance = useMemo(
+    () => debounce(updateWalletBalance, 500),
+    [updateWalletBalance]
+  );
+
+  // Provide wallet context value to children
   const value = useMemo(
     () => ({
       walletData,
-      setWalletData,
-      updateWalletBalance,
-      refreshWallet: fetchWalletData,
+      updateWalletBalance: debouncedUpdateWalletBalance,
     }),
-    [walletData, updateWalletBalance, fetchWalletData]
+    [walletData, debouncedUpdateWalletBalance]
   );
 
   return (

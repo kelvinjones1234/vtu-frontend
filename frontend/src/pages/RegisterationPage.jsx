@@ -2,8 +2,6 @@ import { useContext, useState, useEffect } from "react";
 import { AuthContext } from "../context/AuthenticationContext";
 import { Link } from "react-router-dom";
 import { GeneralContext } from "../context/GeneralContext";
-import simag from "../assets/vtu3.png";
-import logo from "../assets/4.svg";
 import SubmitButton from "../components/SubmitButton";
 import LeftSide from "../components/LeftSide";
 
@@ -23,11 +21,8 @@ const RegistrationPage = () => {
     first_name: "",
     last_name: "",
     username: "",
-    email: "",
-    phone_number: "",
     transaction_pin: "",
     password: "",
-    confirm_password: "",
   });
 
   useEffect(() => {
@@ -74,8 +69,6 @@ const RegistrationPage = () => {
       newError.passwordError = "Please fill in your password";
     } else if (formData.password.length < 8) {
       newError.passwordError = "Your password must be at least 8 characters";
-    } else if (formData.password !== formData.confirm_password) {
-      newError.passwordError = "Passwords do not match";
     }
 
     if (!formData.transaction_pin) {
@@ -94,20 +87,6 @@ const RegistrationPage = () => {
 
     if (!formData.last_name) {
       newError.last_nameError = "Please fill in your last name";
-    }
-
-    if (!formData.phone_number) {
-      newError.phone_numberError = "Please fill in your phone number";
-    } else if (
-      formData.phone_number.length !== 11 ||
-      isNaN(formData.phone_number)
-    ) {
-      newError.phone_numberError =
-        "Phone number must be exactly 11 digits and numeric";
-    }
-
-    if (!formData.email) {
-      newError.emailError = "Please fill in your email";
     }
 
     setErrorMessage(newError);
@@ -219,16 +198,6 @@ const RegistrationPage = () => {
                     placeholder: "Username",
                   },
                   {
-                    name: "email",
-                    placeholder: "Email address",
-                    type: "email",
-                  },
-                  {
-                    name: "phone_number",
-                    placeholder: "Phone Number",
-                    type: "tel",
-                  },
-                  {
                     name: "transaction_pin",
                     placeholder: "4-Digit Transaction PIN",
                   },
@@ -238,14 +207,15 @@ const RegistrationPage = () => {
                     type: showPassword ? "text" : "password",
                     toggleShow: () => setShowPassword(!showPassword),
                     show: showPassword,
-                  },
-                  {
-                    name: "confirm_password",
-                    placeholder: "Confirm Password",
-                    type: showPassword ? "text" : "password",
+                    colSpan: 2, // Add a colSpan property for the password field
                   },
                 ].map((field) => (
-                  <div key={field.name} className="relative">
+                  <div
+                    key={field.name}
+                    className={`relative ${
+                      field.colSpan ? "sm:col-span-2" : "sm:col-span-1"
+                    }`} // Conditionally apply col-span
+                  >
                     <input
                       type={field.type || "text"}
                       name={field.name}

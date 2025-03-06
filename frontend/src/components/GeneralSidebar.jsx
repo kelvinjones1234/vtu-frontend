@@ -84,7 +84,9 @@ const GeneralSidebar = () => {
                   <p>P</p>
                 </div>
                 <div className="text-[.8rem]">
-                  <p className="underline">{user.first_name.toUpperCase()}</p>
+                  <p className="underline">
+                    {user ? user.user.first_name.toUpperCase() : ""}
+                  </p>
                   <span className="text-[.7rem] font-light">
                     {user.phone_number}
                   </span>

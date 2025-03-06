@@ -1,10 +1,4 @@
-import React, {
-  useContext,
-  useMemo,
-  useCallback,
-  useEffect,
-  useState,
-} from "react";
+import React, { useContext, useEffect, useState } from "react";
 import SubmitButton from "./SubmitButton";
 import { AuthContext } from "../context/AuthenticationContext";
 import GeneralLeft from "./GeneralLeft";
@@ -31,8 +25,9 @@ const CableSub = () => {
   const { api } = useContext(GeneralContext);
 
   const [bypassUicNumber, setBypassUicNumber] = useState(false);
-  const [errors, setErrors] = useState({}); // Renamed from errorMessage to errors for consistency
+  const [errors, setErrors] = useState({});
   const [selectedCableCatId, setSelectedCableCatId] = useState("");
+  const [selectedCableId, setSelectedCableId] = useState(""); // New state for id
 
   const [cablePlans, setCablePlans] = useState([]);
   const [popupState, setPopupState] = useState({
@@ -65,10 +60,11 @@ const CableSub = () => {
     );
 
     if (selectedCategory) {
-      setSelectedCableCatId(selectedCategory.cable_id);
+      setSelectedCableId(selectedCategory.id); // Store id for fetching plans
+      setSelectedCableCatId(selectedCategory.cable_id); // Store cable_id for formData
       setFormData((prev) => ({
         ...prev,
-        selectedCableCategory: selectedId,
+        selectedCableCategory: selectedCategory.cable_id, // Set to cable_id
         selectedCablePlan: "",
         price: "",
       }));
@@ -138,22 +134,22 @@ const CableSub = () => {
   const handleBypass = () => setBypassUicNumber((prev) => !prev);
 
   useEffect(() => {
-    if (formData.selectedCableCategory) {
+    if (selectedCableId) {
       api
-        .get(`category/${formData.selectedCableCategory}/`)
+        .get(`category/${selectedCableId}/`)
         .then((response) => {
           setCablePlans(response.data);
         })
         .catch((error) => console.error("Error fetching cable plans:", error));
     }
-  }, [formData.selectedCableCategory, api]);
+  }, [selectedCableId, api]);
 
   return (
     <div className="pt-[15vh] sm:bg-cover bg-center px-4 justify-center ss:px-[5rem] sm:px-[1rem] sm:flex gap-5 md:gap-12 lg:mx-[5rem]">
       <GeneralLeft />
       <div className="mx-auto w-full max-w-[800px]">
         <div>
-          <h2 className="font-bold font-heading_two text-primary dark:text-white text-3xl mb-4">
+          <h2 className="font-bold font-heading_two text-primary dark:text-white text-[1.5rem] md:text-3xl mb-4">
             Buy Cable Subscription
           </h2>
           <div className="flex items-center text-primary dark:text-gray-100 py-4 font-semibold">
@@ -277,15 +273,17 @@ const CableSub = () => {
               <p className="dark:text-white text-primary opacity-80 font-semibold">
                 Bypass UIC Number
               </p>
-              <div className="flex items-center mr-3">
+              <div
+                className="flex items-center mr-3 cursor-pointer"
+                onClick={handleBypass}
+              >
                 <div
-                  className={`h-5 w-10 rounded-full flex items-center relative cursor-pointer hover:transition-colors hover:duration-300 ease-in-out ${
-                    bypassUicNumber ? "bg-gray-600" : "bg-primary"
+                  className={`h-5 w-10 rounded-full flex items-center relative transition-colors duration-300 ease-in-out ${
+                    bypassUicNumber ? "bg-[#1CCEFF]" : "bg-gray-600"
                   }`}
-                  onClick={handleBypass}
                 >
                   <div
-                    className={`h-6 w-6 bg-white bg-gray-400 rounded-full absolute transform hover:transition-transform hover:duration-300 ease-in-out ${
+                    className={`h-6 w-6 bg-white border rounded-full absolute transform transition-transform duration-300 ease-in-out ${
                       bypassUicNumber
                         ? "translate-x-5"
                         : "translate-x-[-0.1rem]"
@@ -297,7 +295,9 @@ const CableSub = () => {
 
             {/* Submit Button */}
             <div>
-              <SubmitButton label="Verify IUC Number" />
+              <SubmitButton
+                label={`${bypassUicNumber ? "Purchase" : "Verify IUC Number"}`}
+              />
             </div>
           </form>
         </div>

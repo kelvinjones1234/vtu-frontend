@@ -10,7 +10,7 @@ export const useTransactionSubmit = ({
   formData,
   generateUniqueId,
   bypassMeterNumber,
-  bypassPhoneNumber,
+  bypassPhoneNumber, 
   bypassUicNumber,
   productType,
 }) => {
@@ -54,7 +54,6 @@ export const useTransactionSubmit = ({
     try {
       let payload = {
         payload_data: {},
-        price: formData.price,
         transaction_type: productType,
       };
 
@@ -65,8 +64,11 @@ export const useTransactionSubmit = ({
             network: formData.networkId,
             phone: formData.phone,
             data_plan: formData.selectedDataPlanId,
-            Ported_number: bypassPhoneNumber,
+            bypass: bypassPhoneNumber,
             description: formData.planName,
+            amount: formData.price,
+            url: formData.url,
+            api_name: formData.api_name,
             "request-id": `Data_${generateUniqueId()}`,
           };
           break;
@@ -76,7 +78,7 @@ export const useTransactionSubmit = ({
             network: formData.networkId,
             phone: formData.phone,
             amount: formData.amount,
-            Ported_number: bypassPhoneNumber,
+            bypass: bypassPhoneNumber,
             pin: formData.pin,
             airtime_type: formData.selectedAirtimeType,
             "request-id": `Airtime_${generateUniqueId()}`,
@@ -89,7 +91,7 @@ export const useTransactionSubmit = ({
             plan: formData.selectedCablePlan,
             uic: formData.uicNumber,
             plan_name: formData.planName,
-            bypass_uic: bypassUicNumber,
+            bypass: bypassUicNumber,
             "request-id": `Cable_${generateUniqueId()}`,
           };
           break;
@@ -100,7 +102,9 @@ export const useTransactionSubmit = ({
             meterNumber: formData.meterNumber,
             meterType: formData.selectedMeterType,
             amount: formData.amount,
-            bypass_meter_number: bypassMeterNumber,
+            bypass: bypassMeterNumber,
+            disco_id: formData.selectedDiscoId,
+            charges: formData.charges,
             "request-id": `Electricity_${generateUniqueId()}`,
           };
           break;
@@ -162,8 +166,8 @@ export const useTransactionSubmit = ({
       const errorMsg =
         error.response &&
         error.response.data.error &&
-        String(error.response.data.error).toLowerCase().includes("insufficient") // Convert to string first
-          ? "An error occurred. If error persists, please contact admin!" // Replace the entire message if it contains "insufficient"
+        String(error.response.data.error).toLowerCase().includes("insufficient")
+          ? "An error occurred. If error persists, please contact admin!"
           : error.response
           ? error.response.data.message ||
             error.response.data.error ||
@@ -193,8 +197,6 @@ export const useTransactionSubmit = ({
     authTokens.access,
     user.username,
     user.user_id,
-    walletData.balance,
-    setWalletData,
   ]);
 
   return { handleSubmit, handleConfirm };

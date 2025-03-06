@@ -71,7 +71,7 @@ const GeneralNavbar = () => {
               </Link>
             </div>
             <div className="text-primary font-bold dark:text-white  hidden xs:block">
-              Hi, {user.first_name.toUpperCase()}
+              Hi, { user ? user.user.first_name.toUpperCase() : ""}              
             </div>
           </div>
           <div className="light-dark-mode hidden sm:block">

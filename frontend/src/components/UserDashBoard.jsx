@@ -71,7 +71,7 @@ const UserDashBoard = () => {
         <div className="text-primary text-[1.5rem] font-bold dark:text-white pb-8 text-center xs:hidden">
           Hi,{" "}
           <span className="bg-gradient-to-r uppercase from-purple-400 via-sky-500 to-red-500 text-transparent bg-clip-text">
-            {user.username}
+            {user && user.user.first_name}
           </span>
         </div>
 
@@ -138,10 +138,10 @@ const UserDashBoard = () => {
                 // src={`https://host-test-sable.vercel.app/${item.image}`}
                 src={`http://127.0.0.1:8000${item.image}`}
                 alt={item.category}
-                className="h-12 w-12 object-contain mb-2"
+                className="h-24 w-12 object-contain mb-2"
                 fetchpriority="high" // Prioritize image loading
               />
-              <p className="text-sm text-center text-primary dark:text-white">
+              <p className="text-sm text-center font-bold text-primary dark:text-white">
                 {item.category}
               </p>
             </Link>

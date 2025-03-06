@@ -299,15 +299,17 @@ const Airtime = () => {
               >
                 Bypass Phone Number
               </p>
-              <div className="flex items-center mr-3">
+              <div
+                className="flex items-center mr-3 cursor-pointer"
+                onClick={handleBypass}
+              >
                 <div
-                  className={`h-5 w-10 rounded-full flex items-center relative cursor-pointer hover:transition-colors hover:duration-300 ease-in-out ${
-                    bypassPhoneNumber ? "bg-gray-600" : "bg-primary"
+                  className={`h-5 w-10 rounded-full flex items-center relative transition-colors duration-300 ease-in-out ${
+                    bypassPhoneNumber ? "bg-[#1CCEFF]" : "bg-gray-600"
                   }`}
-                  onClick={handleBypass}
                 >
                   <div
-                    className={`h-6 w-6 bg-white bg-gray-400 rounded-full absolute transform hover:transition-transform hover:duration-300 ease-in-out ${
+                    className={`h-6 w-6 bg-white border rounded-full absolute transform transition-transform duration-300 ease-in-out ${
                       bypassPhoneNumber
                         ? "translate-x-5"
                         : "translate-x-[-0.1rem]"

@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import GeneralLeft from "./GeneralLeft";
 import GeneralRight from "./GeneralRight";
 import { ProductContext } from "../context/ProductContext";
-import { GeneralContext } from "../context/GeneralContext";
+import { GeneralContext } from "../context/GeneralContext"; 
 import { AuthContext } from "../context/AuthenticationContext";
 import SubmitButton from "./SubmitButton";
 import ConfirmationPopup from "./ConfirmationPopup";
@@ -34,6 +34,8 @@ const Data = () => {
     phone: "",
     pin: "",
     price: "",
+    url: "",
+    api_name: "",
   });
 
   const [planTypes, setPlanTypes] = useState([]);
@@ -48,6 +50,8 @@ const Data = () => {
     successMessage: "",
     errorPopupMessage: "",
   });
+
+  console.log("FORM DATA", formData);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -118,6 +122,8 @@ const Data = () => {
         selectedDataPlan: selectedPlan.id,
         planName: selectedPlan.data_plan,
         price: selectedPlan.price,
+        url: selectedPlan.api.api_url,
+        api_name: selectedPlan.api.api_name,
       }));
     } else {
       setFormData((prev) => ({
@@ -207,7 +213,7 @@ const Data = () => {
       <GeneralLeft />
       <div className="mx-auto w-full max-w-[800px]">
         <div>
-          <h2 className="font-bold font-heading_two text-primary dark:text-white text-[1.5rem] mb-4">
+          <h2 className="font-bold font-heading_two text-primary dark:text-white text-[1.5rem] md:text-3xl mb-4">
             Buy Data
           </h2>
           <div className="flex items-center text-primary dark:text-gray-100 py-4 font-semibold">
@@ -364,22 +370,24 @@ const Data = () => {
             )}
 
             {/* Bypass Phone Number Toggle */}
-            <div className="flex flex-wrap w-full text-white justify-between text-[1rem] py-3">
-              <p
-                className="dark:text-white text-primary opacity-80 font-semibold cursor-pointer"
-                onClick={handleBypass}
-              >
+            <div
+              className="flex flex-wrap w-full text-white justify-between text-[1rem] py-3"
+              // Make the entire div clickable
+            >
+              <p className="dark:text-white text-primary opacity-80 font-semibold">
                 Bypass Phone Number
               </p>
-              <div className="flex items-center mr-3">
+              <div
+                className="flex items-center mr-3 cursor-pointer"
+                onClick={handleBypass}
+              >
                 <div
-                  className={`h-5 w-10 rounded-full flex items-center relative cursor-pointer hover:transition-colors hover:duration-300 hover:ease-in-out ${
+                  className={`h-5 w-10 rounded-full flex items-center relative transition-colors duration-300 ease-in-out ${
                     bypassPhoneNumber ? "bg-[#1CCEFF]" : "bg-gray-600"
                   }`}
-                  onClick={handleBypass}
                 >
                   <div
-                    className={`h-6 w-6 bg-white rounded-full absolute transform hover:transition-transform hover:duration-300 hover:ease-in-out ${
+                    className={`h-6 w-6 bg-white border rounded-full absolute transform transition-transform duration-300 ease-in-out ${
                       bypassPhoneNumber
                         ? "translate-x-5"
                         : "translate-x-[-0.1rem]"

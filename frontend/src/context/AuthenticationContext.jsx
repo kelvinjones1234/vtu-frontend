@@ -1,181 +1,243 @@
-import {
-  createContext,
-  useState,
-  useMemo,
-  useEffect,
-  useContext,
-  useCallback,
-} from "react";
-import { jwtDecode } from "jwt-decode";
+import { createContext, useState, useMemo, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { GeneralContext } from "./GeneralContext";
 
 export const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
   const [userError, setUserError] = useState("");
   const [registerErrors, setRegisterErrors] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [authInitialized, setAuthInitialized] = useState(false);
   const navigate = useNavigate();
   const { api } = useContext(GeneralContext);
-  const memoizedApi = useMemo(() => api, [api]);
-  const [rememberMe, setRememberMe] = useState(false);
 
-  const getStoredTokens = () => {
-    // Check localStorage first, then sessionStorage
-    const tokens =
-      localStorage.getItem("authTokens") ||
-      sessionStorage.getItem("authTokens");
-    return tokens ? JSON.parse(tokens) : null;
-  };
+  // Configure request interceptor to handle token refresh
+  useEffect(() => {
+    let isRefreshing = false;
+    let refreshFailed = false;
+    let failedQueue = [];
 
-  // Define authTokens state and initialize it with getStoredTokens
-  const [authTokens, setAuthTokens] = useState(getStoredTokens());
+    const processQueue = (error = null) => {
+      failedQueue.forEach((prom) => {
+        if (error) {
+          prom.reject(error);
+        } else {
+          prom.resolve();
+        }
+      });
 
-  // Define user state and initialize it with the decoded token
-  const [user, setUser] = useState(() => {
-    const tokens = getStoredTokens();
-    return tokens ? jwtDecode(tokens.access) : null;
-  });
+      failedQueue = [];
+    };
+
+    const requestInterceptor = api.interceptors.response.use(
+      (response) => response,
+      async (error) => {
+        const originalRequest = error.config;
+
+        // Only attempt refresh if:
+        // 1. It's a 401 error
+        // 2. It's not a refresh request itself
+        // 3. We haven't already tried to refresh
+        // 4. We haven't already had a refresh failure this session
+        if (
+          error.response?.status === 401 &&
+          !originalRequest.url.includes("/refresh/") &&
+          !originalRequest._retry &&
+          !refreshFailed &&
+          authInitialized // Only try refresh after initial auth check
+        ) {
+          if (isRefreshing) {
+            // If we're already refreshing, queue this request
+            return new Promise((resolve, reject) => {
+              failedQueue.push({ resolve, reject });
+            })
+              .then(() => {
+                return api(originalRequest);
+              })
+              .catch((err) => {
+                return Promise.reject(err);
+              });
+          }
+
+          originalRequest._retry = true;
+          isRefreshing = true;
+
+          try {
+            // Call refresh token endpoint
+            const refreshResponse = await api.post(
+              "/refresh/",
+              {},
+              {
+                withCredentials: true,
+              }
+            );
+
+            isRefreshing = false;
+
+            if (refreshResponse.status === 200) {
+              processQueue();
+              return api(originalRequest);
+            } else {
+              // Unexpected success status
+              refreshFailed = true;
+              processQueue(new Error("Refresh failed"));
+
+              // Clear user and redirect
+              setUser(null);
+              if (!window.location.pathname.includes("/authentication/login")) {
+                navigate("/authentication/login");
+              }
+
+              return Promise.reject(error);
+            }
+          } catch (refreshError) {
+            isRefreshing = false;
+            refreshFailed = true;
+            processQueue(refreshError);
+
+            // If refresh fails, clear user and redirect to login
+            setUser(null);
+            if (!window.location.pathname.includes("/authentication/login")) {
+              navigate("/authentication/login");
+            }
+
+            return Promise.reject(refreshError);
+          }
+        }
+
+        return Promise.reject(error);
+      }
+    );
+
+    return () => {
+      // Clean up interceptor on unmount
+      api.interceptors.response.eject(requestInterceptor);
+    };
+  }, [api, navigate, authInitialized]);
+
+  // Validate auth on component mount - only once
+  useEffect(() => {
+    const validateAuth = async () => {
+      if (authInitialized) return; // Only run once
+
+      setLoading(true);
+      try {
+        // Call endpoint to get user profile
+        const response = await api.get("/auth/validate/", {
+          withCredentials: true,
+        });
+
+        if (response.status === 200) {
+          console.log("Auth validation successful:", response.data);
+          setUser(response.data);
+        }
+      } catch (error) {
+        console.log("Auth validation failed:", error.response?.status);
+        setUser(null);
+      } finally {
+        setLoading(false);
+        setAuthInitialized(true); // Mark initialization as complete
+      }
+    };
+
+    validateAuth();
+  }, [api]);
 
   const loginUser = async (username, password) => {
     try {
-      const response = await memoizedApi.post(
-        "token/",
-        { username: username.toLowerCase(), password },
-        { headers: { "Content-Type": "application/json" } }
+      setUserError("");
+      setLoading(true);
+
+      console.log("Attempting login for:", username);
+      const response = await api.post(
+        "/login/",
+        { username, password },
+        {
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true,
+        }
       );
 
-      const data = response.data;
       if (response.status === 200) {
-        setAuthTokens(data);
-        setUser(jwtDecode(data.access));
+        console.log("Login successful:", user);
+        setUser(response.data);
 
-        localStorage.removeItem("fundingData");
-
-        // Store in localStorage by default
-        localStorage.setItem("authTokens", JSON.stringify(data));
-
-        // If rememberMe is false, also store in sessionStorage for temporary session
-        if (!rememberMe) {
-          sessionStorage.setItem("authTokens", JSON.stringify(data));
-        }
-
-        navigate("/user/dashboard");
+        // Redirect after login
+        navigate("/user/dashboard", { replace: true });
       }
     } catch (error) {
-      handleError(error);
+      console.error("Login error:", error);
+
+      if (error.response?.status === 401) {
+        setUserError("Invalid username or password");
+      } else if (error.response?.data?.error) {
+        setUserError(error.response.data.error);
+      } else if (error.message === "Network Error") {
+        setUserError(
+          "Network error. Please check your connection and try again."
+        );
+      } else {
+        setUserError("Login failed. Please try again.");
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleError = (error) => {
-    if (error.message === "Network Error") {
-      setUserError("Network error. Try again later.");
-    } else if (error.response) {
-      if (error.response.status === 401) {
-        setUserError("Invalid username or password.");
-      } else {
-        setUserError(
-          error.response.data?.detail || "An error occurred. Please try again."
-        );
-      }
-    } else if (error.request) {
-      setUserError("No response from server. Please try again later.");
-    } else {
-      setUserError("An unexpected error occurred. Please try again.");
+  const logoutUser = async () => {
+    try {
+      await api.post("/logout/", {}, { withCredentials: true });
+    } catch (error) {
+      console.error("Logout error:", error);
+    } finally {
+      // Always clear user and redirect, even if the API fails
+      setUser(null);
+      navigate("/authentication/login", { replace: true });
     }
-    console.error(
-      "Error:",
-      error.response ? error.response.data : error.message
-    );
   };
 
   const registerUser = async (formData) => {
     try {
-      const response = await memoizedApi.post(
-        "authentication/register/",
-        formData,
-        { headers: { "Content-Type": "application/json" } }
-      );
+      setRegisterErrors({});
+      setLoading(true);
+
+      const response = await api.post("/register/", formData, {
+        headers: { "Content-Type": "application/json" },
+        withCredentials: true,
+      });
 
       if (response.status === 201) {
-        navigate("/authentication/login");
+        navigate("/authentication/login/", { replace: true });
       }
     } catch (error) {
-      const errors = error.response?.data || {};
-      setRegisterErrors(errors);
-      console.error(
-        "Error:",
-        error.response ? error.response.data : error.message
-      );
-    }
-  };
-
-  const refreshToken = useCallback(async () => {
-    try {
-      const response = await memoizedApi.post(
-        "token/refresh/",
-        { refresh: authTokens.refresh },
-        { headers: { "Content-Type": "application/json" } }
-      );
-
-      if (response.status === 200) {
-        const data = response.data;
-        setAuthTokens(data);
-        setUser(jwtDecode(data.access));
-
-        // Update localStorage by default
-        localStorage.setItem("authTokens", JSON.stringify(data));
-
-        // If rememberMe is false, also update sessionStorage
-        if (!rememberMe) {
-          sessionStorage.setItem("authTokens", JSON.stringify(data));
-        }
+      if (error.response?.data) {
+        setRegisterErrors(error.response.data);
       } else {
-        logoutUser();
+        setRegisterErrors({
+          non_field_errors: ["Registration failed. Please try again."],
+        });
       }
-    } catch (error) {
-      console.error(
-        "Error refreshing token:",
-        error.response ? error.response.data : error.message
-      );
-      logoutUser();
+    } finally {
+      setLoading(false);
     }
-  }, [authTokens?.refresh, memoizedApi, rememberMe]);
-
-  useEffect(() => {
-    if (authTokens) {
-      const decodedToken = jwtDecode(authTokens.access);
-      if (decodedToken.exp * 1000 < Date.now()) {
-        logoutUser();
-      } else {
-        const interval = setInterval(refreshToken, 17 * 60 * 1000); // Refresh token every 17 minutes
-        return () => clearInterval(interval);
-      }
-    }
-  }, [authTokens, refreshToken]);
-
-  const logoutUser = () => {
-    setUser(null);
-    setAuthTokens(null);
-    localStorage.removeItem("authTokens");
-    sessionStorage.removeItem("authTokens");
-    navigate("/authentication/login");
   };
 
-  const contextData = {
-    loginUser,
-    logoutUser,
-    registerUser,
-    setUserError,
-    refreshToken,
-    setRememberMe,
-    setRegisterErrors,
-    rememberMe,
-    registerErrors,
-    user,
-    userError,
-    authTokens,
-  };
+  const contextData = useMemo(
+    () => ({
+      loginUser,
+      logoutUser,
+      registerUser,
+      setUserError,
+      user,
+      userError,
+      registerErrors,
+      loading,
+      isAuthenticated: !!user,
+    }),
+    [user, userError, registerErrors, loading]
+  );
 
   return (
     <AuthContext.Provider value={contextData}>{children}</AuthContext.Provider>

@@ -30,6 +30,7 @@ const ElectricityBill = () => {
     pin: "",
     amount: "",
     selectedDisco: "",
+    charges: "50",
     selectedMeterType: "",
     selectedDiscoId: "", // Add selectedDiscoId to the formData state
   });
@@ -109,8 +110,8 @@ const ElectricityBill = () => {
       newErrors.meterNumber = "A meter number is required";
     } else if (!/^\d+$/.test(formData.meterNumber)) {
       newErrors.meterNumber = "Meter number must contain only digits";
-    } else if (formData.meterNumber.length !== 11) {
-      newErrors.meterNumber = "Enter a valid 11-digit meter number";
+    } else if (formData.meterNumber.length !== 13) {
+      newErrors.meterNumber = "Enter a valid 13-digit meter number";
     }
 
     if (!formData.amount) {
@@ -151,7 +152,6 @@ const ElectricityBill = () => {
     bypassMeterNumber,
   });
 
-
   const memoizedGeneralLeft = useMemo(() => <GeneralLeft />, []);
   const memoizedGeneralRight = useMemo(() => <GeneralRight />, []);
 
@@ -160,7 +160,7 @@ const ElectricityBill = () => {
       {memoizedGeneralLeft}
       <div className="mx-auto w-full max-w-[800px]">
         <div>
-          <h2 className="font-bold font-heading_two text-primary dark:text-white text-3xl mb-4">
+          <h2 className="font-bold font-heading_two text-primary dark:text-white text-[1.5rem] md:text-3xl mb-4">
             Pay Electricity Bill
           </h2>
           <div className="flex items-center text-primary dark:text-gray-100 py-4 font-semibold">
@@ -240,28 +240,12 @@ const ElectricityBill = () => {
                 type="text"
                 name="meterNumber"
                 value={formData.meterNumber}
+                disabled={!formData.selectedMeterType}
                 placeholder="Meter Number"
                 aria-label="Meter Number"
                 className={`${inputStyle} ${
                   errors.meterNumber ? errorInputStyle : ""
                 }`}
-                onChange={handleInputChange}
-              />
-            </div>
-
-            {/* PIN Input */}
-            <div>
-              {errors.pin && (
-                <p className="text-red-500 text-sm mb-1">{errors.pin}</p>
-              )}
-              <input
-                type="password"
-                name="pin"
-                placeholder="Pin"
-                aria-label="Pin"
-                value={formData.pin}
-                autoComplete="current-password"
-                className={`${inputStyle} ${errors.pin ? errorInputStyle : ""}`}
                 onChange={handleInputChange}
               />
             </div>
@@ -275,6 +259,7 @@ const ElectricityBill = () => {
                 type="text"
                 name="amount"
                 placeholder="Amount"
+                disabled={!formData.meterNumber}
                 value={formData.amount}
                 onChange={handleInputChange}
                 className={`${inputStyle} ${
@@ -283,25 +268,56 @@ const ElectricityBill = () => {
               />
             </div>
 
+            {/* PIN Input */}
+            <div>
+              {errors.pin && (
+                <p className="text-red-500 text-sm mb-1">{errors.pin}</p>
+              )}
+              <input
+                type="password"
+                name="pin"
+                placeholder="Pin"
+                disabled={!formData.amount}
+                aria-label="Pin"
+                value={formData.pin}
+                autoComplete="current-password"
+                className={`${inputStyle} ${errors.pin ? errorInputStyle : ""}`}
+                onChange={handleInputChange}
+              />
+            </div>
+
+            <div className={`${formData.pin?.length !== 4 && "hidden"}`}>
+              <input
+                type="text"
+                name="charges"
+                placeholder=""
+                disabled
+                value={`₦${formData.charges}`}
+                onChange={handleInputChange}
+                className={`${inputStyle}`}
+              />
+            </div>
+
             {/* Bypass IUC Number Toggle */}
             <div className="flex flex-wrap w-full text-white justify-between text-[1rem] py-5">
-              <p
-                className="dark:text-white text-primary opacity-80 font-semibold cursor-pointer"
-                onClick={handleBypass}
-              >
+              <p className="dark:text-white text-primary opacity-80 font-semibold">
                 Bypass Meter Number
               </p>
-              <div className="flex items-center mr-3">
+              <div
+                className="flex items-center mr-3 cursor-pointer"
+                onClick={handleBypass}
+              >
                 <div
-                  className={`h-4 w-9 rounded-2xl flex items-center relative ${
-                    bypassMeterNumber ? "bg-gray-600" : "bg-primary"
+                  className={`h-5 w-10 rounded-full flex items-center relative transition-colors duration-300 ease-in-out ${
+                    bypassMeterNumber ? "bg-[#1CCEFF]" : "bg-gray-600"
                   }`}
                 >
                   <div
-                    className={`button h-5 w-5 bg-white rounded-full absolute hover:transition-all hover:duration-450 ease-in-out ${
-                      bypassMeterNumber ? "right-0" : "left-0"
+                    className={`h-6 w-6 bg-white border rounded-full absolute transform transition-transform duration-300 ease-in-out ${
+                      bypassMeterNumber
+                        ? "translate-x-5"
+                        : "translate-x-[-0.1rem]"
                     }`}
-                    onClick={handleBypass}
                   ></div>
                 </div>
               </div>
@@ -309,7 +325,11 @@ const ElectricityBill = () => {
 
             {/* Submit Button */}
             <div>
-              <SubmitButton label="Verify Meter Number" />
+              <SubmitButton
+                label={`${
+                  bypassMeterNumber ? "Purchase" : "Verify Meter Number"
+                }`}
+              />
             </div>
           </form>
         </div>
