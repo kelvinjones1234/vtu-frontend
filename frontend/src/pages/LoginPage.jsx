@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import SubmitButton from "../components/SubmitButton";
 import { GeneralContext } from "../context/GeneralContext";
 import LeftSide from "../components/LeftSide";
+import FloatingLabelInput from "../components/FloatingLabelInput";
 
 const LoginPage = () => {
   const { loginUser, userError, setUserError, setRememberMe, rememberMe } =
@@ -120,7 +121,7 @@ const LoginPage = () => {
                 </div>
               )}
               <div className="space-y-4">
-                <input
+                <FloatingLabelInput
                   type="text"
                   value={username}
                   placeholder="Username"
@@ -130,7 +131,7 @@ const LoginPage = () => {
                 />
 
                 <div className="relative w-full">
-                  <input
+                  <FloatingLabelInput
                     type={showPassword ? "text" : "password"}
                     placeholder="Password"
                     value={password}

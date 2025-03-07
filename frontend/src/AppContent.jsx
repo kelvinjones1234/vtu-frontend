@@ -75,7 +75,7 @@ function AppContent() {
           element={<AirtimePage />}
         />
         <Route
-          path="/user/dashboard/services/cable subscription"
+          path="/user/dashboard/services/cable"
           element={<CableSubPage />}
         />
         <Route

@@ -3,13 +3,15 @@ import { Link } from "react-router-dom";
 import GeneralLeft from "./GeneralLeft";
 import GeneralRight from "./GeneralRight";
 import { ProductContext } from "../context/ProductContext";
-import { GeneralContext } from "../context/GeneralContext"; 
+import { GeneralContext } from "../context/GeneralContext";
 import { AuthContext } from "../context/AuthenticationContext";
 import SubmitButton from "./SubmitButton";
 import ConfirmationPopup from "./ConfirmationPopup";
 import ErrorPopup from "./ErrorPopup";
 import SuccessPopup from "./SuccessPopup";
 import { useTransactionSubmit } from "./UserTransactionSubmit";
+import FloatingLabelInput from "./FloatingLabelInput";
+import FloatingLabelSelect from "./FloatingLabelSelect";
 
 const selectStyle =
   "custom-select dark:bg-[#18202F] bg-white w-full hover:transition hover:duration-450 hover:ease-in-out mb-3 text-primary dark:text-white py-1 px-4 h-[3.5rem] text-[1.2rem] rounded-2xl outline-none border border-[#1CCEFF] dark:border-gray-700 hover:border-[#1CCEFF] dark:hover:border-[#1CCEFF] focus:border-[#1CCEFF] dark:focus:border-[#1CCEFF]";
@@ -225,101 +227,57 @@ const Data = () => {
         <div className="bg-white dark:bg-gray-800 rounded-[1.5rem] shadow-lg p-6">
           <form onSubmit={handleSubmit}>
             {/* Network Selection */}
-            <div>
-              {errors.selectedNetwork && (
-                <p className="text-red-500 text-sm mb-1">
-                  {errors.selectedNetwork}
-                </p>
-              )}
-              <select
-                name="selectedNetwork"
-                aria-label="Network"
-                value={formData.selectedNetwork}
-                onChange={handleInputChange}
-                className={`${selectStyle} ${
-                  errors.selectedNetwork ? errorInputStyle : ""
-                }`}
-              >
-                <option value="" disabled>
-                  Network
-                </option>
-                {dataNetworks.map((item) => (
-                  <option key={item.network_id} value={item.network}>
-                    {item.network.toUpperCase()}
-                  </option>
-                ))}
-              </select>
-            </div>
+            <FloatingLabelSelect
+              name="selectedNetwork"
+              placeholder="Network"
+              value={formData.selectedNetwork}
+              onChange={handleInputChange}
+              error={errors.selectedNetwork}
+              disabled={false}
+              options={dataNetworks.map((item) => ({
+                value: item.network,
+                label: item.network.toUpperCase(),
+              }))}
+            />
 
             {/* Plan Type Selection */}
-            <div>
-              {errors.selectedPlanType && (
-                <p className="text-red-500 text-sm mb-1">
-                  {errors.selectedPlanType}
-                </p>
-              )}
-              <select
-                name="selectedPlanType"
-                aria-label="Plan Type"
-                value={formData.selectedPlanType}
-                onChange={handleInputChange}
-                className={`${selectStyle} ${
-                  errors.selectedPlanType ? errorInputStyle : ""
-                }`}
-                disabled={
-                  !formData.selectedNetwork ||
-                  !planTypes.some((type) => type.is_active)
-                }
-              >
-                <option value="" disabled>
-                  Plan Type
-                </option>
-                {planTypes.map((type) => (
-                  <option
-                    key={type.plan_type}
-                    value={type.id}
-                    disabled={!type.is_active}
-                  >
-                    {type.plan_type.toUpperCase()}
-                  </option>
-                ))}
-              </select>
-            </div>
+            <FloatingLabelSelect
+              name="selectedPlanType"
+              placeholder="Plan Type"
+              value={formData.selectedPlanType}
+              onChange={handleInputChange}
+              error={errors.selectedPlanType}
+              disabled={
+                !formData.selectedNetwork ||
+                !planTypes.some((type) => type.is_active)
+              }
+              options={planTypes.map((type) => ({
+                value: type.id,
+                label: type.plan_type.toUpperCase(),
+                disabled: !type.is_active,
+              }))}
+            />
 
             {/* Data Plan Selection */}
-            <div>
-              {errors.selectedDataPlan && (
-                <p className="text-red-500 text-sm mb-1">
-                  {errors.selectedDataPlan}
-                </p>
-              )}
-              <select
-                name="selectedDataPlan"
-                aria-label="Data Plan"
-                value={formData.selectedDataPlan}
-                onChange={handleInputChange}
-                className={`${selectStyle} ${
-                  errors.selectedDataPlan ? errorInputStyle : ""
-                }`}
-                disabled={!formData.selectedPlanType}
-              >
-                <option value="" disabled>
-                  Data Plan
-                </option>
-                {dataPlans.map((item) => (
-                  <option key={item.id} value={item.id}>
-                    {item.data_plan}
-                  </option>
-                ))}
-              </select>
-            </div>
+            <FloatingLabelSelect
+              name="selectedDataPlan"
+              placeholder="Data Plan"
+              value={formData.selectedDataPlan}
+              onChange={handleInputChange}
+              error={errors.selectedDataPlan}
+              disabled={!formData.selectedPlanType}
+              options={dataPlans.map((item) => ({
+                value: item.id,
+                label: item.data_plan,
+              }))}
+            />
 
             {/* Phone Number Input */}
             <div>
-              {errors.phone && (
+              {/* {errors.phone && (
                 <p className="text-red-500 text-sm mb-1">{errors.phone}</p>
-              )}
-              <input
+              )} */}
+              <FloatingLabelInput
                 type="text"
                 name="phone"
                 placeholder="Phone Number"
@@ -327,9 +285,7 @@ const Data = () => {
                 disabled={!formData.selectedDataPlan}
                 value={formData.phone}
                 onChange={handleInputChange}
-                className={`${inputStyle} ${
-                  errors.phone ? errorInputStyle : ""
-                }`}
+                error={errors.phone}
               />
               {networkMessage && (
                 <p
@@ -341,10 +297,10 @@ const Data = () => {
 
             {/* PIN Input */}
             <div>
-              {errors.pin && (
+              {/* {errors.pin && (
                 <p className="text-red-500 text-sm mb-1">{errors.pin}</p>
-              )}
-              <input
+              )} */}
+              <FloatingLabelInput
                 type="password"
                 name="pin"
                 placeholder="Pin"
@@ -353,19 +309,18 @@ const Data = () => {
                 autoComplete="current-password"
                 value={formData.pin}
                 onChange={handleInputChange}
-                className={`${inputStyle} ${errors.pin ? errorInputStyle : ""}`}
+                error={errors.pin}
               />
             </div>
 
             {/* Price Display */}
             {formData.price && (
-              <input
+              <FloatingLabelInput
                 type="text"
                 disabled
                 name="price"
                 placeholder="Price"
                 value={`₦${formData.price}`}
-                className={`${inputStyle}`}
               />
             )}
 

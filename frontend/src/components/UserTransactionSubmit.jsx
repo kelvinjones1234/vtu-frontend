@@ -3,6 +3,8 @@ import { useWallet } from "../context/WalletContext";
 import { GeneralContext } from "../context/GeneralContext";
 import { AuthContext } from "../context/AuthenticationContext";
 import { useContext } from "react";
+import { useNavigate } from "react-router-dom"; 
+
 
 export const useTransactionSubmit = ({
   validInputs,
@@ -10,13 +12,14 @@ export const useTransactionSubmit = ({
   formData,
   generateUniqueId,
   bypassMeterNumber,
-  bypassPhoneNumber, 
+  bypassPhoneNumber,
   bypassUicNumber,
   productType,
 }) => {
-  const { user, authTokens, rememberMe, logoutUser } = useContext(AuthContext);
+  const { user, rememberMe, logoutUser } = useContext(AuthContext);
   const { api, setLoading } = useContext(GeneralContext);
   const { walletData, setWalletData } = useWallet();
+  const navigate = useNavigate();
 
   const handleSubmit = useCallback(
     async (e) => {
@@ -24,27 +27,34 @@ export const useTransactionSubmit = ({
 
       if (validInputs()) {
         if (rememberMe) {
-          const token = localStorage.getItem("authTokens");
-          const parsedToken = token ? JSON.parse(token) : null;
-
-          if (parsedToken) {
-            const storedAccessToken = parsedToken.access;
-            if (storedAccessToken !== authTokens.access) {
-              console.log("Token altered or empty");
-              logoutUser();
-            } else {
-              setPopupState((prev) => ({ ...prev, isConfirmOpen: true }));
-            }
-          } else {
-            console.log("No parsed token found");
-            logoutUser();
-          }
+          // Store the "Remember Me" flag in localStorage
+          localStorage.setItem("rememberMe", "true");
         } else {
-          setPopupState((prev) => ({ ...prev, isConfirmOpen: true }));
+          // Remove "Remember Me" flag if not checked
+          localStorage.removeItem("rememberMe");
+        }
+
+        try {
+          // Send login request (cookies will be handled automatically)
+          const response = await api.post(
+            "/login/",
+            { username, password },
+            { withCredentials: true }
+          );
+
+          if (response.status === 200) {
+            console.log("Login successful");
+            navigate("/user/dashboard");
+          } else {
+            console.log("Unexpected response:", response);
+          }
+        } catch (error) {
+          console.error("Login failed:", error.response?.data || error);
+          alert("Login failed. Please check your credentials.");
         }
       }
     },
-    [validInputs, rememberMe, authTokens, logoutUser, setPopupState]
+    [validInputs, rememberMe, navigate]
   );
 
   const handleConfirm = useCallback(async () => {
@@ -116,8 +126,8 @@ export const useTransactionSubmit = ({
       const response = await api.post("post_payment/", payload, {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${authTokens?.access}`,
         },
+        withCredentials: true,
       });
 
       // Handle different response statuses
@@ -194,7 +204,6 @@ export const useTransactionSubmit = ({
     bypassMeterNumber,
     api,
     setLoading,
-    authTokens.access,
     user.username,
     user.user_id,
   ]);

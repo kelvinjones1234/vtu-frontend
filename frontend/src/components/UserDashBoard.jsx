@@ -76,9 +76,9 @@ const UserDashBoard = () => {
         </div>
 
         {/* Wallet Balance Card */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg mb-6 px-3 py-6 text-primary dark:text-white">
+        <div className="bg-white dark:bg-gradient-to-br dark:from-slate-900 dark:to-slate-700 rounded-xl shadow-lg mb-6 px-3 py-6 text-primary dark:text-white">
           <div className="flex justify-between items-center mb-4 text-sm sm:text-[.7rem] md:text-[1rem]">
-            <h2 className="flex items-center space-x-2">
+            <h2 className="sm:flex items-center space-x-2">
               <span>Available Balance</span>
               <button
                 onClick={toggleBalanceVisibility}
@@ -127,7 +127,7 @@ const UserDashBoard = () => {
         </div>
 
         {/* Product Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 my-6">
+        <div className="grid grid-cols-2 xl:grid-cols-4 gap-4 my-6">
           {productData.map((item) => (
             <Link
               key={item.id}
@@ -138,7 +138,7 @@ const UserDashBoard = () => {
                 // src={`https://host-test-sable.vercel.app/${item.image}`}
                 src={`http://127.0.0.1:8000${item.image}`}
                 alt={item.category}
-                className="h-24 w-12 object-contain mb-2"
+                className="h-24 w-24 object-contain mb-2"
                 fetchpriority="high" // Prioritize image loading
               />
               <p className="text-sm text-center font-bold text-primary dark:text-white">

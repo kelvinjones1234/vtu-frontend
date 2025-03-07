@@ -8,7 +8,7 @@ import React, {
 } from "react";
 import { AuthContext } from "./AuthenticationContext";
 import { GeneralContext } from "./GeneralContext";
-import { debounce } from "lodash"; // For debouncing API calls
+import { debounce } from "lodash";
 
 const WalletContext = createContext();
 
@@ -16,13 +16,16 @@ export const WalletProvider = ({ children }) => {
   const [walletData, setWalletData] = useState({ balance: 0 });
   const { logoutUser } = useContext(AuthContext);
   const { api } = useContext(GeneralContext);
+  const { user } = useContext(AuthContext);
+
+  // Memoize the API reference
   const memoizedApi = useMemo(() => api, [api]);
 
-  // Handle errors (e.g., unauthorized access, network issues)
+  // Handle errors
   const handleError = useCallback(
     (error) => {
       if (error.response?.status === 401) {
-        logoutUser(); // Log out user if token is invalid
+        logoutUser();
       } else {
         console.error("Error:", error.response?.data || error.message);
       }
@@ -35,36 +38,35 @@ export const WalletProvider = ({ children }) => {
     async ({ signal } = {}) => {
       try {
         const response = await memoizedApi.get("wallet/", {
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           withCredentials: true,
           signal,
         });
-        setWalletData(response.data);
+
+        // Only update if data has changed
+        if (JSON.stringify(response.data) !== JSON.stringify(walletData)) {
+          setWalletData(response.data);
+        }
       } catch (error) {
         if (error.name !== "AbortError") {
           handleError(error);
         }
       }
     },
-    [memoizedApi, handleError]
+    [memoizedApi, handleError, walletData]
   );
 
-  // Fetch wallet data on component mount
+  // Fetch wallet data on component mount or when user changes
   useEffect(() => {
-    const controller = new AbortController(); // For aborting the request if the component unmounts
+    if (!user) return;
+
+    const controller = new AbortController();
     fetchWalletData({ signal: controller.signal });
 
-    // Cleanup function to abort the request if the component unmounts
-    return () => {
-      controller.abort();
-    };
-  }, [fetchWalletData]);
+    return () => controller.abort();
+  }, [fetchWalletData, user]);
 
-  console.log("Wallet data:", walletData);
-
-  // Optimistically update wallet balance and sync with the server
+  // Update wallet balance with optimistic updates
   const updateWalletBalance = useCallback(
     async (amount) => {
       if (amount <= 0) {
@@ -75,23 +77,23 @@ export const WalletProvider = ({ children }) => {
       const previousBalance = walletData.balance;
       const newBalance = previousBalance + amount;
 
+      // Skip update if balance would be the same (defensive)
+      if (newBalance === previousBalance) return;
+
       // Optimistic update
       setWalletData((prevData) => ({ ...prevData, balance: newBalance }));
 
       try {
         const response = await memoizedApi.put(
           "fund-wallet/",
-
           { amount },
           {
-            headers: {
-              "Content-Type": "application/json",
-            },
+            headers: { "Content-Type": "application/json" },
             withCredentials: true,
           }
         );
 
-        // If the server responds with an error, revert the optimistic update
+        // If server response indicates error, revert
         if (response.status !== 200) {
           setWalletData((prevData) => ({
             ...prevData,
@@ -111,13 +113,13 @@ export const WalletProvider = ({ children }) => {
     [memoizedApi, walletData.balance, handleError]
   );
 
-  // Debounced version of updateWalletBalance to prevent rapid API calls
+  // Create a stable debounced update function
   const debouncedUpdateWalletBalance = useMemo(
     () => debounce(updateWalletBalance, 500),
     [updateWalletBalance]
   );
 
-  // Provide wallet context value to children
+  // Optimize context value object to prevent unnecessary renders
   const value = useMemo(
     () => ({
       walletData,

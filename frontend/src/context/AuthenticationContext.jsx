@@ -1,4 +1,11 @@
-import { createContext, useState, useMemo, useEffect, useContext } from "react";
+import {
+  createContext,
+  useState,
+  useMemo,
+  useEffect,
+  useContext,
+  useCallback,
+} from "react";
 import { useNavigate } from "react-router-dom";
 import { GeneralContext } from "./GeneralContext";
 
@@ -13,8 +20,13 @@ const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
   const { api } = useContext(GeneralContext);
 
+  // Clear user error message handler - memoized
+  const clearUserError = useCallback(() => setUserError(""), []);
+
   // Configure request interceptor to handle token refresh
   useEffect(() => {
+    // These variables persist across interceptor calls but aren't in state
+    // to avoid unnecessary re-renders
     let isRefreshing = false;
     let refreshFailed = false;
     let failedQueue = [];
@@ -27,8 +39,15 @@ const AuthProvider = ({ children }) => {
           prom.resolve();
         }
       });
-
       failedQueue = [];
+    };
+
+    // Handle the logout process - extracted for reuse
+    const handleLogout = () => {
+      setUser(null);
+      if (!window.location.pathname.includes("/authentication/login")) {
+        navigate("/authentication/login");
+      }
     };
 
     const requestInterceptor = api.interceptors.response.use(
@@ -36,29 +55,22 @@ const AuthProvider = ({ children }) => {
       async (error) => {
         const originalRequest = error.config;
 
-        // Only attempt refresh if:
-        // 1. It's a 401 error
-        // 2. It's not a refresh request itself
-        // 3. We haven't already tried to refresh
-        // 4. We haven't already had a refresh failure this session
-        if (
+        // Combine conditions for better readability
+        const shouldAttemptRefresh =
           error.response?.status === 401 &&
           !originalRequest.url.includes("/refresh/") &&
           !originalRequest._retry &&
           !refreshFailed &&
-          authInitialized // Only try refresh after initial auth check
-        ) {
+          authInitialized;
+
+        if (shouldAttemptRefresh) {
           if (isRefreshing) {
-            // If we're already refreshing, queue this request
+            // Queue this request while refresh is in progress
             return new Promise((resolve, reject) => {
               failedQueue.push({ resolve, reject });
             })
-              .then(() => {
-                return api(originalRequest);
-              })
-              .catch((err) => {
-                return Promise.reject(err);
-              });
+              .then(() => api(originalRequest))
+              .catch((err) => Promise.reject(err));
           }
 
           originalRequest._retry = true;
@@ -80,29 +92,16 @@ const AuthProvider = ({ children }) => {
               processQueue();
               return api(originalRequest);
             } else {
-              // Unexpected success status
               refreshFailed = true;
               processQueue(new Error("Refresh failed"));
-
-              // Clear user and redirect
-              setUser(null);
-              if (!window.location.pathname.includes("/authentication/login")) {
-                navigate("/authentication/login");
-              }
-
+              handleLogout();
               return Promise.reject(error);
             }
           } catch (refreshError) {
             isRefreshing = false;
             refreshFailed = true;
             processQueue(refreshError);
-
-            // If refresh fails, clear user and redirect to login
-            setUser(null);
-            if (!window.location.pathname.includes("/authentication/login")) {
-              navigate("/authentication/login");
-            }
-
+            handleLogout();
             return Promise.reject(refreshError);
           }
         }
@@ -124,13 +123,11 @@ const AuthProvider = ({ children }) => {
 
       setLoading(true);
       try {
-        // Call endpoint to get user profile
         const response = await api.get("/auth/validate/", {
           withCredentials: true,
         });
 
         if (response.status === 200) {
-          console.log("Auth validation successful:", response.data);
           setUser(response.data);
         }
       } catch (error) {
@@ -138,55 +135,52 @@ const AuthProvider = ({ children }) => {
         setUser(null);
       } finally {
         setLoading(false);
-        setAuthInitialized(true); // Mark initialization as complete
+        setAuthInitialized(true);
       }
     };
 
     validateAuth();
-  }, [api]);
+  }, [api, authInitialized]);
 
-  const loginUser = async (username, password) => {
-    try {
-      setUserError("");
-      setLoading(true);
+  // Login function - memoized
+  const loginUser = useCallback(
+    async (username, password) => {
+      try {
+        setUserError("");
+        setLoading(true);
 
-      console.log("Attempting login for:", username);
-      const response = await api.post(
-        "/login/",
-        { username, password },
-        {
-          headers: { "Content-Type": "application/json" },
-          withCredentials: true,
-        }
-      );
-
-      if (response.status === 200) {
-        console.log("Login successful:", user);
-        setUser(response.data);
-
-        // Redirect after login
-        navigate("/user/dashboard", { replace: true });
-      }
-    } catch (error) {
-      console.error("Login error:", error);
-
-      if (error.response?.status === 401) {
-        setUserError("Invalid username or password");
-      } else if (error.response?.data?.error) {
-        setUserError(error.response.data.error);
-      } else if (error.message === "Network Error") {
-        setUserError(
-          "Network error. Please check your connection and try again."
+        const response = await api.post(
+          "/login/",
+          { username, password },
+          {
+            headers: { "Content-Type": "application/json" },
+            withCredentials: true,
+          }
         );
-      } else {
-        setUserError("Login failed. Please try again.");
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
 
-  const logoutUser = async () => {
+        if (response.status === 200) {
+          setUser(response.data);
+          navigate("/user/dashboard", { replace: true });
+        }
+      } catch (error) {
+        if (error.response?.data?.error) {
+          setUserError(error.response.data.error);
+        } else if (error.message === "Network Error") {
+          setUserError(
+            "Network error. Please check your connection and try again."
+          );
+        } else {
+          setUserError("Invalid username or password.");
+        }
+      } finally {
+        setLoading(false);
+      }
+    },
+    [api, navigate]
+  );
+
+  // Logout function - memoized
+  const logoutUser = useCallback(async () => {
     try {
       await api.post("/logout/", {}, { withCredentials: true });
     } catch (error) {
@@ -196,47 +190,102 @@ const AuthProvider = ({ children }) => {
       setUser(null);
       navigate("/authentication/login", { replace: true });
     }
-  };
+  }, [api, navigate]);
 
-  const registerUser = async (formData) => {
-    try {
-      setRegisterErrors({});
-      setLoading(true);
+  // Register function - memoized
+  const registerUser = useCallback(
+    async (formData) => {
+      try {
+        setRegisterErrors({});
+        setLoading(true);
 
-      const response = await api.post("/register/", formData, {
-        headers: { "Content-Type": "application/json" },
-        withCredentials: true,
-      });
-
-      if (response.status === 201) {
-        navigate("/authentication/login/", { replace: true });
-      }
-    } catch (error) {
-      if (error.response?.data) {
-        setRegisterErrors(error.response.data);
-      } else {
-        setRegisterErrors({
-          non_field_errors: ["Registration failed. Please try again."],
+        const response = await api.post("/register/", formData, {
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true,
         });
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
 
+        if (response.status === 201) {
+          navigate("/authentication/login/", { replace: true });
+        }
+      } catch (error) {
+        const errors = error.response?.data || {};
+        setRegisterErrors(errors);
+        console.error(
+          "Error:",
+          error.response ? error.response.data : error.message
+        );
+      } finally {
+        setLoading(false);
+      }
+    },
+    [api, navigate]
+  );
+
+  // const registerUser = useCallback(
+  //   async (formData) => {
+  //     try {
+  //       setRegisterErrors({});
+  //       setLoading(true);
+
+  //       const response = await api.post("/register/", formData, {
+  //         headers: { "Content-Type": "application/json" },
+  //         withCredentials: true,
+  //       });
+
+  //       if (response.status === 201) {
+  //         navigate("/authentication/login/", { replace: true });
+  //       }
+  //     } catch (error) {
+  //       console.error("Registration Error:", error); // Log the full error object
+  //       if (error.response) {
+  //         console.error("Response Data:", error.response.data); // Log response data (validation errors)
+  //         console.error("Response Status:", error.response.status); // Log HTTP status code
+  //         console.error("Response Headers:", error.response.headers); // Log response headers
+  //       } else if (error.request) {
+  //         console.error("No Response Received:", error.request); // Log request details if no response is received
+  //       } else {
+  //         console.error("Error Message:", error.message); // Log general error messages
+  //       }
+
+  //       if (error.response?.data) {
+  //         setRegisterErrors(error.response.data);
+  //       } else {
+  //         setRegisterErrors({
+  //           non_field_errors: ["Registration failed. Please try again."],
+  //         });
+  //       }
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   },
+  //   [api, navigate]
+  // );
+
+  // Memoize context value to prevent unnecessary renders
   const contextData = useMemo(
     () => ({
       loginUser,
       logoutUser,
       registerUser,
-      setUserError,
+      setUserError: clearUserError,
+      setRegisterErrors,
       user,
       userError,
       registerErrors,
       loading,
       isAuthenticated: !!user,
     }),
-    [user, userError, registerErrors, loading]
+    [
+      user,
+      userError,
+      registerErrors,
+      loading,
+      setRegisterErrors,
+      loginUser,
+      logoutUser,
+      registerUser,
+      clearUserError,
+    ]
   );
 
   return (

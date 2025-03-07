@@ -4,13 +4,13 @@ import { Link } from "react-router-dom";
 import { GeneralContext } from "../context/GeneralContext";
 import SubmitButton from "../components/SubmitButton";
 import LeftSide from "../components/LeftSide";
+import FloatingLabelInput from "../components/FloatingLabelInput";
 
 const RegistrationPage = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [errorMessage, setErrorMessage] = useState({});
   const [showPassword, setShowPassword] = useState(false);
-  const { registerUser, registerErrors, setRegisterErrors } =
-    useContext(AuthContext);
+  const { registerUser, setRegisterErrors, registerErrors} = useContext(AuthContext);
   const { setLoading } = useContext(GeneralContext);
 
   useEffect(() => {
@@ -216,7 +216,7 @@ const RegistrationPage = () => {
                       field.colSpan ? "sm:col-span-2" : "sm:col-span-1"
                     }`} // Conditionally apply col-span
                   >
-                    <input
+                    <FloatingLabelInput
                       type={field.type || "text"}
                       name={field.name}
                       placeholder={field.placeholder}

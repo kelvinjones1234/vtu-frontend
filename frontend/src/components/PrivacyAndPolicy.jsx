@@ -41,7 +41,7 @@ const PrivacyPolicy = () => {
             policy.map((pol, index) => (
               <div
                 key={index}
-                className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 mb-6"
+                className="bg-white text-black dark:text-white dark:bg-gray-800 rounded-xl shadow-lg p-6 mb-6"
               >
                 <div
                   dangerouslySetInnerHTML={{

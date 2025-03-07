@@ -4,6 +4,7 @@ import SubmitButton from "../components/SubmitButton";
 import axios from "axios";
 import { GeneralContext } from "../context/GeneralContext";
 import LeftSide from "../components/LeftSide";
+import FloatingLabelInput from "../components/FloatingLabelInput";
 
 const PasswordResetRequestPage = () => {
   const { setLoading } = useContext(GeneralContext);
@@ -117,7 +118,7 @@ const PasswordResetRequestPage = () => {
 
               <div className="mb-3">
                 <div>
-                  <input
+                  <FloatingLabelInput
                     type="email"
                     placeholder="Email"
                     value={email}

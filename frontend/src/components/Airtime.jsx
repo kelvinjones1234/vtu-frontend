@@ -17,6 +17,8 @@ import ConfirmationPopup from "./ConfirmationPopup";
 import ErrorPopup from "./ErrorPopup";
 import SuccessPopup from "./SuccessPopup";
 import { useTransactionSubmit } from "./UserTransactionSubmit";
+import FloatingLabelInput from "./FloatingLabelInput";
+import FloatingLabelSelect from "./FloatingLabelSelect";
 
 const selectStyle =
   "custom-select dark:bg-[#18202F] bg-white w-full hover:transition hover:duration-450 hover:ease-in-out mb-3 text-primary dark:text-white py-1 px-4 h-[3.5rem] text-[1.2rem] rounded-2xl outline-none border border-[#1CCEFF] dark:border-gray-700 hover:border-[#1CCEFF] dark:hover:border-[#1CCEFF] focus:border-[#1CCEFF] dark:focus:border-[#1CCEFF]";
@@ -170,7 +172,7 @@ const Airtime = () => {
         <div className="bg-white dark:bg-gray-800 rounded-[1.5rem] shadow-lg p-6">
           <form onSubmit={handleSubmit}>
             {/* Network Selection */}
-            <div>
+            {/* <div>
               {errors.selectedNetwork && (
                 <p className="text-red-500 text-sm mb-1">
                   {errors.selectedNetwork}
@@ -194,10 +196,22 @@ const Airtime = () => {
                   </option>
                 ))}
               </select>
-            </div>
+            </div> */}
+
+            <FloatingLabelSelect
+              name="selectedNetwork"
+              placeholder="Network"
+              value={formData.selectedNetwork}
+              onChange={handleInputChange}
+              error={errors.selectedNetwork}
+              options={airtimeNetworks.map((item) => ({
+                value: item.network,
+                label: item.network,
+              }))}
+            />
 
             {/* Airtime Type Selection */}
-            <div>
+            {/* <div>
               {errors.selectedAirtimeType && (
                 <p className="text-red-500 text-sm mb-1">
                   {errors.selectedAirtimeType}
@@ -229,14 +243,27 @@ const Airtime = () => {
                   </option>
                 ))}
               </select>
-            </div>
+            </div> */}
+
+            <FloatingLabelSelect
+              name="selectedAirtimeType"
+              placeholder="Plan Type"
+              value={formData.selectedAirtimeType}
+              onChange={handleInputChange}
+              error={errors.selectedAirtimeType}
+              disabled={!formData.selectedNetwork}
+              options={airtimeTypes.map((item) => ({
+                value: item.airtime_type,
+                label: item.airtime_type,
+              }))}
+            />
 
             {/* Phone Number Input */}
             <div>
               {errors.phone && (
                 <p className="text-red-500 text-sm mb-1">{errors.phone}</p>
               )}
-              <input
+              <FloatingLabelInput
                 type="text"
                 name="phone"
                 placeholder="Phone Number"
@@ -261,15 +288,17 @@ const Airtime = () => {
               {errors.amount && (
                 <p className="text-red-500 text-sm mb-1">{errors.amount}</p>
               )}
-              <input
+              <FloatingLabelInput
                 type="text"
                 name="amount"
                 placeholder="Amount"
                 disabled={!formData.phone}
+                aria-label="Amount"
+                value={formData.amount}
+                onChange={handleInputChange}
                 className={`${inputStyle} ${
                   errors.amount ? errorInputStyle : ""
                 }`}
-                onChange={handleInputChange}
               />
             </div>
 
@@ -278,7 +307,7 @@ const Airtime = () => {
               {errors.pin && (
                 <p className="text-red-500 text-sm mb-1">{errors.pin}</p>
               )}
-              <input
+              <FloatingLabelInput
                 type="password"
                 name="pin"
                 placeholder="Pin"
