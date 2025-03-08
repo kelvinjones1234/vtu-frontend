@@ -7,7 +7,6 @@ import Pagination from "./Pagination";
 
 const Notifications = () => {
   const {
-    api,
     fetchNotifications,
     handleMarkAsRead,
     errorMessage,

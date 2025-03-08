@@ -23,6 +23,9 @@ const AuthProvider = ({ children }) => {
   // Clear user error message handler - memoized
   const clearUserError = useCallback(() => setUserError(""), []);
 
+  console.log(user);
+  
+
   // Configure request interceptor to handle token refresh
   useEffect(() => {
     // These variables persist across interceptor calls but aren't in state
@@ -221,45 +224,7 @@ const AuthProvider = ({ children }) => {
     [api, navigate]
   );
 
-  // const registerUser = useCallback(
-  //   async (formData) => {
-  //     try {
-  //       setRegisterErrors({});
-  //       setLoading(true);
-
-  //       const response = await api.post("/register/", formData, {
-  //         headers: { "Content-Type": "application/json" },
-  //         withCredentials: true,
-  //       });
-
-  //       if (response.status === 201) {
-  //         navigate("/authentication/login/", { replace: true });
-  //       }
-  //     } catch (error) {
-  //       console.error("Registration Error:", error); // Log the full error object
-  //       if (error.response) {
-  //         console.error("Response Data:", error.response.data); // Log response data (validation errors)
-  //         console.error("Response Status:", error.response.status); // Log HTTP status code
-  //         console.error("Response Headers:", error.response.headers); // Log response headers
-  //       } else if (error.request) {
-  //         console.error("No Response Received:", error.request); // Log request details if no response is received
-  //       } else {
-  //         console.error("Error Message:", error.message); // Log general error messages
-  //       }
-
-  //       if (error.response?.data) {
-  //         setRegisterErrors(error.response.data);
-  //       } else {
-  //         setRegisterErrors({
-  //           non_field_errors: ["Registration failed. Please try again."],
-  //         });
-  //       }
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   },
-  //   [api, navigate]
-  // );
+ 
 
   // Memoize context value to prevent unnecessary renders
   const contextData = useMemo(

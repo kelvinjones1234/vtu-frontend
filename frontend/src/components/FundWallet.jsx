@@ -4,6 +4,7 @@ import GeneralLeft from "./GeneralLeft";
 import GeneralRight from "./GeneralRight";
 import { Link } from "react-router-dom";
 
+
 const FundWallet = ({ fundingData }) => {
   const [copiedAccount, setCopiedAccount] = useState(null);
 

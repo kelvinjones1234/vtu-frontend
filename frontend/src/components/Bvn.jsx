@@ -1,21 +1,20 @@
 import React, { useState, useContext } from "react";
 import { Link } from "react-router-dom";
-import { AuthContext } from "../context/AuthenticationContext";
 import { GeneralContext } from "../context/GeneralContext";
 import GeneralRight from "./GeneralRight";
 import GeneralLeft from "./GeneralLeft";
 import SubmitButton from "./SubmitButton";
+import FloatingLabelInput from "./FloatingLabelInput";
 
 const inputStyle =
   "dark:bg-[#18202F] bg-white w-full hover:transition hover:duration-450 hover:ease-in-out mb-3 text-primary dark:text-white py-1 px-4 h-[3.5rem] text-[1.2rem] rounded-2xl outline-none border border-[#1CCEFF] dark:border-gray-700 dark:hover:border-[#1CCEFF] dark:hover:border-[#1CCEFF] dark:focus:border-[#1CCEFF]";
 
 const Bvn = () => {
-  const { authTokens } = useContext(AuthContext);
   const { api } = useContext(GeneralContext);
   const [bvn, setBvn] = useState("");
   const [errorMessage, setErrorMessage] = useState({});
   const [successMessage, setSuccessMessage] = useState(null);
-  const { setLoading } = useContext(GeneralContext);
+  const [loading, setLoading] = useState(false);
 
   const validateBvn = (bvn) => /^\d{11}$/.test(bvn);
 
@@ -42,19 +41,19 @@ const Bvn = () => {
           {
             headers: {
               "Content-Type": "application/json",
-              Authorization: "Bearer " + String(authTokens.access),
             },
+            withCredentials: true,
           }
         )
         .then((response) => {
           // Set success message first
           setSuccessMessage("Reserved account created successfully!");
-          
+
           // Reload page after showing success message
           setTimeout(() => {
             window.location.reload();
           }, 3000);
-          
+
           setLoading(false);
         })
         .catch((error) => {
@@ -151,7 +150,7 @@ const Bvn = () => {
           <form onSubmit={handleSubmit} className="">
             {/* BVN Input */}
             <div>
-              <input
+              <FloatingLabelInput
                 type="text"
                 name="bvn"
                 placeholder="Enter BVN"
@@ -164,7 +163,7 @@ const Bvn = () => {
             </div>
             {/* Submit Button */}
             <div>
-              <SubmitButton label="Submit" />
+              <SubmitButton label="Submit" loading={loading} />
             </div>
           </form>
         </div>

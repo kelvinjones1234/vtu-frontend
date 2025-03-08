@@ -8,26 +8,26 @@ import { GeneralContext } from "../context/GeneralContext";
 import axios from "axios";
 
 const FundWalletPage = () => {
-  const { user,authTokens } = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
   const [showBvn, setShowBvn] = useState(false);
   const [loading, setLoading] = useState(true);
   const [fundingDetails, setFundingDetails] = useState(null);
   const { api } = useContext(GeneralContext);
-  const localStorageKey = `${user.username}_fundingData`; // Unique key for local storage
+  const localStorageKey = `${user.user.username}_fundingData`; // Unique key for local storage
 
   useEffect(() => {
     const fetchFundingDetails = async () => {
       try {
         // Check local storage first
         const storedData = localStorage.getItem(localStorageKey);
-  
+
         if (storedData) {
           // Parse the stored data (which is an array)
           const parsedData = JSON.parse(storedData);
-  
+
           // Extract the first element of the array
           const fundingDetails = parsedData[0];
-  
+
           // Set the funding details and hide the BVN form
           setFundingDetails(fundingDetails);
           setShowBvn(false);
@@ -38,11 +38,11 @@ const FundWalletPage = () => {
             {
               headers: {
                 "Content-Type": "application/json",
-                Authorization: `Bearer ${authTokens.access}`,
               },
+              withCredentials: true,
             }
           );
-  
+
           // Check if the response data is empty or null
           if (!response.data || response.data.length === 0) {
             setShowBvn(true);
@@ -50,12 +50,15 @@ const FundWalletPage = () => {
           } else {
             // Extract the first element of the array
             const fundingDetails = response.data[0];
-  
+
             setShowBvn(false);
             setFundingDetails(fundingDetails);
-  
+
             // Store the fetched data in local storage
-            localStorage.setItem(localStorageKey, JSON.stringify(response.data));
+            localStorage.setItem(
+              localStorageKey,
+              JSON.stringify(response.data)
+            );
           }
         }
       } catch (error) {
@@ -66,11 +69,10 @@ const FundWalletPage = () => {
         setLoading(false);
       }
     };
-  
-    fetchFundingDetails();
-  }, [user.username, api, localStorageKey]);
 
-  
+    fetchFundingDetails();
+  }, [user, api, localStorageKey]);
+
   if (loading) {
     return <div className="text-center text-lg">Loading...</div>;
   }

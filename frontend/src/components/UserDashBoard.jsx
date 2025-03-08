@@ -76,8 +76,8 @@ const UserDashBoard = () => {
         </div>
 
         {/* Wallet Balance Card */}
-        <div className="bg-white dark:bg-gradient-to-br dark:from-slate-900 dark:to-slate-700 rounded-xl shadow-lg mb-6 px-3 py-6 text-primary dark:text-white">
-          <div className="flex justify-between items-center mb-4 text-sm sm:text-[.7rem] md:text-[1rem]">
+        <div className="bg-white dark:bg-gradient-to-br dark:from-slate-900 dark:to-slate-700 rounded-xl shadow-lg mb-6 p-3 xs:p-6 sm:p-9 text-primary dark:text-white">
+          <div className="flex justify-between items-center mb-[1.5rem] text-sm sm:text-[.7rem] md:text-[1rem]">
             <h2 className="sm:flex items-center space-x-2">
               <span>Available Balance</span>
               <button
@@ -108,8 +108,8 @@ const UserDashBoard = () => {
         </div>
 
         {/* Actions Card */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 text-primary dark:text-white">
-          <p className="mb-4">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-3 xs:p-6 sm:p-9 text-primary dark:text-white">
+          <p className="mb-[1.5rem]">
             Create shortcuts for frequent activities or transfer atom credit to
             other users with their phone number.
           </p>

@@ -9,11 +9,11 @@ import FloatingLabelInput from "../components/FloatingLabelInput";
 const LoginPage = () => {
   const { loginUser, userError, setUserError, setRememberMe, rememberMe } =
     useContext(AuthContext);
-  const { setLoading } = useContext(GeneralContext);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState({});
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const login = (e) => {
     e.preventDefault();
@@ -170,7 +170,7 @@ const LoginPage = () => {
                 </Link>
               </div>
 
-              <SubmitButton label="Sign In" />
+              <SubmitButton label="Sign In" loading={loading} />
 
               <p className="text-center text-gray-300 mt-6 sm:hidden">
                 Don't have an account?{" "}

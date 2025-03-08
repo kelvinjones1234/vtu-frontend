@@ -1,7 +1,7 @@
 import React, {
   createContext,
   useContext,
-  useState,
+  useReducer,
   useEffect,
   useMemo,
   useCallback,
@@ -10,13 +10,25 @@ import { AuthContext } from "./AuthenticationContext";
 import { GeneralContext } from "./GeneralContext";
 import { debounce } from "lodash";
 
+// Wallet reducer for more predictable state management
+const walletReducer = (state, action) => {
+  switch (action.type) {
+    case "SET_BALANCE":
+      return { ...state, balance: action.payload };
+    case "UPDATE_BALANCE":
+      return { ...state, balance: state.balance + action.payload };
+    default:
+      return state;
+  }
+};
+
 const WalletContext = createContext();
 
 export const WalletProvider = ({ children }) => {
-  const [walletData, setWalletData] = useState({ balance: 0 });
-  const { logoutUser } = useContext(AuthContext);
+  // Use reducer instead of useState for complex state logic
+  const [walletData, dispatch] = useReducer(walletReducer, { balance: 0 });
+  const { logoutUser, user } = useContext(AuthContext);
   const { api } = useContext(GeneralContext);
-  const { user } = useContext(AuthContext);
 
   // Memoize the API reference
   const memoizedApi = useMemo(() => api, [api]);
@@ -33,38 +45,17 @@ export const WalletProvider = ({ children }) => {
     [logoutUser]
   );
 
-  // Fetch wallet data from the server
-  const fetchWalletData = useCallback(
-    async ({ signal } = {}) => {
-      try {
-        const response = await memoizedApi.get("wallet/", {
-          headers: { "Content-Type": "application/json" },
-          withCredentials: true,
-          signal,
-        });
+  // Set wallet data from user object - optimized with direct dispatch
+  const fetchWalletData = useCallback(() => {
+    if (user?.user?.amount !== undefined) {
+      dispatch({ type: "SET_BALANCE", payload: user.user.amount });
+    }
+  }, [user]);
 
-        // Only update if data has changed
-        if (JSON.stringify(response.data) !== JSON.stringify(walletData)) {
-          setWalletData(response.data);
-        }
-      } catch (error) {
-        if (error.name !== "AbortError") {
-          handleError(error);
-        }
-      }
-    },
-    [memoizedApi, handleError, walletData]
-  );
-
-  // Fetch wallet data on component mount or when user changes
+  // Update wallet data when user changes
   useEffect(() => {
-    if (!user) return;
-
-    const controller = new AbortController();
-    fetchWalletData({ signal: controller.signal });
-
-    return () => controller.abort();
-  }, [fetchWalletData, user]);
+    fetchWalletData();
+  }, [fetchWalletData]);
 
   // Update wallet balance with optimistic updates
   const updateWalletBalance = useCallback(
@@ -75,13 +66,9 @@ export const WalletProvider = ({ children }) => {
       }
 
       const previousBalance = walletData.balance;
-      const newBalance = previousBalance + amount;
-
-      // Skip update if balance would be the same (defensive)
-      if (newBalance === previousBalance) return;
 
       // Optimistic update
-      setWalletData((prevData) => ({ ...prevData, balance: newBalance }));
+      dispatch({ type: "UPDATE_BALANCE", payload: amount });
 
       try {
         const response = await memoizedApi.put(
@@ -95,18 +82,12 @@ export const WalletProvider = ({ children }) => {
 
         // If server response indicates error, revert
         if (response.status !== 200) {
-          setWalletData((prevData) => ({
-            ...prevData,
-            balance: previousBalance,
-          }));
+          dispatch({ type: "SET_BALANCE", payload: previousBalance });
           console.error("Failed to update wallet balance on the server.");
         }
       } catch (error) {
         // Revert optimistic update on error
-        setWalletData((prevData) => ({
-          ...prevData,
-          balance: previousBalance,
-        }));
+        dispatch({ type: "SET_BALANCE", payload: previousBalance });
         handleError(error);
       }
     },
@@ -119,13 +100,21 @@ export const WalletProvider = ({ children }) => {
     [updateWalletBalance]
   );
 
+  // Clean up the debounced function when component unmounts
+  useEffect(() => {
+    return () => {
+      debouncedUpdateWalletBalance.cancel();
+    };
+  }, [debouncedUpdateWalletBalance]);
+
   // Optimize context value object to prevent unnecessary renders
   const value = useMemo(
     () => ({
       walletData,
       updateWalletBalance: debouncedUpdateWalletBalance,
+      refreshWallet: fetchWalletData,
     }),
-    [walletData, debouncedUpdateWalletBalance]
+    [walletData, debouncedUpdateWalletBalance, fetchWalletData]
   );
 
   return (

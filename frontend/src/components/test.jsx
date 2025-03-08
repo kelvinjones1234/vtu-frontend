@@ -1,559 +1,530 @@
-import React, { useState } from "react";
-import axios from "axios";
-
-const App = () => {
-  const [responseMessage, setResponseMessage] = useState(""); // To store the API response
-  const [loading, setLoading] = useState(false); // Loading state for button feedback
-
-  // API Credentials
-  const apiKey = "MK_TEST_5TLTGUVZ8K";
-  const clientSecret = "FT4DD1PJC2SXDHC5V069HDUALMGERT16";
-  const encodedCredentials = btoa(`${apiKey}:${clientSecret}`); // Base64 encode
-
-  // Data to be sent in the POST request
-  const requestData = {
-    accountReference: "abc1niui23",
-    accountName: "Test Reserved Account",
-    currencyCode: "NGN",
-    contractCode: "100693167467",
-    customerEmail: "test@tester.com",
-    customerName: "John Doe",
-    bvn: "21212121212",
-    getAllAvailableBanks: true,
-  };
-
-  const handleButtonClick = async () => {
-    setLoading(true);
-    setResponseMessage(""); // Clear previous response
-
-    try {
-      const response = await axios.post(
-        "https://sandbox.monnify.com/api/v2/bank-transfer/reserved-accounts/",
-        requestData,
-        {
-          headers: {
-            Authorization: `Basic ${encodedCredentials}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      setResponseMessage(JSON.stringify(response.data, null, 2)); // Display response data
-    } catch (error) {
-      console.error("Error making the request:", error);
-      setResponseMessage(
-        error.response
-          ? JSON.stringify(error.response.data, null, 2)
-          : "An error occurred while making the request."
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  return (
-    <div style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
-      <h1>Monnify Reserved Account Creator</h1>
-      <button
-        onClick={handleButtonClick}
-        style={{
-          padding: "10px 20px",
-          fontSize: "16px",
-          backgroundColor: loading ? "#ccc" : "#007bff",
-          color: "white",
-          border: "none",
-          borderRadius: "5px",
-          cursor: loading ? "not-allowed" : "pointer",
-        }}
-        disabled={loading}
-      >
-        {loading ? "Creating Account..." : "Create Reserved Account"}
-      </button>
-      <div style={{ marginTop: "20px" }}>
-        <h2>Response:</h2>
-        <pre
-          style={{
-            backgroundColor: "#f4f4f4",
-            padding: "10px",
-            borderRadius: "5px",
-            overflow: "auto",
-            maxHeight: "300px",
-          }}
-        >
-          {responseMessage || "Click the button to see the response"}
-        </pre>
-      </div>
-    </div>
-  );
-};
-
-export default App;
-
-
-
-
-
-
-
-
-
-// import { React, lazy, Suspense } from "react";
-// import { BrowserRouter } from "react-router-dom";
-// import AuthProvider from "./context/AuthenticationContext";
-// import ProductProvider from "./context/ProductContext";
-// import { WalletProvider } from "./context/WalletContext";
-// import GeneralProvider from "./context/GeneralContext";
-// import ParticleComponent from "./components/ParticleComponent";
-// import ScrollToTop from "./components/ScrollTop";
-// import ErrorBoundary from "./pages/ErrorBoundary";
-// import LoadingSpinner from "./components/LoadingSpinner";
-
-// // Lazy load the AppContent component
-// const AppContent = lazy(() => import("./AppContent"));
-
-// function App() {
-//   return (
-//     <BrowserRouter>
-//       <GeneralProvider>
-//         <AuthProvider>
-//           <ProductProvider>
-//             <WalletProvider>
-//               <div className="absolute top-0 left-0 w-full min-h-full bg-white dark:bg-dark-custom-gradient z-[-100]"></div>
-//               <ParticleComponent className="particles" />
-//               <ScrollToTop />
-//               <ErrorBoundary>
-//                 <Suspense
-//                   fallback={
-//                     <div className="flex items-center justify-center h-screen">
-//                       <LoadingSpinner />
-//                     </div>
-//                   }
-//                 >
-//                   <AppContent />
-//                 </Suspense>
-//               </ErrorBoundary>
-//             </WalletProvider>
-//           </ProductProvider>
-//         </AuthProvider>
-//       </GeneralProvider>
-//     </BrowserRouter>
-//   );
-// }
-
-// export default App;
-
-
-
-
-// import {
-//   createContext,
-//   useEffect,
-//   useState,
-//   useContext,
-//   useMemo,
-//   useCallback,
-// } from "react";
-// import { GeneralContext } from "./GeneralContext";
-// import { AuthContext } from "./AuthenticationContext";
-
-// export const ProductContext = createContext();
-
-// const ProductProvider = ({ children }) => {
-//   const [dataNetworks, setDataNetworks] = useState([]);
-//   const [productData, setProductData] = useState([]);
-//   const [airtimeNetworks, setAirtimeNetworks] = useState([]);
-//   const [cableCategories, setCableCategories] = useState([]);
-//   const [notifications, setNotifications] = useState([]);
-//   const [unreadCount, setUnreadCount] = useState(0);
-//   const [allRead, setAllRead] = useState(true);
-//   const [errorMessage, setErrorMessage] = useState("");
-//   const [successMessage, setSuccessMessage] = useState("");
-//   const [isLoading, setIsLoading] = useState(true);
-//   const [terms, setTerms] = useState("");
-//   const [policy, setPolicy] = useState("");
-//   const [about, setAbout] = useState("");
-//   const [apiSettings, setApiSettings] = useState([]);
-//   const [activeApi, setActiveApi] = useState(null);
-
-//   const { api } = useContext(GeneralContext);
-//   const { authTokens } = useContext(AuthContext);
-
-//   useEffect(() => {
-//     if (apiSettings && Array.isArray(apiSettings)) {
-//       const activeApiKey = apiSettings.find((api) => api.active)?.api_key;
-//       if (activeApiKey && activeApiKey !== activeApi) {
-//         setActiveApi(activeApiKey);
-//       }
-//     } else {
-//       console.error("apiSettings is null or not an array");
-//     }
-//   }, [apiSettings, activeApi]);
-
-//   const fetchNotifications = useCallback(async () => {
-//     if (!authTokens) return; // Exit if authTokens is null
-
-//     setIsLoading(true);
-//     try {
-//       const response = await api.get("notifications/", {
-//         headers: {
-//           "Content-Type": "application/json",
-//           Authorization: `Bearer ${authTokens.access}`,
-//         },
-//       });
-//       const notifications = response.data;
-//       setNotifications(notifications);
-//       setUnreadCount(notifications.filter((n) => !n.is_read).length);
-//       setAllRead(notifications.every((n) => n.is_read));
-//       setErrorMessage("");
-//     } catch (error) {
-//       console.error("Error fetching notifications:", error);
-//       setErrorMessage("Failed to load notifications.");
-//     } finally {
-//       setIsLoading(false);
-//     }
-//   }, [authTokens, api]);
-
-//   const fetchAndUpdateLocalStorage = useCallback(async () => {
-//     try {
-//       const response = await api.get("combined-data/");
-//       const data = response.data;
-
-//       // Update local storage
-//       localStorage.setItem("combinedData", JSON.stringify(data));
-
-//       // Update state
-//       setDataNetworks(data.dataNetworks);
-//       setProductData(data.productData);
-//       setAirtimeNetworks(data.airtimeNetworks);
-//       setCableCategories(data.cableCategories);
-//       setTerms(data.terms);
-//       setPolicy(data.policy);
-//       setAbout(data.about);
-//       setApiSettings(data.apiSettings);
-//     } catch (error) {
-//       console.error("Error fetching combined data:", error);
-//     }
-//   }, [api]);
-
-//   useEffect(() => {
-//     // Initial fetch from local storage or API
-//     const cachedData = localStorage.getItem("combinedData");
-
-//     if (cachedData) {
-//       // If cached data exists, use it
-//       const parsedData = JSON.parse(cachedData);
-//       setDataNetworks(parsedData.dataNetworks);
-//       setProductData(parsedData.productData);
-//       setAirtimeNetworks(parsedData.airtimeNetworks);
-//       setCableCategories(parsedData.cableCategories);
-//       setTerms(parsedData.terms);
-//       setPolicy(parsedData.policy);
-//       setAbout(parsedData.about);
-//       setApiSettings(parsedData.apiSettings);
-//     }
-
-//     // Fetch notifications and start periodic updates
-//     fetchNotifications();
-//     fetchAndUpdateLocalStorage();
-
-//     // Set up an interval to refetch and update local storage every minute
-//     const intervalId = setInterval(fetchAndUpdateLocalStorage, 48 * 60 * 60 * 1000); // 24hrs minute in milliseconds
-
-//     // Clear the interval when the component unmounts
-//     return () => clearInterval(intervalId);
-//   }, [fetchNotifications, fetchAndUpdateLocalStorage]);
-
-//   const handleMarkAsRead = useCallback(
-//     async (id) => {
-//       if (!authTokens) return; // Exit if authTokens is null
-
-//       try {
-//         await api.patch(
-//           `notifications/${id}/`,
-//           { is_read: true },
-//           {
-//             headers: {
-//               "Content-Type": "application/json",
-//               Authorization: `Bearer ${authTokens.access}`,
-//             },
-//           }
-//         );
-//         setNotifications((prevNotifications) =>
-//           prevNotifications.map((notification) =>
-//             notification.id === id
-//               ? { ...notification, is_read: true }
-//               : notification
-//           )
-//         );
-//         setUnreadCount((prevCount) => prevCount - 1);
-//         setAllRead(unreadCount - 1 === 0);
-//         setSuccessMessage("Notification marked as read.");
-//         clearMessageAfterTimeout(setSuccessMessage);
-//       } catch (error) {
-//         console.error("Error marking notification as read:", error);
-//         setErrorMessage("Failed to mark notification as read.");
-//         clearMessageAfterTimeout(setErrorMessage);
-//       }
-//     },
-//     [authTokens, api, unreadCount]
-//   );
-
-//   const handleMarkAllAsRead = useCallback(async () => {
-//     if (!authTokens) return; // Exit if authTokens is null
-
-//     try {
-//       const unreadNotifications = notifications.filter(
-//         (notification) => !notification.is_read
-//       );
-//       const markAllReadPromises = unreadNotifications.map((notification) =>
-//         api.patch(
-//           `notifications/${notification.id}/`,
-//           { is_read: true },
-//           {
-//             headers: {
-//               "Content-Type": "application/json",
-//               Authorization: `Bearer ${authTokens.access}`,
-//             },
-//           }
-//         )
-//       );
-
-//       await Promise.all(markAllReadPromises);
-
-//       setNotifications((prevNotifications) =>
-//         prevNotifications.map((notification) => ({
-//           ...notification,
-//           is_read: true,
-//         }))
-//       );
-//       setUnreadCount(0);
-//       setAllRead(true);
-//       setSuccessMessage("All notifications marked as read.");
-//       clearMessageAfterTimeout(setSuccessMessage);
-//     } catch (error) {
-//       console.error("Error marking all notifications as read:", error);
-//       setErrorMessage("Failed to mark all notifications as read.");
-//       clearMessageAfterTimeout(setErrorMessage);
-//     }
-//   }, [authTokens, api, notifications]);
-
-//   const clearMessageAfterTimeout = useCallback((setMessage) => {
-//     setTimeout(() => setMessage(""), 3000); // Clear message after 3 seconds
-//   }, []);
-
-//   const contextData = useMemo(
-//     () => ({
-//       fetchNotifications,
-//       handleMarkAsRead,
-//       handleMarkAllAsRead,
-//       about,
-//       activeApi,
-//       policy,
-//       terms,
-//       notifications,
-//       unreadCount,
-//       allRead,
-//       isLoading,
-//       errorMessage,
-//       successMessage,
-//       dataNetworks,
-//       productData,
-//       airtimeNetworks,
-//       cableCategories,
-//     }),
-//     [
-//       fetchNotifications,
-//       handleMarkAsRead,
-//       handleMarkAllAsRead,
-//       about,
-//       activeApi,
-//       policy,
-//       terms,
-//       notifications,
-//       unreadCount,
-//       allRead,
-//       isLoading,
-//       errorMessage,
-//       successMessage,
-//       dataNetworks,
-//       productData,
-//       airtimeNetworks,
-//       cableCategories,
-//     ]
-//   );
-
-//   return (
-//     <ProductContext.Provider value={contextData}>
-//       {children}
-//     </ProductContext.Provider>
-//   );
-// };
-
-// export default ProductProvider;
-
-
-
-// import React, { useState, useEffect, useContext, useMemo } from "react";
-// import { Copy, CheckCircle } from "lucide-react";
-// import GeneralLeft from "./GeneralLeft";
-// import GeneralRight from "./GeneralRight";
+// import React, { useState, useEffect, useContext, useCallback } from "react";
 // import { Link } from "react-router-dom";
 // import { GeneralContext } from "../context/GeneralContext";
+// import GeneralLeft from "./GeneralLeft";
+// import GeneralRight from "./GeneralRight";
+// import SubmitButton from "./SubmitButton";
+// import FloatingLabelInput from "./FloatingLabelInput";
+// import { FaChevronDown, FaChevronUp } from "react-icons/fa";
+// import { AuthContext } from "../context/AuthenticationContext";
 
-// const FundWallet = () => {
-//   const [fundingData, setFundingData] = useState(null);
-//   const [copiedAccount, setCopiedAccount] = useState(null);
+// const accordionButtonStyle =
+//   "text-[1rem] w-full outline-none text-white p-1 h-[3.2rem] bg-link rounded-2xl bg-opacity-[90%] font-semibold hover:bg-sky-500 transition duration-450 ease-in-out flex items-center justify-center gap-2";
+
+// const cardStyle =
+//   "bg-white dark:bg-gray-800 shadow-lg p-6 mb-6 rounded-[1.5rem] shadow-lg";
+
+// const sectionTitleStyle =
+//   "font-semibold text-lg text-primary dark:text-white mb-4";
+
+// const Profile = () => {
 //   const { api } = useContext(GeneralContext);
-//   const localStorageKey = "fundingData"; // Key for local storage
+//   const [profileLoading, setProfileLoading] = useState(false);
+//   const [passwordLoading, setPasswordLoading] = useState(false);
+//   const [pinLoading, setPinLoading] = useState(false);
+//   const { user } = useContext(AuthContext);
+
+//   // Initialize userData with default values
+//   const [userData, setUserData] = useState({
+//     username: "",
+//     first_name: "",
+//     last_name: "",
+//     phone: "",
+//     transaction_pin: "",
+//     email: "",
+//   });
+
+//   const [message, setMessage] = useState({ type: "", text: "" });
+//   const [errors, setErrors] = useState({});
+//   const [showResetPassword, setShowResetPassword] = useState(false);
+//   const [showResetPin, setShowResetPin] = useState(false);
+
+//   const [resetPasswordData, setResetPasswordData] = useState({
+//     oldPassword: "",
+//     newPassword: "",
+//     confirmNewPassword: "",
+//   });
+
+//   const [resetPinData, setResetPinData] = useState({
+//     oldPin: "",
+//     newPin: "",
+//     confirmNewPin: "",
+//   });
 
 //   useEffect(() => {
-//     async function fetchFundingDetails() {
-//       const apiUrl = "funding-details/";
+//     if (message.text) {
+//       window.scrollTo({ top: 0, behavior: "smooth" });
+//     }
+//   }, [message]);
 
-//       try {
-//         const response = await api.get(apiUrl, {
-//           headers: {
-//             "Content-Type": "application/json",
-//           },
+//   const fetchUserData = useCallback(() => {
+//     if (user && user.user && user.user !== undefined) {
+//       setUserData({
+//         first_name: user.user.first_name,
+//         last_name: user.user.last_name,
+//         phone: user.user.phone,
+//         username: user.user.username,
+//         email: user.user.email,
+//       });
+//     }
+//   });
+
+//   console.log(userData);
+
+//   useEffect(() => {
+//     fetchUserData();
+//   }, []);
+
+//   console.log("hello", userData);
+
+//   // Handle form submission
+//   // Replace the entire handleSubmit function with this updated version
+//   const handleSubmit = async (e) => {
+//     e.preventDefault();
+
+//     if (!validateForm()) {
+//       return;
+//     }
+
+//     setProfileLoading(true);
+//     try {
+//       // Log what we're sending for debugging
+//       console.log("Sending user data:", userData);
+
+//       // Extract only the fields that need to be updated
+//       // const updateData = {
+//       //   username: userData.username,
+//       //   email: userData.email,
+//       //   first_name: userData.first_name,
+//       //   last_name: userData.last_name,
+//       //   phone: userData.phone,
+//       // };
+
+//       const updateData = {
+//         username: "admin",
+//         email: "admin@gmail.com",
+//         first_name: "userData.first_name",
+//         last_name: "userData.last_name",
+//         phone: 2000000999,
+//       };
+
+//       console.log(updateData);
+
+//       const response = await api.put("/user/", updateData, {
+//         headers: {
+//           "Content-Type": "application/json",
+//         },
+//         withCredentials: true,
+//       });
+
+//       console.log("User data updated successfully:", response.data);
+//       setMessage({ type: "success", text: "Profile updated successfully!" });
+
+//       // Update the user context if needed
+//       // If you have a way to update the user context, do it here
+
+//       // Clear message after 3 seconds
+//       setTimeout(() => setMessage({ type: "", text: "" }), 3000);
+//     } catch (error) {
+//       console.error("Error updating user data:", error.response || error);
+
+//       // More detailed error handling
+//       if (error.response) {
+//         // The server responded with a status code outside the 2xx range
+//         console.error("Response data:", error.response.data);
+//         console.error("Response status:", error.response.status);
+
+//         const errorMessage =
+//           error.response.data?.message ||
+//           error.response.data?.error ||
+//           "Failed to update profile. Server returned an error.";
+
+//         setMessage({ type: "error", text: errorMessage });
+//       } else if (error.request) {
+//         // The request was made but no response was received
+//         console.error("Request made but no response received", error.request);
+//         setMessage({
+//           type: "error",
+//           text: "No response from server. Please check your connection.",
 //         });
-
-//         const data = response.data[0]; // Assuming data is an array and you're fetching the first object
-//         setFundingData(data); // Update state with the fetched data
-//         localStorage.setItem(localStorageKey, JSON.stringify(data)); // Store in local storage
-//       } catch (error) {
-//         console.error(
-//           "Error fetching data from API:",
-//           error.response?.status,
-//           error.response?.statusText
-//         );
+//       } else {
+//         // Something happened in setting up the request
+//         console.error("Error setting up request:", error.message);
+//         setMessage({
+//           type: "error",
+//           text: "An error occurred while sending the request.",
+//         });
 //       }
+//     } finally {
+//       setProfileLoading(false);
+//     }
+//   }; // Handle input changes
+//   const handleChange = (e) => {
+//     const { name, value } = e.target;
+//     setUserData((prevData) => ({
+//       ...prevData,
+//       [name]: value,
+//     }));
+
+//     // Clear errors when the user starts typing
+//     if (errors[name]) {
+//       setErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
+//     }
+//   };
+
+//   // Handle reset password input changes
+//   const handleResetPasswordChange = (e) => {
+//     const { name, value } = e.target;
+//     setResetPasswordData((prevData) => ({
+//       ...prevData,
+//       [name]: value,
+//     }));
+//   };
+
+//   // Handle reset pin input changes
+//   const handleResetPinChange = (e) => {
+//     const { name, value } = e.target;
+//     setResetPinData((prevData) => ({
+//       ...prevData,
+//       [name]: value,
+//     }));
+//   };
+
+//   // Validate form inputs
+//   const validateForm = () => {
+//     const newErrors = {};
+
+//     if (userData.phone && userData.phone.length !== 11) {
+//       newErrors.phone = "Invalid Phone Number.";
+//     }
+//     if (userData.transaction_pin && userData.transaction_pin.length !== 4) {
+//       newErrors.transaction_pin = "Transaction pin must be exactly 4 digits.";
 //     }
 
+//     setErrors(newErrors);
+//     return Object.keys(newErrors).length === 0;
+//   };
 
-//     const storedData = localStorage.getItem(localStorageKey);
-//     if (storedData) {
-//       setFundingData(JSON.parse(storedData));
-//     } else {
-//       fetchFundingDetails();
+//   // Handle reset password submission
+//   const handleResetPasswordSubmit = async (e) => {
+//     e.preventDefault();
+
+//     if (
+//       resetPasswordData.newPassword !== resetPasswordData.confirmNewPassword
+//     ) {
+//       setMessage({ type: "error", text: "New passwords do not match" });
+//       return;
 //     }
-//   }, [api]);
 
-//   // Destructure funding data
-//   const {
-//     account_details: accounts = [], // Default to an empty array if accounts are not available
-//     created_at: createdOn,
-//   } = fundingData || {}; // Handle null initial state gracefully
+//     setPasswordLoading(true);
+//     try {
+//       const response = await api.post("change-password/", resetPasswordData, {
+//         headers: { "Content-Type": "application/json" },
+//         withCredentials: true,
+//       });
 
-//   // Format the date dynamically
-//   const formattedDate = useMemo(() => {
-//     return createdOn
-//       ? new Date(createdOn).toLocaleString("en-US", {
-//           year: "numeric",
-//           month: "long",
-//           day: "numeric",
-//           hour: "2-digit",
-//           minute: "2-digit",
-//           second: "2-digit",
-//         })
-//       : "N/A";
-//   }, [createdOn]);
+//       console.log("Password reset successfully:", response.data);
+//       setMessage({ type: "success", text: "Password reset successfully!" });
+//       setShowResetPassword(false);
+//       setResetPasswordData({
+//         oldPassword: "",
+//         newPassword: "",
+//         confirmNewPassword: "",
+//       });
 
-//   // Function to handle copying account number
-//   const handleCopyAccount = (accountNumber) => {
-//     navigator.clipboard.writeText(accountNumber).then(() => {
-//       setCopiedAccount(accountNumber);
+//       // Clear message after 3 seconds
+//       setTimeout(() => setMessage({ type: "", text: "" }), 3000);
+//     } catch (error) {
+//       console.log("Error resetting password:", error);
 
-//       // Reset copied state after 2 seconds
-//       setTimeout(() => {
-//         setCopiedAccount(null);
-//       }, 1000);
-//     });
+//       // Extract the actual error message from the backend response
+//       if (error.response && error.response.data && error.response.data.error) {
+//         setMessage({ type: "error", text: error.response.data.error });
+//       } else {
+//         setMessage({
+//           type: "error",
+//           text: "Something went wrong. Please try again.",
+//         });
+//       }
+//     } finally {
+//       setPasswordLoading(false);
+//     }
+//   };
+
+//   // Handle reset pin submission
+//   const handleResetPinSubmit = async (e) => {
+//     e.preventDefault();
+
+//     if (resetPinData.newPin !== resetPinData.confirmNewPin) {
+//       setMessage({ type: "error", text: "New pins do not match" });
+//       return;
+//     }
+
+//     setPinLoading(true);
+//     try {
+//       const response = await api.put("user/reset-pin/", resetPinData, {
+//         headers: {
+//           "Content-Type": "application/json",
+//         },
+//         withCredentials: true,
+//       });
+
+//       console.log("PIN reset successfully:", response.data);
+//       setMessage({ type: "success", text: "PIN reset successfully!" });
+//       setShowResetPin(false);
+//       setResetPinData({ oldPin: "", newPin: "", confirmNewPin: "" });
+
+//       // Clear message after 3 seconds
+//       setTimeout(() => setMessage({ type: "", text: "" }), 3000);
+//     } catch (error) {
+//       console.error("Error resetting PIN:", error);
+//       if (error.response && error.response.data && error.response.data.error) {
+//         setMessage({ type: "error", text: error.response.data.error });
+//       } else {
+//         setMessage({
+//           type: "error",
+//           text: "Something went wrong. Please try again.",
+//         });
+//       }
+//     } finally {
+//       setPinLoading(false);
+//     }
 //   };
 
 //   return (
-//     <div className="mt-[6rem] sm:bg-cover bg-center px-4 justify-center ss:px-[5rem] sm:px-[1rem] sm:flex gap-5 md:gap-12 lg:mx-[5rem]">
+//     <div className="pt-[15vh] sm:bg-cover bg-center px-4 justify-center ss:px-[5rem] sm:px-[1rem] sm:flex gap-5 md:gap-12 lg:mx-[5rem]">
 //       <GeneralLeft />
-//       <div>
-//         <div>
-//           <h2 className="font-bold font-heading_two text-primary dark:text-white text-[1.5rem]">
-//             Fund Wallet
+//       <div className="mx-auto w-full max-w-[800px] mt-[1.6rem]">
+//         <div className="mb-6">
+//           <h2 className="font-bold font-heading_two text-primary dark:text-white text-3xl mb-4">
+//             Profile
 //           </h2>
-//           <div className="flex items-center text-primary dark:text-gray-100 py-4 font-semibold">
-//             <Link to={"/user/dashboard"}>Dashboard</Link>{" "}
-//             <div className="h-1 w-1 mx-5 bg-white rounded-full"></div>
-//             <span className="text-gray-500">Fund Wallet</span>
+//           <div className="flex items-center text-primary dark:text-gray-100 py-2 font-semibold">
+//             <Link
+//               to={"/user/dashboard"}
+//               className="hover:text-[#1CCEFF] transition-colors"
+//             >
+//               Dashboard
+//             </Link>
+//             <div className="h-1 w-1 mx-5 bg-primary dark:bg-white rounded-full"></div>
+//             <span className="text-gray-500">Edit Profile</span>
 //           </div>
 //         </div>
-//         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8">
-//           <h1 className="text-2xl font-bold text-primary dark:text-white text-center mb-6">
-//             Linked Bank Accounts for Automated Transfer
-//           </h1>
 
-//           {fundingData ? (
-//             <>
-//               <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
-//                 Seamless Wallet Funding: Automated Bank Transfer
+//         {/* Message Banner */}
+//         {message.text && (
+//           <div
+//             className={`mb-4 p-4 rounded-lg shadow-md flex items-start ${
+//               message.type === "success"
+//                 ? "bg-green-50 border-l-4 border-green-500"
+//                 : "bg-red-50 border-l-4 border-red-500"
+//             }`}
+//           >
+//             <div className="flex-shrink-0 mr-3 mt-0.5">
+//               <svg
+//                 className={`h-5 w-5 ${
+//                   message.type === "success" ? "text-green-400" : "text-red-400"
+//                 }`}
+//                 viewBox="0 0 20 20"
+//                 fill="currentColor"
+//               >
+//                 {message.type === "success" ? (
+//                   // Checkmark icon for success
+//                   <path
+//                     fillRule="evenodd"
+//                     d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+//                     clipRule="evenodd"
+//                   />
+//                 ) : (
+//                   // X icon for error
+//                   <path
+//                     fillRule="evenodd"
+//                     d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+//                     clipRule="evenodd"
+//                   />
+//                 )}
+//               </svg>
+//             </div>
+//             <div className="flex-1">
+//               <p
+//                 className={`font-medium ${
+//                   message.type === "success" ? "text-green-800" : "text-red-800"
+//                 }`}
+//               >
+//                 {message.type === "success" ? "Success" : "Error"}
 //               </p>
-//               <div className="bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500 p-3 mb-4">
-//                 <p className="text-sm text-gray-700 dark:text-gray-200">
-//                   Fund your wallet instantly by transferring to any of the
-//                   accounts below. Transfers are automated and credited in
-//                   real-time.
-//                 </p>
-//               </div>
-//               <div className="bg-green-50 dark:bg-green-900/20 border-l-4 border-green-500 p-3 mb-4">
-//                 <p className="text-sm text-gray-700 dark:text-gray-200">
-//                   <strong>Note:</strong> Use your account for transfers to
-//                   ensure instant processing. Funds reflect immediately.
-//                 </p>
-//               </div>
-//               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-//                 {accounts.map((account, index) => (
-//                   <div
-//                     key={index}
-//                     className="bg-gray-100 dark:bg-gray-700 p-4 rounded-md shadow-md relative"
-//                   >
-//                     <p className="text-sm font-medium text-gray-600 dark:text-gray-300">
-//                       Bank Name:
-//                     </p>
-//                     <p className="text-lg font-bold text-primary dark:text-white">
-//                       {account.bankName}
-//                     </p>
+//               <p
+//                 className={`mt-1 text-sm ${
+//                   message.type === "success" ? "text-green-700" : "text-red-700"
+//                 }`}
+//               >
+//                 {message.text}
+//               </p>
+//             </div>
+//           </div>
+//         )}
 
-//                     <p className="text-sm font-medium text-gray-600 dark:text-gray-300 mt-2">
-//                       Account Number:
-//                     </p>
-//                     <div className="flex items-center">
-//                       <p className="text-lg font-bold text-primary dark:text-white flex-grow">
-//                         {account.accountNumber}
-//                       </p>
-//                       <button
-//                         onClick={() => handleCopyAccount(account.accountNumber)}
-//                         className="ml-2 text-gray-500 hover:text-primary transition-colors"
-//                         title="Copy Account Number"
-//                       >
-//                         {copiedAccount === account.accountNumber ? (
-//                           <CheckCircle className="w-5 h-5 text-green-500" />
-//                         ) : (
-//                           <Copy className="w-5 h-5" />
-//                         )}
-//                       </button>
-//                     </div>
+//         {/* Personal Information Card */}
+//         <div className={cardStyle}>
+//           <h3 className={sectionTitleStyle}>Personal Information</h3>
+//           <form onSubmit={handleSubmit}>
+//             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+//               <FloatingLabelInput
+//                 type="text"
+//                 name="username"
+//                 value={userData.username}
+//                 placeholder="Username"
+//                 disabled={true}
+//               />
+//               <FloatingLabelInput
+//                 type="email"
+//                 name="email"
+//                 value={userData.email}
+//                 placeholder="Email"
+//                 // disabled={true}
+//                 onChange={handleChange}
+//               />
+//               <FloatingLabelInput
+//                 type="text"
+//                 name="first_name"
+//                 value={userData.first_name}
+//                 placeholder="First Name"
+//                 // disabled={true}
+//                 onChange={handleChange}
+//               />
+//               <FloatingLabelInput
+//                 type="text"
+//                 name="last_name"
+//                 value={userData.last_name}
+//                 placeholder="Last Name"
+//                 // disabled={true}
+//                 onChange={handleChange}
+//               />
+//             </div>
 
-//                     <p className="text-sm font-medium text-gray-600 dark:text-gray-300 mt-2">
-//                       Account Name:
-//                     </p>
-//                     <p className="text-lg font-bold text-primary dark:text-white">
-//                       {account.accountName}
-//                     </p>
+//             {/* Profile Form */}
+//             <div className="space-y-4">
+//               <FloatingLabelInput
+//                 type="text"
+//                 name="phone"
+//                 value={userData.phone}
+//                 onChange={handleChange}
+//                 placeholder="Phone Number"
+//                 error={errors.phone}
+//               />
+//               <div className="pt-2">
+//                 <SubmitButton label="Save Changes" loading={profileLoading} />
+//               </div>
+//             </div>
+//           </form>
+//         </div>
+
+//         {/* Security Settings Card */}
+//         <div className={cardStyle}>
+//           <h3 className={sectionTitleStyle}>Security Settings</h3>
+
+//           {/* Reset Password Section */}
+//           <div className="mb-6">
+//             <button
+//               onClick={() => setShowResetPassword(!showResetPassword)}
+//               className={accordionButtonStyle}
+//             >
+//               {showResetPassword ? "Hide Reset Password" : "Reset Password"}
+//               <span className="text-lg">
+//                 {showResetPassword ? <FaChevronUp /> : <FaChevronDown />}
+//               </span>
+//             </button>
+//             <div
+//               className={`overflow-hidden transition-all duration-500 ease-in-out ${
+//                 showResetPassword ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+//               }`}
+//             >
+//               <div className="mt-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg transform transition-transform duration-500 ease-in-out">
+//                 <form
+//                   onSubmit={handleResetPasswordSubmit}
+//                   className="space-y-4"
+//                 >
+//                   <FloatingLabelInput
+//                     type="password"
+//                     name="oldPassword"
+//                     value={resetPasswordData.oldPassword}
+//                     onChange={handleResetPasswordChange}
+//                     placeholder="Current Password"
+//                   />
+//                   <FloatingLabelInput
+//                     type="password"
+//                     name="newPassword"
+//                     value={resetPasswordData.newPassword}
+//                     onChange={handleResetPasswordChange}
+//                     placeholder="New Password"
+//                   />
+//                   <FloatingLabelInput
+//                     type="password"
+//                     name="confirmNewPassword"
+//                     value={resetPasswordData.confirmNewPassword}
+//                     onChange={handleResetPasswordChange}
+//                     placeholder="Confirm New Password"
+//                   />
+//                   <div className="pt-2">
+//                     <SubmitButton
+//                       label="Reset Password"
+//                       loading={passwordLoading}
+//                     />
 //                   </div>
-//                 ))}
+//                 </form>
 //               </div>
-//             </>
-//           ) : (
-//             <p className="text-center text-gray-500">
-//               Loading funding details...
-//             </p>
-//           )}
+//             </div>
+//           </div>
+
+//           {/* Reset PIN Section */}
+//           <div>
+//             <button
+//               onClick={() => setShowResetPin(!showResetPin)}
+//               className={accordionButtonStyle}
+//             >
+//               {showResetPin ? "Hide Reset PIN" : "Reset Transaction PIN"}
+//               <span className="text-lg">
+//                 {showResetPin ? <FaChevronUp /> : <FaChevronDown />}
+//               </span>
+//             </button>
+//             <div
+//               className={`overflow-hidden transition-all duration-500 ease-in-out ${
+//                 showResetPin ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+//               }`}
+//             >
+//               <div className="mt-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg transform transition-transform duration-500 ease-in-out">
+//                 <form onSubmit={handleResetPinSubmit} className="space-y-4">
+//                   <FloatingLabelInput
+//                     type="password"
+//                     name="oldPin"
+//                     value={resetPinData.oldPin}
+//                     onChange={handleResetPinChange}
+//                     placeholder="Current PIN"
+//                     maxLength={4}
+//                   />
+//                   <FloatingLabelInput
+//                     type="password"
+//                     name="newPin"
+//                     value={resetPinData.newPin}
+//                     onChange={handleResetPinChange}
+//                     placeholder="New PIN (4 digits)"
+//                     maxLength={4}
+//                   />
+//                   <FloatingLabelInput
+//                     type="password"
+//                     name="confirmNewPin"
+//                     value={resetPinData.confirmNewPin}
+//                     onChange={handleResetPinChange}
+//                     placeholder="Confirm New PIN"
+//                     maxLength={4}
+//                   />
+//                   <div className="pt-2">
+//                     <SubmitButton label="Reset PIN" loading={pinLoading} />
+//                   </div>
+//                 </form>
+//               </div>
+//             </div>
+//           </div>
 //         </div>
 //       </div>
 //       <GeneralRight />
@@ -561,4 +532,497 @@ export default App;
 //   );
 // };
 
-// export default FundWallet;
+// export default Profile;
+
+
+
+
+
+// import React, { useState, useEffect, useContext } from "react";
+// import { Link } from "react-router-dom";
+// import { GeneralContext } from "../context/GeneralContext";
+// import GeneralLeft from "./GeneralLeft";
+// import GeneralRight from "./GeneralRight";
+// import SubmitButton from "./SubmitButton";
+// import FloatingLabelInput from "./FloatingLabelInput";
+// import { FaChevronDown, FaChevronUp } from "react-icons/fa";
+
+// const accordionButtonStyle =
+//   "text-[1rem] w-full outline-none text-white p-1 h-[3.2rem] bg-link rounded-2xl bg-opacity-[90%] font-semibold hover:bg-sky-500 transition duration-450 ease-in-out flex items-center justify-center gap-2";
+
+// const cardStyle =
+//   "bg-white dark:bg-gray-800 shadow-lg p-6 mb-6 rounded-[1.5rem] shadow-lg";
+
+// const sectionTitleStyle =
+//   "font-semibold text-lg text-primary dark:text-white mb-4";
+
+// const Profile = () => {
+//   const { api, setLoading } = useContext(GeneralContext);
+//   const [profileLoading, setProfileLoading] = useState(false);
+//   const [passwordLoading, setPasswordLoading] = useState(false);
+//   const [pinLoading, setPinLoading] = useState(false);
+
+//   // Initialize userData with default values
+//   const [userData, setUserData] = useState({
+//     username: "",
+//     first_name: "",
+//     last_name: "",
+//     phone: "",
+//     transaction_pin: "",
+//     email: "",
+//   });
+
+//   const [message, setMessage] = useState({ type: "", text: "" });
+//   const [errors, setErrors] = useState({});
+//   const [showResetPassword, setShowResetPassword] = useState(false);
+//   const [showResetPin, setShowResetPin] = useState(false);
+
+//   const [resetPasswordData, setResetPasswordData] = useState({
+//     oldPassword: "",
+//     newPassword: "",
+//     confirmNewPassword: "",
+//   });
+
+//   const [resetPinData, setResetPinData] = useState({
+//     oldPin: "",
+//     newPin: "",
+//     confirmNewPin: "",
+//   });
+
+//   useEffect(() => {
+//     if (message.text) {
+//       window.scrollTo({ top: 0, behavior: "smooth" });
+//     }
+//   }, [message]);
+
+//   // Fetch user data on mount
+//   useEffect(() => {
+//     const fetchUserData = async () => {
+//       try {
+//         const response = await api.get("user/", {
+//           headers: {
+//             "Content-Type": "application/json",
+//           },
+//           withCredentials: true,
+//         });
+
+//         // Merge API response with default userData to ensure all fields are defined
+//         setUserData((prevData) => ({
+//           ...prevData,
+//           ...response.data,
+//         }));
+//       } catch (error) {
+//         console.error("Error fetching user data:", error);
+//         setMessage({ type: "error", text: "Failed to fetch user data" });
+//       } finally {
+//       }
+//     };
+
+//     fetchUserData();
+//   }, [api, setLoading]);
+
+//   // Handle form submission
+//   const handleSubmit = async (e) => {
+//     e.preventDefault();
+
+//     if (!validateForm()) {
+//       return;
+//     }
+
+//     setProfileLoading(true);
+//     try {
+//       const response = await api.put("user/", userData, {
+//         headers: {
+//           "Content-Type": "application/json",
+//         },
+//         withCredentials: true,
+//       });
+
+//       console.log("User data updated successfully:", response.data);
+//       setMessage({ type: "success", text: "Profile updated successfully!" });
+
+//       // Clear message after 3 seconds
+//       setTimeout(() => setMessage({ type: "", text: "" }), 3000);
+//     } catch (error) {
+//       console.error("Error updating user data:", error);
+//       setMessage({ type: "error", text: "Failed to update profile" });
+//     } finally {
+//       setProfileLoading(false);
+//     }
+//   };
+
+//   // Handle input changes
+//   const handleChange = (e) => {
+//     const { name, value } = e.target;
+//     setUserData((prevData) => ({
+//       ...prevData,
+//       [name]: value,
+//     }));
+
+//     // Clear errors when the user starts typing
+//     if (errors[name]) {
+//       setErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
+//     }
+//   };
+
+//   // Handle reset password input changes
+//   const handleResetPasswordChange = (e) => {
+//     const { name, value } = e.target;
+//     setResetPasswordData((prevData) => ({
+//       ...prevData,
+//       [name]: value,
+//     }));
+//   };
+
+//   // Handle reset pin input changes
+//   const handleResetPinChange = (e) => {
+//     const { name, value } = e.target;
+//     setResetPinData((prevData) => ({
+//       ...prevData,
+//       [name]: value,
+//     }));
+//   };
+
+//   // Validate form inputs
+//   const validateForm = () => {
+//     const newErrors = {};
+
+//     if (userData.phone && userData.phone.length !== 11) {
+//       newErrors.phone = "Invalid Phone Number.";
+//     }
+//     if (userData.transaction_pin && userData.transaction_pin.length !== 4) {
+//       newErrors.transaction_pin = "Transaction pin must be exactly 4 digits.";
+//     }
+
+//     setErrors(newErrors);
+//     return Object.keys(newErrors).length === 0;
+//   };
+
+//   // Handle reset password submission
+//   const handleResetPasswordSubmit = async (e) => {
+//     e.preventDefault();
+
+//     if (
+//       resetPasswordData.newPassword !== resetPasswordData.confirmNewPassword
+//     ) {
+//       setMessage({ type: "error", text: "New passwords do not match" });
+//       return;
+//     }
+
+//     setPasswordLoading(true);
+//     try {
+//       const response = await api.post("change-password/", resetPasswordData, {
+//         headers: { "Content-Type": "application/json" },
+//         withCredentials: true,
+//       });
+
+//       console.log("Password reset successfully:", response.data);
+//       setMessage({ type: "success", text: "Password reset successfully!" });
+//       setShowResetPassword(false);
+//       setResetPasswordData({
+//         oldPassword: "",
+//         newPassword: "",
+//         confirmNewPassword: "",
+//       });
+
+//       // Clear message after 3 seconds
+//       setTimeout(() => setMessage({ type: "", text: "" }), 3000);
+//     } catch (error) {
+//       console.log("Error resetting password:", error);
+
+//       // Extract the actual error message from the backend response
+//       if (error.response && error.response.data && error.response.data.error) {
+//         setMessage({ type: "error", text: error.response.data.error });
+//       } else {
+//         setMessage({
+//           type: "error",
+//           text: "Something went wrong. Please try again.",
+//         });
+//       }
+//     } finally {
+//       setPasswordLoading(false);
+//     }
+//   };
+
+//   // Handle reset pin submission
+//   const handleResetPinSubmit = async (e) => {
+//     e.preventDefault();
+
+//     if (resetPinData.newPin !== resetPinData.confirmNewPin) {
+//       setMessage({ type: "error", text: "New pins do not match" });
+//       return;
+//     }
+
+//     setPinLoading(true);
+//     try {
+//       const response = await api.put("user/reset-pin/", resetPinData, {
+//         headers: {
+//           "Content-Type": "application/json",
+//         },
+//         withCredentials: true,
+//       });
+
+//       console.log("PIN reset successfully:", response.data);
+//       setMessage({ type: "success", text: "PIN reset successfully!" });
+//       setShowResetPin(false);
+//       setResetPinData({ oldPin: "", newPin: "", confirmNewPin: "" });
+
+//       // Clear message after 3 seconds
+//       setTimeout(() => setMessage({ type: "", text: "" }), 3000);
+//     } catch (error) {
+//       console.error("Error resetting PIN:", error);
+//       if (error.response && error.response.data && error.response.data.error) {
+//         setMessage({ type: "error", text: error.response.data.error });
+//       } else {
+//         setMessage({
+//           type: "error",
+//           text: "Something went wrong. Please try again.",
+//         });
+//       }
+//     } finally {
+//       setPinLoading(false);
+//     }
+//   };
+
+//   return (
+//     <div className="pt-[15vh] sm:bg-cover bg-center px-4 justify-center ss:px-[5rem] sm:px-[1rem] sm:flex gap-5 md:gap-12 lg:mx-[5rem]">
+//       <GeneralLeft />
+//       <div className="mx-auto w-full max-w-[800px] mt-[1.6rem]">
+//         <div className="mb-6">
+//           <h2 className="font-bold font-heading_two text-primary dark:text-white text-3xl mb-4">
+//             Profile
+//           </h2>
+//           <div className="flex items-center text-primary dark:text-gray-100 py-2 font-semibold">
+//             <Link
+//               to={"/user/dashboard"}
+//               className="hover:text-[#1CCEFF] transition-colors"
+//             >
+//               Dashboard
+//             </Link>
+//             <div className="h-1 w-1 mx-5 bg-primary dark:bg-white rounded-full"></div>
+//             <span className="text-gray-500">Edit Profile</span>
+//           </div>
+//         </div>
+
+//         {/* Message Banner */}
+//         {message.text && (
+//           <div
+//             className={`mb-4 p-4 rounded-lg shadow-md flex items-start ${
+//               message.type === "success"
+//                 ? "bg-green-50 border-l-4 border-green-500"
+//                 : "bg-red-50 border-l-4 border-red-500"
+//             }`}
+//           >
+//             <div className="flex-shrink-0 mr-3 mt-0.5">
+//               <svg
+//                 className={`h-5 w-5 ${
+//                   message.type === "success" ? "text-green-400" : "text-red-400"
+//                 }`}
+//                 viewBox="0 0 20 20"
+//                 fill="currentColor"
+//               >
+//                 {message.type === "success" ? (
+//                   // Checkmark icon for success
+//                   <path
+//                     fillRule="evenodd"
+//                     d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+//                     clipRule="evenodd"
+//                   />
+//                 ) : (
+//                   // X icon for error
+//                   <path
+//                     fillRule="evenodd"
+//                     d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+//                     clipRule="evenodd"
+//                   />
+//                 )}
+//               </svg>
+//             </div>
+//             <div className="flex-1">
+//               <p
+//                 className={`font-medium ${
+//                   message.type === "success" ? "text-green-800" : "text-red-800"
+//                 }`}
+//               >
+//                 {message.type === "success" ? "Success" : "Error"}
+//               </p>
+//               <p
+//                 className={`mt-1 text-sm ${
+//                   message.type === "success" ? "text-green-700" : "text-red-700"
+//                 }`}
+//               >
+//                 {message.text}
+//               </p>
+//             </div>
+//           </div>
+//         )}
+
+//         {/* Personal Information Card */}
+//         <div className={cardStyle}>
+//           <h3 className={sectionTitleStyle}>Personal Information</h3>
+//           <form onSubmit={handleSubmit}>
+//             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+//               <FloatingLabelInput
+//                 type="text"
+//                 name="username"
+//                 value={userData.username}
+//                 placeholder="Username"
+//                 disabled={true}
+//               />
+//               <FloatingLabelInput
+//                 type="email"
+//                 name="email"
+//                 value={userData.email}
+//                 placeholder="Email"
+//                 // disabled={true}
+//                 onChange={handleChange}
+//               />
+//               <FloatingLabelInput
+//                 type="text"
+//                 name="first_name"
+//                 value={userData.first_name}
+//                 placeholder="First Name"
+//                 // disabled={true}
+//                 onChange={handleChange}
+//               />
+//               <FloatingLabelInput
+//                 type="text"
+//                 name="last_name"
+//                 value={userData.last_name}
+//                 placeholder="Last Name"
+//                 // disabled={true}
+//                 onChange={handleChange}
+//               />
+//             </div>
+
+//             {/* Profile Form */}
+//             <div className="space-y-4">
+//               <FloatingLabelInput
+//                 type="text"
+//                 name="phone"
+//                 value={userData.phone}
+//                 onChange={handleChange}
+//                 placeholder="Phone Number"
+//                 error={errors.phone}
+//               />
+//               <div className="pt-2">
+//                 <SubmitButton label="Save Changes" loading={profileLoading} />
+//               </div>
+//             </div>
+//           </form>
+//         </div>
+
+//         {/* Security Settings Card */}
+//         <div className={cardStyle}>
+//           <h3 className={sectionTitleStyle}>Security Settings</h3>
+
+//           {/* Reset Password Section */}
+//           <div className="mb-6">
+//             <button
+//               onClick={() => setShowResetPassword(!showResetPassword)}
+//               className={accordionButtonStyle}
+//             >
+//               {showResetPassword ? "Hide Reset Password" : "Reset Password"}
+//               <span className="text-lg">
+//                 {showResetPassword ? <FaChevronUp /> : <FaChevronDown />}
+//               </span>
+//             </button>
+//             <div
+//               className={`overflow-hidden transition-all duration-500 ease-in-out ${
+//                 showResetPassword ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+//               }`}
+//             >
+//               <div className="mt-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg transform transition-transform duration-500 ease-in-out">
+//                 <form
+//                   onSubmit={handleResetPasswordSubmit}
+//                   className="space-y-4"
+//                 >
+//                   <FloatingLabelInput
+//                     type="password"
+//                     name="oldPassword"
+//                     value={resetPasswordData.oldPassword}
+//                     onChange={handleResetPasswordChange}
+//                     placeholder="Current Password"
+//                   />
+//                   <FloatingLabelInput
+//                     type="password"
+//                     name="newPassword"
+//                     value={resetPasswordData.newPassword}
+//                     onChange={handleResetPasswordChange}
+//                     placeholder="New Password"
+//                   />
+//                   <FloatingLabelInput
+//                     type="password"
+//                     name="confirmNewPassword"
+//                     value={resetPasswordData.confirmNewPassword}
+//                     onChange={handleResetPasswordChange}
+//                     placeholder="Confirm New Password"
+//                   />
+//                   <div className="pt-2">
+//                     <SubmitButton
+//                       label="Reset Password"
+//                       loading={passwordLoading}
+//                     />
+//                   </div>
+//                 </form>
+//               </div>
+//             </div>
+//           </div>
+
+//           {/* Reset PIN Section */}
+//           <div>
+//             <button
+//               onClick={() => setShowResetPin(!showResetPin)}
+//               className={accordionButtonStyle}
+//             >
+//               {showResetPin ? "Hide Reset PIN" : "Reset Transaction PIN"}
+//               <span className="text-lg">
+//                 {showResetPin ? <FaChevronUp /> : <FaChevronDown />}
+//               </span>
+//             </button>
+//             <div
+//               className={`overflow-hidden transition-all duration-500 ease-in-out ${
+//                 showResetPin ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+//               }`}
+//             >
+//               <div className="mt-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg transform transition-transform duration-500 ease-in-out">
+//                 <form onSubmit={handleResetPinSubmit} className="space-y-4">
+//                   <FloatingLabelInput
+//                     type="password"
+//                     name="oldPin"
+//                     value={resetPinData.oldPin}
+//                     onChange={handleResetPinChange}
+//                     placeholder="Current PIN"
+//                     maxLength={4}
+//                   />
+//                   <FloatingLabelInput
+//                     type="password"
+//                     name="newPin"
+//                     value={resetPinData.newPin}
+//                     onChange={handleResetPinChange}
+//                     placeholder="New PIN (4 digits)"
+//                     maxLength={4}
+//                   />
+//                   <FloatingLabelInput
+//                     type="password"
+//                     name="confirmNewPin"
+//                     value={resetPinData.confirmNewPin}
+//                     onChange={handleResetPinChange}
+//                     placeholder="Confirm New PIN"
+//                     maxLength={4}
+//                   />
+//                   <div className="pt-2">
+//                     <SubmitButton label="Reset PIN" loading={pinLoading} />
+//                   </div>
+//                 </form>
+//               </div>
+//             </div>
+//           </div>
+//         </div>
+//       </div>
+//       <GeneralRight />
+//     </div>
+//   );
+// };
+
+// export default Profile;

@@ -131,8 +131,8 @@ const ProductProvider = ({ children }) => {
       const response = await api.get("notifications/", {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${authTokens.access}`,
         },
+        withCredentials: true,
       });
 
       const notifications = response.data;

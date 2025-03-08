@@ -34,8 +34,6 @@ const GeneralNavbar = () => {
     };
   }, [mobileMenuToggle]);
 
-
-
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > 30) {
@@ -71,7 +69,10 @@ const GeneralNavbar = () => {
               </Link>
             </div>
             <div className="text-primary font-bold dark:text-white  hidden xs:block">
-              Hi, { user ? user.user.first_name.toUpperCase() : ""}              
+              Hi,{" "}
+              <span className="bg-gradient-to-r uppercase from-purple-400 via-sky-500 to-red-500 text-transparent bg-clip-text">
+                {user ? user.user.first_name.toUpperCase() : ""}
+              </span>
             </div>
           </div>
           <div className="light-dark-mode hidden sm:block">
