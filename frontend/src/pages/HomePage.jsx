@@ -3,10 +3,9 @@ import HomePageNavbar from "../components/HomePageNavbar";
 import HomeHero from "../components/HomeHero";
 import AfterHero from "../components/AfterHero";
 import Footer from "../components/Footer";
-import { GeneralContext } from "../context/GeneralContext";
-
+import { useGeneral } from "../context/GeneralContext";
 const HomePage = () => {
-  const { homeMenuToggle } = useContext(GeneralContext);
+  const { homeMenuToggle } = useGeneral();
 
   useEffect(() => {
     if (homeMenuToggle) {

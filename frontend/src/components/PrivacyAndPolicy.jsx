@@ -2,12 +2,12 @@ import { useContext } from "react";
 import { Link } from "react-router-dom";
 import GeneralLeft from "./GeneralLeft";
 import GeneralRight from "./GeneralRight";
-import { AuthContext } from "../context/AuthenticationContext";
-import { ProductContext } from "../context/ProductContext";
+import { useProduct } from "../context/ProductContext";
+import { useAuth } from "../context/AuthenticationContext";
 
 const PrivacyPolicy = () => {
-  const { user } = useContext(AuthContext);
-  const { policy } = useContext(ProductContext);
+  const { user } = useAuth();
+  const { policy } = useProduct();
 
   return (
     <div className={`${!user && "lg:px-[6rem]"} ${user ? "" : "dark"}`}>

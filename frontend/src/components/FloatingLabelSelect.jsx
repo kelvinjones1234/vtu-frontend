@@ -31,7 +31,7 @@ const FloatingLabelSelect = ({
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
           disabled={disabled}
-          className={`block w-full h-[3.5rem] text-[1.2rem] pt-6 px-4 pb-2 bg-transparent dark:bg-[#18202F] text-primary dark:text-white rounded-2xl outline-none transition-all appearance-none ${
+          className={`block w-full h-[3.5rem] text-[1.2rem] pt-6 pl-4 pr-10 pb-2 bg-transparent dark:bg-[#18202F] text-primary dark:text-white rounded-2xl outline-none transition-all appearance-none ${
             disabled ? "opacity-70" : ""
           }`}
         >

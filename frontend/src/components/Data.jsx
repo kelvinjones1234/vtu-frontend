@@ -400,9 +400,6 @@ import React, {
 import { Link } from "react-router-dom";
 import GeneralLeft from "./GeneralLeft";
 import GeneralRight from "./GeneralRight";
-import { ProductContext } from "../context/ProductContext";
-import { GeneralContext } from "../context/GeneralContext";
-import { AuthContext } from "../context/AuthenticationContext";
 import SubmitButton from "./SubmitButton";
 import ConfirmationPopup from "./ConfirmationPopup";
 import ErrorPopup from "./ErrorPopup";
@@ -410,6 +407,9 @@ import SuccessPopup from "./SuccessPopup";
 import { useTransactionSubmit } from "./UserTransactionSubmit";
 import FloatingLabelInput from "./FloatingLabelInput";
 import FloatingLabelSelect from "./FloatingLabelSelect";
+import { useAuth } from '../context/AuthenticationContext';
+import { useGeneral } from '../context/GeneralContext';
+import { useProduct } from '../context/ProductContext';
 
 // Network Selection Component
 const NetworkSelector = React.memo(
@@ -561,9 +561,10 @@ const BypassToggle = React.memo(({ bypassPhoneNumber, onToggle }) => {
 
 // Main Data Component
 const Data = () => {
-  const { dataNetworks } = useContext(ProductContext);
-  const { api, detectNetwork } = useContext(GeneralContext);
-  const { user } = useContext(AuthContext);
+  const { dataNetworks } = useProduct();
+  const { api, detectNetwork } = useGeneral();
+  const { user } = useAuth();
+  const [loading, setLoading] = useState(false);
 
   // Form state
   const [formData, setFormData] = useState({
@@ -746,7 +747,7 @@ const Data = () => {
     }
     if (!formData.pin) {
       newErrors.pin = "PIN is required";
-    } else if (formData.pin !== user.transaction_pin) {
+    } else if (formData.pin !== user.user.transaction_pin) {
       newErrors.pin = "Incorrect PIN";
     }
 
@@ -770,6 +771,7 @@ const Data = () => {
     validInputs,
     setPopupState,
     generateUniqueId,
+    setLoading,
     productType,
     formData: transactionFormData,
     bypassPhoneNumber,
@@ -874,7 +876,7 @@ const Data = () => {
 
             {/* Submit Button */}
             <div>
-              <SubmitButton label="Purchase" />
+              <SubmitButton label="Purchase" loading={loading} />
             </div>
           </form>
         </div>

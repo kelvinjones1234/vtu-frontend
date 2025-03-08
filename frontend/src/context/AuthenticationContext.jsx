@@ -7,24 +7,20 @@ import {
   useCallback,
 } from "react";
 import { useNavigate } from "react-router-dom";
-import { GeneralContext } from "./GeneralContext";
-
+import { useGeneral } from "./GeneralContext";
 export const AuthContext = createContext();
 
-const AuthProvider = ({ children }) => {
+export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [userError, setUserError] = useState("");
   const [registerErrors, setRegisterErrors] = useState({});
   const [loading, setLoading] = useState(true);
   const [authInitialized, setAuthInitialized] = useState(false);
   const navigate = useNavigate();
-  const { api } = useContext(GeneralContext);
+  const { api } = useGeneral();
 
   // Clear user error message handler - memoized
   const clearUserError = useCallback(() => setUserError(""), []);
-
-  console.log(user);
-  
 
   // Configure request interceptor to handle token refresh
   useEffect(() => {
@@ -134,7 +130,6 @@ const AuthProvider = ({ children }) => {
           setUser(response.data);
         }
       } catch (error) {
-        console.log("Auth validation failed:", error.response?.status);
         setUser(null);
       } finally {
         setLoading(false);
@@ -224,8 +219,6 @@ const AuthProvider = ({ children }) => {
     [api, navigate]
   );
 
- 
-
   // Memoize context value to prevent unnecessary renders
   const contextData = useMemo(
     () => ({
@@ -258,4 +251,4 @@ const AuthProvider = ({ children }) => {
   );
 };
 
-export default AuthProvider;
+export const useAuth = () => useContext(AuthContext);

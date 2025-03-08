@@ -2,8 +2,8 @@ import React, { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
 import GeneralLeft from "./GeneralLeft";
 import GeneralRight from "./GeneralRight";
-import { ProductContext } from "../context/ProductContext";
 import Pagination from "./Pagination";
+import { useProduct } from "../context/ProductContext";
 
 const Notifications = () => {
   const {
@@ -15,7 +15,7 @@ const Notifications = () => {
     isLoading,
     handleMarkAllAsRead,
     unreadCount,
-  } = useContext(ProductContext);
+  } = useProduct();
 
   const [currentPage, setCurrentPage] = useState(1);
   const notificationsPerPage = 10;

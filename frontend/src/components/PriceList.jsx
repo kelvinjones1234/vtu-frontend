@@ -2,10 +2,9 @@ import { useContext } from "react";
 import { Link } from "react-router-dom";
 import GeneralLeft from "./GeneralLeft";
 import GeneralRight from "./GeneralRight";
-import { AuthContext } from "../context/AuthenticationContext";
-
+import { useAuth } from "../context/AuthenticationContext";
 const PriceList = () => {
-  const { user } = useContext(AuthContext);
+  const { user } = useAuth();
 
   const dataPrices = {
     mtn: [

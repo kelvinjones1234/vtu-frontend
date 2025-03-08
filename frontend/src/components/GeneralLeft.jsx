@@ -12,14 +12,14 @@ import {
   FaChevronDown,
 } from "react-icons/fa";
 
-import { AuthContext } from "../context/AuthenticationContext";
-import { ProductContext } from "../context/ProductContext";
-import { GeneralContext } from "../context/GeneralContext";
+import { useAuth } from "../context/AuthenticationContext";
+import { useProduct } from "../context/ProductContext";
+import { useGeneral } from "../context/GeneralContext";
 import Transfer from "./Transfer";
 
 const GeneralLeft = () => {
-  const { logoutUser } = useContext(AuthContext);
-  const { productData } = useContext(ProductContext);
+  const { logoutUser } = useAuth();
+  const { productData } = useProduct();
   const {
     handleTransferForm,
     setTransferForm,
@@ -27,7 +27,7 @@ const GeneralLeft = () => {
     servicesDropDown,
     setServicesDropDown,
     handleServicesDropDowns,
-  } = useContext(GeneralContext);
+  } = useGeneral();
 
   const location = useLocation();
   const [activePath, setActivePath] = useState(location.pathname);

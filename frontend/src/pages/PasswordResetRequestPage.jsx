@@ -1,13 +1,13 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import SubmitButton from "../components/SubmitButton";
 import axios from "axios";
-import { GeneralContext } from "../context/GeneralContext";
+import { useGeneral } from "../context/GeneralContext";
 import LeftSide from "../components/LeftSide";
 import FloatingLabelInput from "../components/FloatingLabelInput";
 
 const PasswordResetRequestPage = () => {
-  const { setLoading } = useContext(GeneralContext);
+  const { setLoading } = useGeneral();
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");

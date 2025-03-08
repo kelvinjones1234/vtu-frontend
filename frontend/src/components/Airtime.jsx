@@ -1,4 +1,6 @@
-import { ProductContext } from "../context/ProductContext";
+import { useProduct } from "../context/ProductContext";
+import { useAuth } from "../context/AuthenticationContext";
+import { useGeneral } from "../context/GeneralContext";
 import GeneralLeft from "./GeneralLeft";
 import GeneralRight from "./GeneralRight";
 import {
@@ -10,8 +12,6 @@ import {
   useMemo,
 } from "react";
 import { Link } from "react-router-dom";
-import { GeneralContext } from "../context/GeneralContext";
-import { AuthContext } from "../context/AuthenticationContext";
 import SubmitButton from "./SubmitButton";
 import ConfirmationPopup from "./ConfirmationPopup";
 import ErrorPopup from "./ErrorPopup";
@@ -29,9 +29,9 @@ const inputStyle =
 const errorInputStyle = "border-red-500 dark:border-red-700";
 
 const Airtime = () => {
-  const { api, detectNetwork } = useContext(GeneralContext);
-  const { airtimeNetworks } = useContext(ProductContext);
-  const { user } = useContext(AuthContext);
+  const { api, detectNetwork } = useGeneral();
+  const { airtimeNetworks } = useProduct();
+  const { user } = useAuth();
 
   const [formData, setFormData] = useState({
     selectedNetwork: "",

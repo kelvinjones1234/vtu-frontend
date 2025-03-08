@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState } from "react";
 import { Copy, CheckCircle } from "lucide-react";
 import GeneralLeft from "./GeneralLeft";
 import GeneralRight from "./GeneralRight";

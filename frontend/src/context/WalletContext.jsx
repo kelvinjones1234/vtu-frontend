@@ -6,9 +6,9 @@ import React, {
   useMemo,
   useCallback,
 } from "react";
-import { AuthContext } from "./AuthenticationContext";
-import { GeneralContext } from "./GeneralContext";
 import { debounce } from "lodash";
+import { useAuth } from "./AuthenticationContext";
+import { useGeneral } from "./GeneralContext";
 
 // Wallet reducer for more predictable state management
 const walletReducer = (state, action) => {
@@ -16,7 +16,7 @@ const walletReducer = (state, action) => {
     case "SET_BALANCE":
       return { ...state, balance: action.payload };
     case "UPDATE_BALANCE":
-      return { ...state, balance: state.balance + action.payload };
+      return { ...state, balance: action.payload };
     default:
       return state;
   }
@@ -27,12 +27,11 @@ const WalletContext = createContext();
 export const WalletProvider = ({ children }) => {
   // Use reducer instead of useState for complex state logic
   const [walletData, dispatch] = useReducer(walletReducer, { balance: 0 });
-  const { logoutUser, user } = useContext(AuthContext);
-  const { api } = useContext(GeneralContext);
+  const { logoutUser, user } = useAuth();
+  const { api } = useGeneral();
 
   // Memoize the API reference
   const memoizedApi = useMemo(() => api, [api]);
-
   // Handle errors
   const handleError = useCallback(
     (error) => {
@@ -72,7 +71,7 @@ export const WalletProvider = ({ children }) => {
 
       try {
         const response = await memoizedApi.put(
-          "fund-wallet/",
+          "wallet/",
           { amount },
           {
             headers: { "Content-Type": "application/json" },

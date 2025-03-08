@@ -1,11 +1,11 @@
 import React, { useContext, useEffect, useState } from "react";
 import SubmitButton from "./SubmitButton";
-import { AuthContext } from "../context/AuthenticationContext";
+import { useAuth } from "../context/AuthenticationContext";
+import { useProduct } from "../context/ProductContext";
+import { useGeneral } from "../context/GeneralContext";
 import GeneralLeft from "./GeneralLeft";
 import GeneralRight from "./GeneralRight";
-import { ProductContext } from "../context/ProductContext";
 import { Link } from "react-router-dom";
-import { GeneralContext } from "../context/GeneralContext";
 import ConfirmationPopup from "./ConfirmationPopup";
 import ErrorPopup from "./ErrorPopup";
 import SuccessPopup from "./SuccessPopup";
@@ -20,9 +20,9 @@ const inputStyle =
 const errorInputStyle = "border-red-500 dark:border-red-700";
 
 const CableSub = () => {
-  const { cableCategories } = useContext(ProductContext);
-  const { user } = useContext(AuthContext);
-  const { api } = useContext(GeneralContext);
+  const { cableCategories } = useProduct();
+  const { user } = useAuth();
+  const { api } = useGeneral();
 
   const [bypassUicNumber, setBypassUicNumber] = useState(false);
   const [errors, setErrors] = useState({});

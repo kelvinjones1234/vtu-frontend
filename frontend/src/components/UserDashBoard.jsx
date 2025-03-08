@@ -1,22 +1,22 @@
-import React, { useContext, useState, useMemo, useCallback } from "react";
+import React, { useState, useMemo, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { FaAngleRight, FaEye, FaEyeSlash } from "react-icons/fa6";
 import GeneralLeft from "./GeneralLeft";
 import GeneralRight from "./GeneralRight";
-import { ProductContext } from "../context/ProductContext";
 import { useWallet } from "../context/WalletContext";
-import { AuthContext } from "../context/AuthenticationContext";
-import { GeneralContext } from "../context/GeneralContext";
+import { useGeneral } from "../context/GeneralContext";
+import { useAuth } from "../context/AuthenticationContext";
+import { useProduct } from "../context/ProductContext";
 
 const UserDashBoard = () => {
-  const { productData } = useContext(ProductContext);
+  const { productData } = useProduct();
   const { walletData, loading, error } = useWallet();
-  const { user } = useContext(AuthContext);
+  const { user } = useAuth();
   const {
     handleTransferForm,
     handleMobileMenuToggle,
     handleMobileTransferForm,
-  } = useContext(GeneralContext);
+  } = useGeneral();
 
   const [isBalanceHidden, setIsBalanceHidden] = useState(true);
 

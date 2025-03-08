@@ -1,7 +1,7 @@
 import { React, lazy, Suspense, useContext } from "react";
 import { Routes, Route } from "react-router-dom";
-import { AuthContext } from "./context/AuthenticationContext";
 // import HomePage from "./pages/HomePage";
+import { useAuth } from "./context/AuthenticationContext";
 import UserDashboardPage from "./pages/UserDashboardPage";
 import PrivateRoute from "./utils/PrivateRoute";
 import DataPage from "./pages/DataPage";
@@ -34,7 +34,7 @@ const PasswordResetRequestPage = lazy(() =>
 );
 
 function AppContent() {
-  const { user } = useContext(AuthContext);
+  const { user } = useAuth();
 
   return (
     <Routes>

@@ -1,17 +1,17 @@
 import { useContext, useState, useEffect } from "react";
-import { AuthContext } from "../context/AuthenticationContext";
 import { Link } from "react-router-dom";
-import { GeneralContext } from "../context/GeneralContext";
 import SubmitButton from "../components/SubmitButton";
 import LeftSide from "../components/LeftSide";
 import FloatingLabelInput from "../components/FloatingLabelInput";
+import { useGeneral } from "../context/GeneralContext";
+import { useAuth } from "../context/AuthenticationContext";
 
 const RegistrationPage = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [errorMessage, setErrorMessage] = useState({});
   const [showPassword, setShowPassword] = useState(false);
-  const { registerUser, setRegisterErrors, registerErrors} = useContext(AuthContext);
-  const { setLoading } = useContext(GeneralContext);
+  const { registerUser, setRegisterErrors, registerErrors } = useAuth();
+  const { setLoading } = useGeneral();
 
   useEffect(() => {
     return () => setRegisterErrors({});

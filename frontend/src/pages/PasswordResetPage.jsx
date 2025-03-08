@@ -1,14 +1,14 @@
 import React, { useContext, useState } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { GeneralContext } from "../context/GeneralContext";
 import SubmitButton from "../components/SubmitButton";
 import LeftSide from "../components/LeftSide";
+import { useGeneral } from "../context/GeneralContext";
 
 const PasswordResetPage = () => {
   const { uidb64, token } = useParams();
   const navigate = useNavigate();
-  const { setLoading } = useContext(GeneralContext);
+  const { setLoading } = useGeneral();
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [message, setMessage] = useState({ type: "", content: "" });

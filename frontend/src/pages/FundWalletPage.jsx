@@ -1,18 +1,18 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import FundWallet from "../components/FundWallet";
 import GeneralNavbar from "../components/GeneralNavbar";
 import Footer from "../components/Footer";
 import Bvn from "../components/Bvn";
-import { AuthContext } from "../context/AuthenticationContext";
-import { GeneralContext } from "../context/GeneralContext";
+import { useGeneral } from "../context/GeneralContext";
 import axios from "axios";
+import { useAuth } from "../context/AuthenticationContext";
 
 const FundWalletPage = () => {
-  const { user } = useContext(AuthContext);
+  const { user } = useAuth();
   const [showBvn, setShowBvn] = useState(false);
   const [loading, setLoading] = useState(true);
   const [fundingDetails, setFundingDetails] = useState(null);
-  const { api } = useContext(GeneralContext);
+  const { api } = useGeneral();
   const localStorageKey = `${user.user.username}_fundingData`; // Unique key for local storage
 
   useEffect(() => {

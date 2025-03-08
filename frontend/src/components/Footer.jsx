@@ -4,7 +4,7 @@ import whatsapp from "../assets/whatsapp.png";
 import twitter from "../assets/twitter1.png";
 import instagram from "../assets/instagram.png";
 import facebook from "../assets/facebook.png";
-import { AuthContext } from "../context/AuthenticationContext";
+import { useAuth } from "../context/AuthenticationContext";
 
 const socials = [
   { src: twitter, alt: "Twitter" },
@@ -15,7 +15,7 @@ const socials = [
 
 const Footer = () => {
   const location = useLocation();
-  const { user } = useContext(AuthContext);
+  const { user } = useAuth();
 
   const isHomepage = location.pathname === "/";
 

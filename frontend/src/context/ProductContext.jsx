@@ -6,8 +6,8 @@ import {
   useMemo,
   useCallback,
 } from "react";
-import { GeneralContext } from "./GeneralContext";
-import { AuthContext } from "./AuthenticationContext";
+import { useAuth } from "./AuthenticationContext";
+import { useGeneral } from "./GeneralContext";
 
 export const ProductContext = createContext();
 
@@ -15,7 +15,7 @@ const REFRESH_INTERVAL = 48 * 60 * 60 * 1000; // 48hrs
 const CACHE_KEY = "combinedData";
 const MESSAGE_TIMEOUT = 3000; // 3 seconds for success/error messages
 
-const ProductProvider = ({ children }) => {
+export const ProductProvider = ({ children }) => {
   const [state, setState] = useState({
     dataNetworks: [],
     productData: [],
@@ -34,8 +34,8 @@ const ProductProvider = ({ children }) => {
     successMessage: "",
   });
 
-  const { api } = useContext(GeneralContext);
-  const { authTokens } = useContext(AuthContext);
+  const { api } = useGeneral();
+  const { authTokens } = useAuth();
 
   // Memoized update function to reduce unnecessary re-renders
   const updateState = useCallback((updates) => {
@@ -292,4 +292,4 @@ const ProductProvider = ({ children }) => {
   );
 };
 
-export default ProductProvider;
+export const useProduct = () => useContext(ProductContext);

@@ -1,16 +1,16 @@
 import React, { useState, useContext } from "react";
 import { Link } from "react-router-dom";
-import { GeneralContext } from "../context/GeneralContext";
 import GeneralRight from "./GeneralRight";
 import GeneralLeft from "./GeneralLeft";
 import SubmitButton from "./SubmitButton";
+import { useGeneral } from "../context/GeneralContext";
 import FloatingLabelInput from "./FloatingLabelInput";
 
 const inputStyle =
   "dark:bg-[#18202F] bg-white w-full hover:transition hover:duration-450 hover:ease-in-out mb-3 text-primary dark:text-white py-1 px-4 h-[3.5rem] text-[1.2rem] rounded-2xl outline-none border border-[#1CCEFF] dark:border-gray-700 dark:hover:border-[#1CCEFF] dark:hover:border-[#1CCEFF] dark:focus:border-[#1CCEFF]";
 
 const Bvn = () => {
-  const { api } = useContext(GeneralContext);
+  const { api } = useGeneral();
   const [bvn, setBvn] = useState("");
   const [errorMessage, setErrorMessage] = useState({});
   const [successMessage, setSuccessMessage] = useState(null);

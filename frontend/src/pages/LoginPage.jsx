@@ -1,14 +1,13 @@
-import React, { useContext, useState, useEffect } from "react";
-import { AuthContext } from "../context/AuthenticationContext";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import SubmitButton from "../components/SubmitButton";
-import { GeneralContext } from "../context/GeneralContext";
 import LeftSide from "../components/LeftSide";
 import FloatingLabelInput from "../components/FloatingLabelInput";
+import { useAuth } from "../context/AuthenticationContext";
 
 const LoginPage = () => {
   const { loginUser, userError, setUserError, setRememberMe, rememberMe } =
-    useContext(AuthContext);
+    useAuth();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState({});

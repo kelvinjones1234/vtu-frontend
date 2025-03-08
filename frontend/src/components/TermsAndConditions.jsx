@@ -1,13 +1,13 @@
-import { useContext } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import GeneralLeft from "./GeneralLeft";
 import GeneralRight from "./GeneralRight";
-import { AuthContext } from "../context/AuthenticationContext";
-import { ProductContext } from "../context/ProductContext";
+import { useProduct } from "../context/ProductContext";
+import { useAuth } from "../context/AuthenticationContext";
 
 const TermsConditions = () => {
-  const { user } = useContext(AuthContext);
-  const { terms } = useContext(ProductContext);
+  const { user } = useAuth();
+  const { terms } = useProduct();
 
   return (
     <div className={`${!user && "lg:px-[6rem]"} ${user ? "" : "dark"}`}>

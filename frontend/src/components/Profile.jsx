@@ -1,12 +1,12 @@
-import React, { useState, useEffect, useContext, useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
-import { GeneralContext } from "../context/GeneralContext";
 import GeneralLeft from "./GeneralLeft";
 import GeneralRight from "./GeneralRight";
 import SubmitButton from "./SubmitButton";
 import FloatingLabelInput from "./FloatingLabelInput";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
-import { AuthContext } from "../context/AuthenticationContext";
+import { useAuth } from "../context/AuthenticationContext";
+import { useGeneral } from "../context/GeneralContext";
 
 const accordionButtonStyle =
   "text-[1rem] w-full outline-none text-white p-1 h-[3.2rem] bg-link rounded-2xl bg-opacity-[90%] font-semibold hover:bg-sky-500 transition duration-450 ease-in-out flex items-center justify-center gap-2";
@@ -18,8 +18,8 @@ const sectionTitleStyle =
   "font-semibold text-lg text-primary dark:text-white mb-4";
 
 const Profile = () => {
-  const { api } = useContext(GeneralContext);
-  const { user } = useContext(AuthContext);
+  const { api } = useGeneral();
+  const { user } = useAuth();
 
   // Consolidated loading states
   const [loading, setLoading] = useState({

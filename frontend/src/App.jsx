@@ -1,9 +1,9 @@
 import { React, lazy, Suspense } from "react";
 import { BrowserRouter } from "react-router-dom";
-import AuthProvider from "./context/AuthenticationContext";
-import ProductProvider from "./context/ProductContext";
+import { AuthProvider } from "./context/AuthenticationContext";
+import { ProductProvider } from "./context/ProductContext";
 import { WalletProvider } from "./context/WalletContext";
-import GeneralProvider from "./context/GeneralContext";
+import { GeneralProvider } from "./context/GeneralContext";
 import ParticleComponent from "./components/ParticleComponent";
 import ScrollToTop from "./components/ScrollTop";
 import ErrorBoundary from "./pages/ErrorBoundary";

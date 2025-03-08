@@ -1,23 +1,42 @@
-import React, { useContext, useState } from "react";
-import { AuthContext } from "../context/AuthenticationContext";
+import React, { useState, useEffect } from "react";
 import { useWallet } from "../context/WalletContext";
-import { GeneralContext } from "../context/GeneralContext";
 import SubmitButton from "../components/SubmitButton";
+import { useAuth } from "../context/AuthenticationContext";
+import { useGeneral } from "../context/GeneralContext";
+import FloatingLabelInput from "./FloatingLabelInput";
 
+// Move styles outside component to prevent recreation on each render
 const inputStyle =
   "transition duration-450 font-normal ease-in-out my-2 w-full text-primary dark:text-white py-1 px-3 h-[2.8rem] text-[1.2rem] rounded-2xl outline-none dark:bg-[#18202F] bg-white border border-[#1CCEFF] dark:border-gray-700 dark:hover:border-gray-500 dark:hover:border-black dark:focus:border-[#1CCEFF]";
 
-const Transfer = () => {
-  const { api, setLoading, setMobileTransferForm } = useContext(GeneralContext);
-  const { authTokens, user } = useContext(AuthContext);
-  const { walletData, updateWalletBalance } = useWallet();
+const initialFormState = {
+  username: "",
+  amount: "",
+  pin: "",
+};
 
-  const [formData, setFormData] = useState({
-    username: "",
-    amount: "",
-    pin: "",
-  });
+const Transfer = () => {
+  const { api, setMobileTransferForm } = useGeneral();
+  const { user } = useAuth();
+  const { walletData, updateWalletBalance } = useWallet();
+  const [loading, setLoading] = useState(false);
+  const [formData, setFormData] = useState(initialFormState);
   const [message, setMessage] = useState({ type: "", text: "" });
+
+  // Auto-dismiss message after 5 seconds
+  useEffect(() => {
+    let timeoutId;
+    if (message.text) {
+      timeoutId = setTimeout(() => {
+        setMessage({ type: "", text: "" });
+      }, 5000);
+    }
+
+    // Clean up timeout on component unmount or when message changes
+    return () => {
+      if (timeoutId) clearTimeout(timeoutId);
+    };
+  }, [message.text]);
 
   // Validate inputs
   const validateInputs = () => {
@@ -30,22 +49,28 @@ const Transfer = () => {
       });
       return false;
     }
-    if (!amount || isNaN(amount) || parseFloat(amount) <= 0) {
+
+    const amountNum = parseFloat(amount);
+    if (!amount || isNaN(amountNum) || amountNum <= 0) {
       setMessage({ type: "error", text: "Please enter a valid amount" });
       return false;
     }
+
     if (!pin) {
       setMessage({ type: "error", text: "Please enter your PIN" });
       return false;
     }
-    if (username.toLowerCase() === user.username.toLowerCase()) {
+
+    if (username.toLowerCase() === user.user.username.toLowerCase()) {
       setMessage({ type: "error", text: "Cannot transfer to yourself" });
       return false;
     }
-    if (walletData.balance < parseFloat(amount)) {
+
+    if (user.user.balance < amountNum) {
       setMessage({ type: "error", text: "Insufficient funds" });
       return false;
     }
+
     return true;
   };
 
@@ -60,45 +85,38 @@ const Transfer = () => {
     try {
       setLoading(true);
 
-      // Check if the provided PIN matches the stored PIN
-      const walletResponse = await api.get(`wallet/`, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${authTokens.access}`,
-        },
-      });
-
-      const wallet = walletResponse.data;
-
-      if (wallet.wallet_name.transaction_pin !== formData.pin) {
+      if (user.user.transaction_pin !== formData.pin) {
         setMessage({ type: "error", text: "Incorrect PIN" });
+        setLoading(false);
         return;
       }
+
+      const amountNum = parseFloat(formData.amount);
 
       // Proceed with the transfer
       await api.post(
         "transfer/",
         {
           username: formData.username.toLowerCase(),
-          amount: parseFloat(formData.amount),
+          amount: amountNum,
           transaction_pin: formData.pin,
         },
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${authTokens.access}`,
           },
+          withCredentials: true,
         }
       );
 
       // Update wallet balance in context
-      updateWalletBalance(walletData.balance - parseFloat(formData.amount));
+      updateWalletBalance(walletData.balance - amountNum);
 
       // Success message
       setMessage({ type: "success", text: "Transfer Successful!" });
 
       // Reset form fields
-      setFormData({ username: "", amount: "", pin: "" });
+      setFormData(initialFormState);
 
       // Close mobile transfer form if applicable
       if (setMobileTransferForm) {
@@ -117,7 +135,7 @@ const Transfer = () => {
     }
   };
 
-  // Handle input changes
+  // Handle input changes with memoization
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -183,27 +201,27 @@ const Transfer = () => {
 
         {/* Transfer Form */}
         <form onSubmit={handleTransfer}>
-          <input
+          <FloatingLabelInput
             name="username"
             value={formData.username}
             onChange={handleInputChange}
             type="text"
             placeholder="Username"
             aria-label="Username"
-            className={`${inputStyle}`}
+            className={inputStyle}
           />
 
-          <input
+          <FloatingLabelInput
             name="amount"
             value={formData.amount}
             onChange={handleInputChange}
             type="text"
             placeholder="Amount"
             aria-label="Amount"
-            className={`${inputStyle}`}
+            className={inputStyle}
           />
 
-          <input
+          <FloatingLabelInput
             name="pin"
             value={formData.pin}
             onChange={handleInputChange}
@@ -211,10 +229,10 @@ const Transfer = () => {
             placeholder="Pin"
             aria-label="Pin"
             autoComplete="current-password"
-            className={`${inputStyle}`}
+            className={inputStyle}
           />
 
-          <SubmitButton label="Transfer" />
+          <SubmitButton label="Transfer" loading={loading} />
         </form>
       </div>
     </div>

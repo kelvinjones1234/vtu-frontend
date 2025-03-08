@@ -5,8 +5,7 @@ import authenticate from "../assets/authenticate.svg";
 import about from "../assets/about.svg";
 import right from "../assets/right_arrow.svg";
 import bottom from "../assets/bottom_arrow.svg";
-import { GeneralContext } from "../context/GeneralContext";
-
+import { useGeneral } from "../context/GeneralContext";
 const HomePageNavbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
 
@@ -14,8 +13,8 @@ const HomePageNavbar = () => {
     handleHomeMenuToggle,
     sideBarAuthToggle,
     handleSideBarAuthToggle,
-    homeMenuToggle
-  } = useContext(GeneralContext);
+    homeMenuToggle,
+  } = useGeneral();
 
   useEffect(() => {
     const handleScroll = () => {

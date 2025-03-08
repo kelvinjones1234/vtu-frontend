@@ -1,11 +1,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { useContext } from "react";
 import { motion } from "framer-motion";
-import { AuthContext } from "../context/AuthenticationContext";
-
+import { useAuth } from "../context/AuthenticationContext";
 const HomeHero = () => {
-  const { user, logoutUser } = useContext(AuthContext);
+  const { user } = useAuth();
 
   return (
     <div className="relative">

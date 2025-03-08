@@ -10,10 +10,10 @@ import {
   FaChevronRight,
   FaChevronDown,
 } from "react-icons/fa";
-import { ProductContext } from "../context/ProductContext";
 import Transfer from "./Transfer";
-import { AuthContext } from "../context/AuthenticationContext";
-import { GeneralContext } from "../context/GeneralContext";
+import { useGeneral } from "../context/GeneralContext";
+import { useAuth } from "../context/AuthenticationContext";
+import { useProduct } from "../context/ProductContext";
 import dark from "../assets/dark.svg";
 import light from "../assets/light.svg";
 
@@ -27,14 +27,14 @@ const GeneralSidebar = () => {
     mobileTransferForm,
     handleThemeSettings,
     darkMode,
-  } = useContext(GeneralContext);
+  } = useGeneral();
 
   useEffect(() => {
     setActivePath(location.pathname);
   }, [location.pathname]);
 
-  const { productData } = useContext(ProductContext);
-  const { logoutUser, user } = useContext(AuthContext);
+  const { productData } = useProduct();
+  const { logoutUser, user } = useAuth();
   const [activePath, setActivePath] = useState(location.pathname);
 
   // Function to handle menu item click and close the mobile menu

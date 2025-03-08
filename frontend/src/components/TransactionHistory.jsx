@@ -1,12 +1,11 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import GeneralLeft from "./GeneralLeft";
 import GeneralRight from "./GeneralRight";
 import { Link } from "react-router-dom";
-import { ProductContext } from "../context/ProductContext";
 import Pagination from "./Pagination";
 import logo from "../assets/4.svg";
-import { GeneralContext } from "../context/GeneralContext";
-
+import { useGeneral } from "../context/GeneralContext";
+import { useProduct } from "../context/ProductContext";
 
 const TransactionHistory = () => {
   const [transactionHistory, setTransactionHistory] = useState([]);
@@ -18,8 +17,8 @@ const TransactionHistory = () => {
   const [endDate, setEndDate] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [transactionsPerPage] = useState(10);
-  const { productData } = useContext(ProductContext);
-  const { api } = useContext(GeneralContext);
+  const { productData } = useProduct();
+  const { api } = useGeneral();
 
   useEffect(() => {
     const fetchTransactionHistory = async () => {
@@ -44,7 +43,7 @@ const TransactionHistory = () => {
     };
 
     fetchTransactionHistory();
-  }, [api]);
+  }, []);
 
   useEffect(() => {
     let filtered = transactionHistory;
@@ -236,7 +235,7 @@ const TransactionHistory = () => {
     <div className="pt-[15vh] sm:bg-cover bg-center px-4 justify-center ss:px-[5rem] sm:px-[1rem] sm:flex gap-5 md:gap-12 lg:mx-[5rem]">
       <GeneralLeft />
       <div className="mx-auto max-w-[607px] sm:max-w-[341px] md:max-w-[500px] min-[1500px]:max-w-[700px] xl:max-w-[900px]">
-      {/* <div className="mx-auto w-full max-w-[800px]"> */}
+        {/* <div className="mx-auto w-full max-w-[800px]"> */}
         <div className="mb-8">
           <h2 className="font-bold font-heading_two text-primary dark:text-white text-3xl mb-4">
             Transaction History

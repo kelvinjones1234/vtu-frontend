@@ -8,14 +8,13 @@ import React, {
 import GeneralLeft from "./GeneralLeft";
 import GeneralRight from "./GeneralRight";
 import { Link } from "react-router-dom";
-import { GeneralContext } from "../context/GeneralContext";
+import { useGeneral } from "../context/GeneralContext";
 import SubmitButton from "./SubmitButton";
 import { useTransactionSubmit } from "./UserTransactionSubmit";
 import ConfirmationPopup from "./ConfirmationPopup";
 import ErrorPopup from "./ErrorPopup";
 import SuccessPopup from "./SuccessPopup";
-import { AuthContext } from "../context/AuthenticationContext";
-
+import { useAuth } from "../context/AuthenticationContext";
 const selectStyle =
   "custom-select dark:bg-[#18202F] bg-white w-full hover:transition hover:duration-450 hover:ease-in-out mb-3 text-primary dark:text-white py-1 px-4 h-[3.5rem] text-[1.2rem] rounded-2xl outline-none border border-[#1CCEFF] dark:border-gray-700 hover:border-[#1CCEFF] dark:hover:border-[#1CCEFF] focus:border-[#1CCEFF] dark:focus:border-[#1CCEFF]";
 
@@ -35,7 +34,7 @@ const ElectricityBill = () => {
     selectedDiscoId: "", // Add selectedDiscoId to the formData state
   });
 
-  const { user } = useContext(AuthContext);
+  const { user } = useAuth();
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -62,7 +61,7 @@ const ElectricityBill = () => {
 
   const [errors, setErrors] = useState({});
   const [discos, setDiscos] = useState([]);
-  const { api } = useContext(GeneralContext);
+  const { api } = useGeneral();
   const [bypassMeterNumber, setBypassMeterNumber] = useState(false);
 
   const [popupState, setPopupState] = useState({
