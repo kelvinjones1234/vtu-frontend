@@ -71,12 +71,7 @@ const GeneralLeft = () => {
   };
 
   return (
-    <motion.div
-      className="min-w-[196px] h-[calc(100vh-25vh)] hidden pr-5 sm:block overflow-y-auto sticky top-[15vh] self-start font-body_two custom-scrollbar"
-      initial={{ opacity: 0, x: -20 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ duration: 0.5 }}
-    >
+    <motion.div className="w-[25rem] min-w-[196px] h-[calc(100vh-25vh)] hidden pr-5 sm:block overflow-y-auto sticky top-[15vh] self-start font-body_two custom-scrollbar">
       <div>
         {/* Dashboard Item - First item without margin top */}
         <motion.div

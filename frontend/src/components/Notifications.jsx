@@ -8,7 +8,6 @@ import { useProduct } from "../context/ProductContext";
 const Notifications = () => {
   const {
     fetchNotifications,
-    handleMarkAsRead,
     errorMessage,
     successMessage,
     notifications,
@@ -55,7 +54,7 @@ const Notifications = () => {
             <span>
               <button
                 onClick={handleMarkAllAsRead}
-                className="ml-4 text-green-500 hover:text-green-600"
+                className="ml-4 text-[.8rem] text-green-500 hover:text-green-600"
                 disabled={notifications.every(
                   (notification) => notification.is_read
                 )}
@@ -72,11 +71,29 @@ const Notifications = () => {
         </header>
 
         <section className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
+          {/* Updated Success Message */}
           {successMessage && (
-            <div className="bg-green-500 text-white p-2 rounded mb-4">
-              {successMessage}
+            <div className="mb-4 p-4 rounded-lg shadow-md flex items-start bg-green-50 border-l-4 border-green-500">
+              <div className="flex-shrink-0 mr-3 mt-0.5">
+                <svg
+                  className="h-5 w-5 text-green-400"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </div>
+              <div>
+                <p className="font-medium">Success</p>
+                <p className="text-sm">{successMessage}</p>
+              </div>
             </div>
           )}
+
           {errorMessage && (
             <div className="text-red-500 mb-4">{errorMessage}</div>
           )}
@@ -101,13 +118,10 @@ const Notifications = () => {
                       {new Date(notification.date_sent).toLocaleString()}
                     </p>
                     {!notification.is_read && (
-                      <button
-                        onClick={() => handleMarkAsRead(notification.id)}
-                        className="text-green-600 hover:text-green-700 bg-gray-300 hover:bg-gray-400 transition-all duration-400 ease-in-out rounded-full px-[.4rem]"
+                      <div
+                        className="h-2 w-2 rounded-full bg-red-800"
                         title="Mark as read"
-                      >
-                        &#10003;
-                      </button>
+                      ></div>
                     )}
                   </div>
                   <p className="text-primary dark:text-white mt-2">

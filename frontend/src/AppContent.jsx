@@ -28,6 +28,7 @@ const PasswordResetPage = lazy(() => import("./pages/PasswordResetPage"));
 const AboutPage = lazy(() => import("./pages/AboutPage"));
 const NoAuthAboutPage = lazy(() => import("./pages/NoAuthAboutPage"));
 const PriceListPage = lazy(() => import("./pages/PriceListPage"));
+const ServiceShortcutsPage = lazy(() => import("./pages/ServiceShortcutsPage"));
 
 const PasswordResetRequestPage = lazy(() =>
   import("./pages/PasswordResetRequestPage")
@@ -70,6 +71,11 @@ function AppContent() {
         <Route path="/user/notifications" element={<NotificationPage />} />
         <Route path="/user/dashboard/services/data" element={<DataPage />} />
         <Route path="/user/dashboard/fundwallet" element={<FundWalletPage />} />
+        <Route
+          path="/user/dashboard/service-shortcut"
+          element={<ServiceShortcutsPage />}
+        />
+
         <Route
           path="/user/dashboard/services/airtime"
           element={<AirtimePage />}

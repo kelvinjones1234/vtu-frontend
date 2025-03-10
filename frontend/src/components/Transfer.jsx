@@ -4,6 +4,7 @@ import SubmitButton from "../components/SubmitButton";
 import { useAuth } from "../context/AuthenticationContext";
 import { useGeneral } from "../context/GeneralContext";
 import FloatingLabelInput from "./FloatingLabelInput";
+import { useProduct } from "../context/ProductContext";
 
 // Move styles outside component to prevent recreation on each render
 const inputStyle =
@@ -22,6 +23,7 @@ const Transfer = () => {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState(initialFormState);
   const [message, setMessage] = useState({ type: "", text: "" });
+  const { fetchNotifications } = useProduct();
 
   // Auto-dismiss message after 5 seconds
   useEffect(() => {
@@ -29,7 +31,7 @@ const Transfer = () => {
     if (message.text) {
       timeoutId = setTimeout(() => {
         setMessage({ type: "", text: "" });
-      }, 5000);
+      }, 2000);
     }
 
     // Clean up timeout on component unmount or when message changes
@@ -66,8 +68,13 @@ const Transfer = () => {
       return false;
     }
 
-    if (user.user.balance < amountNum) {
+    if (walletData.balance < amountNum) {
       setMessage({ type: "error", text: "Insufficient funds" });
+      return false;
+    }
+
+    if (amountNum < 500) {
+      setMessage({ type: "error", text: "Minimum transfer amount is 500" });
       return false;
     }
 
@@ -109,7 +116,7 @@ const Transfer = () => {
         }
       );
 
-      // Update wallet balance in context
+      fetchNotifications();
       updateWalletBalance(walletData.balance - amountNum);
 
       // Success message

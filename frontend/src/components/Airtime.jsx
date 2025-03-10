@@ -28,19 +28,14 @@ const inputStyle =
 
 const errorInputStyle = "border-red-500 dark:border-red-700";
 
-const Airtime = () => {
+const Airtime = ({ showSidebars = true, showStyle = true }) => {
   const { api, detectNetwork } = useGeneral();
-  const { airtimeNetworks } = useProduct();
-  const { user } = useAuth();
+  const [loading, setLoading] = useState(false);
 
-  const [formData, setFormData] = useState({
-    selectedNetwork: "",
-    selectedAirtimeType: "",
-    phone: "",
-    pin: "",
-    amount: "",
-    networkId: "",
-  });
+  const { airtimeNetworks, setAirtimeFormData, airtimeFormData, handleSave } =
+    useProduct();
+
+  const { user } = useAuth();
 
   const [airtimeTypes, setAirtimeTypes] = useState([]);
   const [errors, setErrors] = useState({});
@@ -58,7 +53,7 @@ const Airtime = () => {
   const handleInputChange = useCallback(
     (e) => {
       const { name, value } = e.target;
-      setFormData((prev) => ({ ...prev, [name]: value }));
+      setAirtimeFormData((prev) => ({ ...prev, [name]: value }));
       setErrors((prev) => ({ ...prev, [name]: "" })); // Clear the error when the input changes
 
       if (name === "phone") {
@@ -75,7 +70,7 @@ const Airtime = () => {
           (network) => network.network === value
         );
         if (selectedNetworkObj) {
-          setFormData((prev) => ({
+          setAirtimeFormData((prev) => ({
             ...prev,
             selectedNetwork: value,
             networkId: selectedNetworkObj.network_id,
@@ -87,9 +82,9 @@ const Airtime = () => {
   );
 
   useEffect(() => {
-    if (formData.selectedNetwork) {
+    if (airtimeFormData.selectedNetwork) {
       api
-        .get(`airtime/airtime-type/${formData.selectedNetwork}/`)
+        .get(`airtime/airtime-type/${airtimeFormData.selectedNetwork}/`)
         .then((response) => setAirtimeTypes(response.data))
         .catch((error) => {
           console.error("Error fetching plan types:", error);
@@ -101,31 +96,34 @@ const Airtime = () => {
           }));
         });
     }
-  }, [formData.selectedNetwork, api]);
+  }, [airtimeFormData.selectedNetwork, api]);
 
   const validInputs = useCallback(() => {
     const newErrors = {};
-    if (!formData.selectedNetwork)
+    if (!airtimeFormData.selectedNetwork)
       newErrors.selectedNetwork = "Please select a network";
-    if (!formData.selectedAirtimeType)
+    if (!airtimeFormData.title) {
+      newErrors.title = "Shortcut must be saved with a name";
+    }
+    if (!airtimeFormData.selectedAirtimeType)
       newErrors.selectedAirtimeType = "Please select an airtime type";
-    if (!formData.phone) {
+    if (!airtimeFormData.phone) {
       newErrors.phone = "A phone number is required";
-    } else if (!/^\d+$/.test(formData.phone)) {
+    } else if (!/^\d+$/.test(airtimeFormData.phone)) {
       newErrors.phone = "Phone number must contain only digits";
-    } else if (formData.phone.length !== 11) {
+    } else if (airtimeFormData.phone.length !== 11) {
       newErrors.phone = "Enter a valid 11-digit phone number";
     }
 
-    if (!formData.amount) newErrors.amount = "Please enter an amount";
-    if (!formData.pin) {
+    if (!airtimeFormData.amount) newErrors.amount = "Please enter an amount";
+    if (!airtimeFormData.pin) {
       newErrors.pin = "PIN is required";
-    } else if (formData.pin !== user.transaction_pin) {
+    } else if (airtimeFormData.pin !== user.transaction_pin) {
       newErrors.pin = "Incorrect PIN";
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
-  }, [formData, user.transaction_pin]);
+  }, [airtimeFormData, user.transaction_pin]);
 
   const generateUniqueId = useCallback((length = 16) => {
     const array = new Uint8Array(length / 2);
@@ -141,8 +139,9 @@ const Airtime = () => {
     validInputs,
     setPopupState,
     generateUniqueId,
+    setLoading,
     productType,
-    formData,
+    formData: airtimeFormData,
     bypassPhoneNumber,
   });
 
@@ -156,52 +155,61 @@ const Airtime = () => {
   const memoizedGeneralRight = useMemo(() => <GeneralRight />, []);
 
   return (
-    <div className="pt-[15vh] sm:bg-cover bg-center px-4 justify-center ss:px-[5rem] sm:px-[1rem] sm:flex gap-5 md:gap-12 lg:mx-[5rem]">
-      {memoizedGeneralLeft}
-      <div className="mx-auto w-full max-w-[800px]">
-        <div>
-          <h2 className="font-bold font-heading_two text-primary dark:text-white text-[1.5rem] mb-4">
-            Buy Airtime
-          </h2>
-          <div className="flex items-center text-primary dark:text-gray-100 py-4 font-semibold">
-            <Link to={"/user/dashboard"}>Dashboard</Link>{" "}
-            <div className="h-1 w-1 mx-5 bg-primary dark:bg-white rounded-full"></div>
-            <span className="text-gray-500">Airtime</span>
-          </div>
-        </div>
-        <div className="bg-white dark:bg-gray-800 rounded-[1.5rem] shadow-lg p-6">
-          <form onSubmit={handleSubmit}>
-            {/* Network Selection */}
-            {/* <div>
-              {errors.selectedNetwork && (
-                <p className="text-red-500 text-sm mb-1">
-                  {errors.selectedNetwork}
-                </p>
-              )}
-              <select
-                name="selectedNetwork"
-                aria-label="Network"
-                className={`${selectStyle} ${
-                  errors.selectedNetwork ? errorInputStyle : ""
-                }`}
-                value={formData.selectedNetwork}
-                onChange={handleInputChange}
-              >
-                <option value="" disabled>
-                  Network
-                </option>
-                {airtimeNetworks.map((item) => (
-                  <option key={item.network_id} value={item.network}>
-                    {item.network.toUpperCase()}
-                  </option>
-                ))}
-              </select>
-            </div> */}
+    <div
+      className={`${
+        showStyle &&
+        "pt-[15vh] sm:bg-cover bg-center px-4 justify-center ss:px-[5rem] sm:px-[1rem] sm:flex gap-5 md:gap-12 lg:mx-[5rem]"
+      }`}
+    >
+      {showSidebars && memoizedGeneralLeft}
 
+      <div className="mx-auto w-full max-w-[800px]">
+        {showStyle && (
+          <div>
+            <h2 className="font-bold font-heading_two text-primary dark:text-white text-[1.5rem] mb-4">
+              Buy Airtime
+            </h2>
+            <div className="flex items-center text-primary dark:text-gray-100 py-4 font-semibold">
+              <Link to={"/user/dashboard"}>Dashboard</Link>{" "}
+              <div className="h-1 w-1 mx-5 bg-primary dark:bg-white rounded-full"></div>
+              <span className="text-gray-500">Airtime</span>
+            </div>
+          </div>
+        )}
+
+        <div
+          className={`${
+            showStyle &&
+            "bg-white dark:bg-gray-800 rounded-[1.5rem] shadow-lg p-6"
+          }`}
+        >
+          <form
+            onSubmit={
+              showStyle
+                ? handleSubmit
+                : (e) => handleSave(e, airtimeFormData, validInputs)
+            }
+          >
+            {!showStyle && (
+              <div>
+                <FloatingLabelInput
+                  type="text"
+                  name="title"
+                  placeholder="Shortcut Name"
+                  aria-label="Title"
+                  value={airtimeFormData.title}
+                  onChange={handleInputChange}
+                  className={`${inputStyle}`}
+                  error={errors.title}
+                />
+              </div>
+            )}
+
+            {/* Network Selection */}
             <FloatingLabelSelect
               name="selectedNetwork"
               placeholder="Network"
-              value={formData.selectedNetwork}
+              value={airtimeFormData.selectedNetwork}
               onChange={handleInputChange}
               error={errors.selectedNetwork}
               options={airtimeNetworks.map((item) => ({
@@ -210,48 +218,13 @@ const Airtime = () => {
               }))}
             />
 
-            {/* Airtime Type Selection */}
-            {/* <div>
-              {errors.selectedAirtimeType && (
-                <p className="text-red-500 text-sm mb-1">
-                  {errors.selectedAirtimeType}
-                </p>
-              )}
-              <select
-                name="selectedAirtimeType"
-                aria-label="Plan Type"
-                className={`${selectStyle} ${
-                  errors.selectedAirtimeType ? errorInputStyle : ""
-                }`}
-                value={formData.selectedAirtimeType}
-                onChange={handleInputChange}
-                disabled={
-                  !formData.selectedNetwork ||
-                  !airtimeTypes.some((type) => type.is_active)
-                }
-              >
-                <option value="" disabled>
-                  Plan Type
-                </option>
-                {airtimeTypes.map((item) => (
-                  <option
-                    key={item.id}
-                    value={item.airtime_type}
-                    disabled={!item.is_active}
-                  >
-                    {item.airtime_type.toUpperCase()}
-                  </option>
-                ))}
-              </select>
-            </div> */}
-
             <FloatingLabelSelect
               name="selectedAirtimeType"
               placeholder="Plan Type"
-              value={formData.selectedAirtimeType}
+              value={airtimeFormData.selectedAirtimeType}
               onChange={handleInputChange}
               error={errors.selectedAirtimeType}
-              disabled={!formData.selectedNetwork}
+              disabled={!airtimeFormData.selectedNetwork}
               options={airtimeTypes.map((item) => ({
                 value: item.airtime_type,
                 label: item.airtime_type,
@@ -260,20 +233,16 @@ const Airtime = () => {
 
             {/* Phone Number Input */}
             <div>
-              {errors.phone && (
-                <p className="text-red-500 text-sm mb-1">{errors.phone}</p>
-              )}
               <FloatingLabelInput
                 type="text"
                 name="phone"
                 placeholder="Phone Number"
                 aria-label="Phone number"
-                disabled={!formData.selectedAirtimeType}
-                value={formData.phone}
+                disabled={!airtimeFormData.selectedAirtimeType}
+                value={airtimeFormData.phone}
                 onChange={handleInputChange}
-                className={`${inputStyle} ${
-                  errors.phone ? errorInputStyle : ""
-                }`}
+                className={`${inputStyle}`}
+                error={errors.phone}
               />
               {networkMessage && (
                 <p
@@ -285,38 +254,32 @@ const Airtime = () => {
 
             {/* Amount Input */}
             <div>
-              {errors.amount && (
-                <p className="text-red-500 text-sm mb-1">{errors.amount}</p>
-              )}
               <FloatingLabelInput
                 type="text"
                 name="amount"
                 placeholder="Amount"
-                disabled={!formData.phone}
+                disabled={!airtimeFormData.phone}
                 aria-label="Amount"
-                value={formData.amount}
+                value={airtimeFormData.amount}
                 onChange={handleInputChange}
-                className={`${inputStyle} ${
-                  errors.amount ? errorInputStyle : ""
-                }`}
+                className={`${inputStyle}`}
+                error={errors.amount}
               />
             </div>
 
             {/* PIN Input */}
             <div>
-              {errors.pin && (
-                <p className="text-red-500 text-sm mb-1">{errors.pin}</p>
-              )}
               <FloatingLabelInput
                 type="password"
                 name="pin"
                 placeholder="Pin"
-                disabled={!formData.amount}
+                disabled={!airtimeFormData.amount}
                 aria-label="Pin"
                 autoComplete="current-password"
-                value={formData.pin}
+                value={airtimeFormData.pin}
                 onChange={handleInputChange}
                 className={`${inputStyle} ${errors.pin ? errorInputStyle : ""}`}
+                error={errors.pin}
               />
             </div>
 
@@ -350,19 +313,22 @@ const Airtime = () => {
 
             {/* Submit Button */}
             <div>
-              <SubmitButton label="Purchase" />
+              <SubmitButton
+                label={`${showStyle ? "Purchase" : "Save"}`}
+                loading={loading}
+              />
             </div>
           </form>
         </div>
       </div>
-      {memoizedGeneralRight}
+      {showSidebars && memoizedGeneralRight}
 
       {/* Confirmation Popup */}
       <ConfirmationPopup
         isOpen={popupState.isConfirmOpen}
         onConfirm={handleConfirm}
         onCancel={handleCancel}
-        message={`Are you sure you want to proceed with transferring ₦${formData.amount} airtime to ${formData.phone}?`}
+        message={`Are you sure you want to proceed with transferring ₦${airtimeFormData.amount} airtime to ${airtimeFormData.phone}?`}
       />
 
       {/* Error Popup */}

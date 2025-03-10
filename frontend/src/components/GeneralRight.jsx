@@ -9,7 +9,7 @@ const GeneralRight = () => {
   const { user } = useAuth();
 
   return (
-    <div className="w-[25rem] z-[] hidden sm:block sticky top-[15vh] self-start font-body_two">
+    <div className="w-[25rem] hidden sm:block sticky top-[15vh] self-start font-body_two">
       <div>
         <h1 className="dark:text-white text-primary underline font-bold mb-[2rem] font-heading_two">
           Profile

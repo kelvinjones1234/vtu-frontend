@@ -6,12 +6,11 @@ import {
   useMemo,
   useCallback,
 } from "react";
-import { useAuth } from "./AuthenticationContext";
 import { useGeneral } from "./GeneralContext";
+import { useAuth } from "./AuthenticationContext";
 
 export const ProductContext = createContext();
 
-const REFRESH_INTERVAL = 48 * 60 * 60 * 1000; // 48hrs
 const CACHE_KEY = "combinedData";
 const MESSAGE_TIMEOUT = 3000; // 3 seconds for success/error messages
 
@@ -35,7 +34,73 @@ export const ProductProvider = ({ children }) => {
   });
 
   const { api } = useGeneral();
-  const { authTokens } = useAuth();
+  const { user } = useAuth();
+
+  const [dataFormData, setDataFormData] = useState({
+    selectedNetwork: "",
+    selectedPlanType: "",
+    selectedDataPlan: "",
+    phone: "",
+    pin: "",
+  });
+
+  const [airtimeFormData, setAirtimeFormData] = useState({
+    selectedNetwork: "",
+    selectedAirtimeType: "",
+    phone: "",
+    pin: "",
+    amount: "",
+    networkId: "",
+  });
+
+  const [electricityFormData, setElectricityFormData] = useState({
+    meterNumber: "",
+    pin: "",
+    amount: "",
+    selectedDisco: "",
+    charges: "50",
+    selectedMeterType: "",
+    selectedDiscoId: "", // Add selectedDiscoId to the formData state
+  });
+
+  const [cableFormData, setCableFormData] = useState({
+    selectedCableCategory: "",
+    selectedCablePlan: "",
+    uicNumber: "",
+    pin: "",
+    price: "",
+    planName: "",
+  });
+
+  const handleSave = async (e, formData, validInputs) => {
+    e.preventDefault();
+
+    if (validInputs()) {
+      const cleanedFormData = {
+        shortcut_name: formData.title, // Extract title dynamically
+        shortcut_payload: formData, // Send the dynamic form data
+      };
+      console.log(cleanedFormData);
+
+      try {
+        const response = await api.post("shortcuts/", cleanedFormData, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        });
+
+        console.log("Response Data:", response.data);
+        alert("Shortcut saved successfully!");
+      } catch (error) {
+        console.error(
+          "Error saving shortcut:",
+          error.response ? error.response.data : error.message
+        );
+        alert("Failed to save shortcut. Please try again.");
+      }
+    }
+  };
 
   // Memoized update function to reduce unnecessary re-renders
   const updateState = useCallback((updates) => {
@@ -125,8 +190,6 @@ export const ProductProvider = ({ children }) => {
 
   // Fetch notifications with improved error handling
   const fetchNotifications = useCallback(async () => {
-    if (!authTokens) return;
-
     try {
       const response = await api.get("notifications/", {
         headers: {
@@ -152,60 +215,10 @@ export const ProductProvider = ({ children }) => {
       // Clear error message after timeout
       setTimeout(() => clearMessage("errorMessage"), MESSAGE_TIMEOUT);
     }
-  }, [authTokens, api, updateState, clearMessage]);
-
-  // Mark a single notification as read
-  const handleMarkAsRead = useCallback(
-    async (id) => {
-      if (!authTokens) return;
-
-      try {
-        await api.patch(
-          `notifications/${id}/`,
-          { is_read: true },
-          {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${authTokens.access}`,
-            },
-          }
-        );
-
-        updateState((prevState) => {
-          const updatedNotifications = prevState.notifications.map(
-            (notification) =>
-              notification.id === id
-                ? { ...notification, is_read: true }
-                : notification
-          );
-
-          return {
-            notifications: updatedNotifications,
-            unreadCount: prevState.unreadCount - 1,
-            allRead: updatedNotifications.every((n) => n.is_read),
-            successMessage: "Notification marked as read.",
-          };
-        });
-
-        // Clear success message after timeout
-        setTimeout(() => clearMessage("successMessage"), MESSAGE_TIMEOUT);
-      } catch (error) {
-        console.error("Error marking notification as read:", error);
-        updateState({
-          errorMessage: "Failed to mark notification as read.",
-        });
-
-        // Clear error message after timeout
-        setTimeout(() => clearMessage("errorMessage"), MESSAGE_TIMEOUT);
-      }
-    },
-    [authTokens, api, updateState, clearMessage]
-  );
+  }, [api, updateState, clearMessage]);
 
   // Mark all notifications as read
   const handleMarkAllAsRead = useCallback(async () => {
-    if (!authTokens) return;
-
     try {
       const unreadNotifications = state.notifications.filter(
         (notification) => !notification.is_read
@@ -218,8 +231,8 @@ export const ProductProvider = ({ children }) => {
           {
             headers: {
               "Content-Type": "application/json",
-              Authorization: `Bearer ${authTokens.access}`,
             },
+            withCredentials: true,
           }
         )
       );
@@ -247,7 +260,7 @@ export const ProductProvider = ({ children }) => {
       // Clear error message after timeout
       setTimeout(() => clearMessage("errorMessage"), MESSAGE_TIMEOUT);
     }
-  }, [authTokens, api, state.notifications, updateState, clearMessage]);
+  }, [api, state.notifications, updateState, clearMessage]);
 
   // Initial data load and periodic updates
   useEffect(() => {
@@ -255,17 +268,8 @@ export const ProductProvider = ({ children }) => {
     fetchCombinedData();
 
     // Fetch notifications
-    fetchNotifications();
-
-    // Set up interval for periodic updates
-    const intervalId = setInterval(() => {
-      fetchFromAPI();
-      fetchNotifications();
-    }, REFRESH_INTERVAL);
-
-    // Cleanup interval on unmount
-    return () => clearInterval(intervalId);
-  }, [fetchCombinedData, fetchNotifications]);
+    user && fetchNotifications();
+  }, [fetchCombinedData, user, fetchNotifications]);
 
   // Context value memoized to prevent unnecessary re-renders
   const contextData = useMemo(
@@ -273,15 +277,31 @@ export const ProductProvider = ({ children }) => {
       ...state,
       fetchCombinedData,
       fetchNotifications,
-      handleMarkAsRead,
       handleMarkAllAsRead,
+      setDataFormData,
+      handleSave,
+      setAirtimeFormData,
+      setElectricityFormData,
+      setCableFormData,
+      dataFormData,
+      airtimeFormData,
+      electricityFormData,
+      cableFormData,
     }),
     [
       state,
       fetchCombinedData,
       fetchNotifications,
-      handleMarkAsRead,
       handleMarkAllAsRead,
+      setDataFormData,
+      handleSave,
+      setAirtimeFormData,
+      setElectricityFormData,
+      setCableFormData,
+      dataFormData,
+      airtimeFormData,
+      electricityFormData,
+      cableFormData,
     ]
   );
 

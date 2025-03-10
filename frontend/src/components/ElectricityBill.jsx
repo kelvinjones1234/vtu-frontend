@@ -15,6 +15,11 @@ import ConfirmationPopup from "./ConfirmationPopup";
 import ErrorPopup from "./ErrorPopup";
 import SuccessPopup from "./SuccessPopup";
 import { useAuth } from "../context/AuthenticationContext";
+import { useProduct } from "../context/ProductContext";
+
+import FloatingLabelInput from "./FloatingLabelInput";
+import FloatingLabelSelect from "./FloatingLabelSelect";
+
 const selectStyle =
   "custom-select dark:bg-[#18202F] bg-white w-full hover:transition hover:duration-450 hover:ease-in-out mb-3 text-primary dark:text-white py-1 px-4 h-[3.5rem] text-[1.2rem] rounded-2xl outline-none border border-[#1CCEFF] dark:border-gray-700 hover:border-[#1CCEFF] dark:hover:border-[#1CCEFF] focus:border-[#1CCEFF] dark:focus:border-[#1CCEFF]";
 
@@ -23,22 +28,15 @@ const inputStyle =
 
 const errorInputStyle = "border-red-500 dark:border-red-700";
 
-const ElectricityBill = () => {
-  const [formData, setFormData] = useState({
-    meterNumber: "",
-    pin: "",
-    amount: "",
-    selectedDisco: "",
-    charges: "50",
-    selectedMeterType: "",
-    selectedDiscoId: "", // Add selectedDiscoId to the formData state
-  });
+const ElectricityBill = ({ showSidebars = true, showStyle = true }) => {
+  const { electricityFormData, setElectricityFormData, handleSave } =
+    useProduct();
 
   const { user } = useAuth();
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => {
+    setElectricityFormData((prev) => {
       const updatedFormData = { ...prev, [name]: value };
 
       // If the selectedDisco changes, find the corresponding plan_id
@@ -91,41 +89,44 @@ const ElectricityBill = () => {
 
   // Filter meter types based on selected Disco
   const filteredMeterTypes = useMemo(() => {
-    if (!formData.selectedDisco) return [];
+    if (!electricityFormData.selectedDisco) return [];
     return discos.filter(
-      (disco) => disco.disco_name === formData.selectedDisco
+      (disco) => disco.disco_name === electricityFormData.selectedDisco
     );
-  }, [formData.selectedDisco, discos]);
+  }, [electricityFormData.selectedDisco, discos]);
 
-  const validInputs = () => {
+  const validInputs = useCallback(() => {
     const newErrors = {};
-    if (!formData.selectedDisco) {
+    if (!electricityFormData.selectedDisco) {
       newErrors.selectedDisco = "Please select a Disco";
     }
-    if (!formData.selectedMeterType) {
+    if (!electricityFormData.selectedMeterType) {
       newErrors.selectedMeterType = "Please select a meter type";
     }
-    if (!formData.meterNumber) {
+    if (!electricityFormData.title) {
+      newErrors.title = "Shortcut must be saved with a name";
+    }
+    if (!electricityFormData.meterNumber) {
       newErrors.meterNumber = "A meter number is required";
-    } else if (!/^\d+$/.test(formData.meterNumber)) {
+    } else if (!/^\d+$/.test(electricityFormData.meterNumber)) {
       newErrors.meterNumber = "Meter number must contain only digits";
-    } else if (formData.meterNumber.length !== 13) {
+    } else if (electricityFormData.meterNumber.length !== 13) {
       newErrors.meterNumber = "Enter a valid 13-digit meter number";
     }
 
-    if (!formData.amount) {
+    if (!electricityFormData.amount) {
       newErrors.amount = "Please enter an amount";
     }
 
-    if (!formData.pin) {
+    if (!electricityFormData.pin) {
       newErrors.pin = "PIN is required";
-    } else if (formData.pin !== user.transaction_pin) {
+    } else if (electricityFormData.pin !== user.transaction_pin) {
       newErrors.pin = "Incorrect PIN";
     }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
-  };
+  }, [electricityFormData, user.transaction_pin]);
 
   const generateUniqueId = useCallback((length = 16) => {
     const array = new Uint8Array(length / 2);
@@ -147,7 +148,7 @@ const ElectricityBill = () => {
     setPopupState,
     generateUniqueId,
     productType,
-    formData,
+    formData: electricityFormData,
     bypassMeterNumber,
   });
 
@@ -155,143 +156,139 @@ const ElectricityBill = () => {
   const memoizedGeneralRight = useMemo(() => <GeneralRight />, []);
 
   return (
-    <div className="pt-[15vh] sm:bg-cover bg-center px-4 justify-center ss:px-[5rem] sm:px-[1rem] sm:flex gap-5 md:gap-12 lg:mx-[5rem]">
-      {memoizedGeneralLeft}
+    <div
+      className={`${
+        showStyle &&
+        "pt-[15vh] sm:bg-cover bg-center px-4 justify-center ss:px-[5rem] sm:px-[1rem] sm:flex gap-5 md:gap-12 lg:mx-[5rem]"
+      }`}
+    >
+      {showSidebars && memoizedGeneralLeft}
       <div className="mx-auto w-full max-w-[800px]">
-        <div>
-          <h2 className="font-bold font-heading_two text-primary dark:text-white text-[1.5rem] md:text-3xl mb-4">
-            Pay Electricity Bill
-          </h2>
-          <div className="flex items-center text-primary dark:text-gray-100 py-4 font-semibold">
-            <Link to={"/user/dashboard"}>Dashboard</Link>{" "}
-            <div className="h-1 w-1 mx-5 bg-primary dark:bg-white rounded-full"></div>
-            <span className="text-gray-500">Electricity Bill</span>
+        {showStyle && (
+          <div>
+            <h2 className="font-bold font-heading_two text-primary dark:text-white text-[1.5rem] md:text-3xl mb-4">
+              Pay Electricity Bill
+            </h2>
+            <div className="flex items-center text-primary dark:text-gray-100 py-4 font-semibold">
+              <Link to={"/user/dashboard"}>Dashboard</Link>{" "}
+              <div className="h-1 w-1 mx-5 bg-primary dark:bg-white rounded-full"></div>
+              <span className="text-gray-500">Electricity Bill</span>
+            </div>
           </div>
-        </div>
-        <div className="bg-white dark:bg-gray-800 rounded-[1.5rem] shadow-lg p-6">
-          <form onSubmit={handleSubmit} className="space-y-4">
+        )}
+        <div
+          className={`${
+            showStyle &&
+            "bg-white dark:bg-gray-800 rounded-[1.5rem] shadow-lg p-6"
+          }`}
+        >
+          <form
+            onSubmit={
+              showStyle
+                ? handleSubmit
+                : (e) => handleSave(e, electricityFormData, validInputs)
+            }
+          >
+            {!showStyle && (
+              <div>
+                <FloatingLabelInput
+                  type="text"
+                  name="title"
+                  placeholder="Shortcut Name"
+                  aria-label="Title"
+                  value={electricityFormData.title}
+                  onChange={handleInputChange}
+                  className={`${inputStyle}`}
+                  error={errors.title}
+                />
+              </div>
+            )}
             {/* Disco Selection */}
             <div>
-              {errors.selectedDisco && (
-                <p className="text-red-500 text-sm mb-1">
-                  {errors.selectedDisco}
-                </p>
-              )}
-              <select
+              <FloatingLabelSelect
                 name="selectedDisco"
-                aria-label="Disco Name"
-                className={`${selectStyle} ${
-                  errors.selectedDisco ? errorInputStyle : ""
-                }`}
-                value={formData.selectedDisco}
+                placeholder="Disco Name"
+                value={electricityFormData.selectedDisco}
                 onChange={handleInputChange}
-              >
-                <option value="" disabled>
-                  Disco Name
-                </option>
-                {uniqueDiscos.map((discoName, index) => (
-                  <option key={index} value={discoName}>
-                    {discoName}
-                  </option>
-                ))}
-              </select>
+                error={errors.selectedDisco}
+                // disabled={!electricityFormData.selectedDisco}
+                options={uniqueDiscos.map((discoName) => ({
+                  value: discoName,
+                  label: discoName,
+                }))}
+              />
             </div>
 
             {/* Meter Type Selection */}
             <div>
-              {errors.selectedMeterType && (
-                <p className="text-red-500 text-sm mb-1">
-                  {errors.selectedMeterType}
-                </p>
-              )}
-              <select
+              <FloatingLabelSelect
                 name="selectedMeterType"
-                aria-label="Meter Type"
-                className={`${selectStyle} ${
-                  errors.selectedMeterType ? errorInputStyle : ""
-                }`}
-                value={formData.selectedMeterType}
+                placeholder="Meter Type"
+                value={electricityFormData.selectedMeterType}
                 onChange={handleInputChange}
-              >
-                <option value="" disabled>
-                  Meter Type
-                </option>
-                {filteredMeterTypes.map((item) => (
-                  <option
-                    key={item.id}
-                    value={item.meter_type}
-                    disabled={!item.is_active}
-                  >
-                    {item.meter_type}
-                  </option>
-                ))}
-              </select>
+                error={errors.selectedMeterType}
+                disabled={!electricityFormData.selectedDisco}
+                options={filteredMeterTypes.map((item) => ({
+                  value: item.id,
+                  label: item.meter_type,
+                }))}
+              />
             </div>
 
             {/* Meter Number Input */}
             <div>
-              {errors.meterNumber && (
-                <p className="text-red-500 text-sm mb-1">
-                  {errors.meterNumber}
-                </p>
-              )}
-              <input
+              <FloatingLabelInput
                 type="text"
                 name="meterNumber"
-                value={formData.meterNumber}
-                disabled={!formData.selectedMeterType}
+                value={electricityFormData.meterNumber}
+                disabled={!electricityFormData.selectedMeterType}
                 placeholder="Meter Number"
                 aria-label="Meter Number"
-                className={`${inputStyle} ${
-                  errors.meterNumber ? errorInputStyle : ""
-                }`}
+                className={`${inputStyle}`}
                 onChange={handleInputChange}
+                error={errors.meterNumber}
               />
             </div>
 
             {/* Amount Input */}
             <div>
-              {errors.amount && (
-                <p className="text-red-500 text-sm mb-1">{errors.amount}</p>
-              )}
-              <input
+              <FloatingLabelInput
                 type="text"
                 name="amount"
                 placeholder="Amount"
-                disabled={!formData.meterNumber}
-                value={formData.amount}
+                disabled={!electricityFormData.amount}
+                value={electricityFormData.amount}
                 onChange={handleInputChange}
-                className={`${inputStyle} ${
-                  errors.amount ? errorInputStyle : ""
-                }`}
+                className={`${inputStyle}`}
+                error={errors.amount}
               />
             </div>
 
             {/* PIN Input */}
             <div>
-              {errors.pin && (
-                <p className="text-red-500 text-sm mb-1">{errors.pin}</p>
-              )}
-              <input
+              <FloatingLabelInput
                 type="password"
                 name="pin"
                 placeholder="Pin"
-                disabled={!formData.amount}
+                disabled={!electricityFormData.amount}
                 aria-label="Pin"
-                value={formData.pin}
+                value={electricityFormData.pin}
                 autoComplete="current-password"
-                className={`${inputStyle} ${errors.pin ? errorInputStyle : ""}`}
+                className={`${inputStyle}`}
+                error={errors.pin}
                 onChange={handleInputChange}
               />
             </div>
 
-            <div className={`${formData.pin?.length !== 4 && "hidden"}`}>
-              <input
+            <div
+              className={`${electricityFormData.pin?.length !== 4 && "hidden"}`}
+            >
+              <FloatingLabelInput
                 type="text"
                 name="charges"
                 placeholder=""
                 disabled
-                value={`₦${formData.charges}`}
+                value={`₦${electricityFormData.charges}`}
                 onChange={handleInputChange}
                 className={`${inputStyle}`}
               />
@@ -333,12 +330,12 @@ const ElectricityBill = () => {
           </form>
         </div>
       </div>
-      {memoizedGeneralRight}
+      {showSidebars && memoizedGeneralRight}
       <ConfirmationPopup
         isOpen={popupState.isConfirmOpen}
         onConfirm={handleConfirm}
         onCancel={handleCancel}
-        message={`Are you sure you want to proceed with transferring ₦${formData.amount} airtime to ${formData.phone}?`}
+        message={`Are you sure you want to proceed with transferring ₦${electricityFormData.amount} airtime to ${electricityFormData.phone}?`}
       />
 
       <ErrorPopup

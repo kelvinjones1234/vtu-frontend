@@ -114,9 +114,11 @@ const UserDashBoard = () => {
             other users with their phone number.
           </p>
           <div className="flex justify-between">
-            <button className="bg-blue-500 text-[.8rem] hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-full transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
-              Create Shortcut
-            </button>
+            <Link to={"/user/dashboard/service-shortcut"}>
+              <button className="bg-blue-500 text-[.8rem] hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-full transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
+                Create Shortcut
+              </button>
+            </Link>
             <button
               onClick={handleTransfer}
               className="border text-[.8rem] border-green-500 text-green-500 font-semibold py-2 px-4 rounded-full transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50"
@@ -161,3 +163,4 @@ const UserDashBoard = () => {
 };
 
 export default UserDashBoard;
+ 

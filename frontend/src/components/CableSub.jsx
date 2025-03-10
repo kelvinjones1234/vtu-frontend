@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import SubmitButton from "./SubmitButton";
 import { useAuth } from "../context/AuthenticationContext";
 import { useProduct } from "../context/ProductContext";
@@ -10,6 +10,8 @@ import ConfirmationPopup from "./ConfirmationPopup";
 import ErrorPopup from "./ErrorPopup";
 import SuccessPopup from "./SuccessPopup";
 import { useTransactionSubmit } from "./UserTransactionSubmit";
+import FloatingLabelInput from "./FloatingLabelInput";
+import FloatingLabelSelect from "./FloatingLabelSelect";
 
 const selectStyle =
   "custom-select dark:bg-[#18202F] bg-white w-full hover:transition hover:duration-450 hover:ease-in-out mb-3 text-primary dark:text-white py-1 px-4 h-[3.5rem] text-[1.2rem] rounded-2xl outline-none border border-[#1CCEFF] dark:border-gray-700 hover:border-[#1CCEFF] dark:hover:border-[#1CCEFF] focus:border-[#1CCEFF] dark:focus:border-[#1CCEFF]";
@@ -19,10 +21,12 @@ const inputStyle =
 
 const errorInputStyle = "border-red-500 dark:border-red-700";
 
-const CableSub = () => {
-  const { cableCategories } = useProduct();
+const CableSub = ({ showSidebars = true, showStyle = true }) => {
+  const { cableCategories, cableFormData, setCableFormData, handleSave } =
+    useProduct();
   const { user } = useAuth();
   const { api } = useGeneral();
+  const [loading, setLoading] = useState(false);
 
   const [bypassUicNumber, setBypassUicNumber] = useState(false);
   const [errors, setErrors] = useState({});
@@ -38,18 +42,9 @@ const CableSub = () => {
     errorPopupMessage: "",
   });
 
-  const [formData, setFormData] = useState({
-    selectedCableCategory: "",
-    selectedCablePlan: "",
-    uicNumber: "",
-    pin: "",
-    price: "",
-    planName: "",
-  });
-
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setCableFormData((prev) => ({ ...prev, [name]: value }));
     setErrors((prev) => ({ ...prev, [name]: "" })); // Clear the error when the input changes
   };
 
@@ -61,8 +56,8 @@ const CableSub = () => {
 
     if (selectedCategory) {
       setSelectedCableId(selectedCategory.id); // Store id for fetching plans
-      setSelectedCableCatId(selectedCategory.cable_id); // Store cable_id for formData
-      setFormData((prev) => ({
+      setSelectedCableCatId(selectedCategory.cable_id); // Store cable_id for cableFormData
+      setCableFormData((prev) => ({
         ...prev,
         selectedCableCategory: selectedCategory.cable_id, // Set to cable_id
         selectedCablePlan: "",
@@ -77,7 +72,7 @@ const CableSub = () => {
     const selectedPlan = cablePlans.find(
       (plan) => plan.plan_id === selectedPlanId
     );
-    setFormData((prev) => ({
+    setCableFormData((prev) => ({
       ...prev,
       selectedCablePlan: selectedPlanId,
       price: selectedPlan ? selectedPlan.price : "",
@@ -85,28 +80,31 @@ const CableSub = () => {
     }));
   };
 
-  const validInputs = () => {
+  const validInputs = useCallback(() => {
     const newErrors = {};
-    if (!formData.selectedCableCategory) {
+    if (!cableFormData.selectedCableCategory) {
       newErrors.selectedCableCategory = "Please select a cable category";
     }
-    if (!formData.selectedCablePlan) {
+    if (!cableFormData.title) {
+      newErrors.title = "Shortcut must be saved with a name";
+    }
+    if (!cableFormData.selectedCablePlan) {
       newErrors.selectedCablePlan = "Please select a cable plan";
     }
-    if (!formData.uicNumber) {
-      newErrors.uicNumber = "A UIC number is required";
-    } else if (formData.uicNumber.length !== 10) {
+    if (!cableFormData.uicNumber) {
+      newErrors.uicNumber = "An IUC number is required";
+    } else if (cableFormData.uicNumber.length !== 10) {
       newErrors.uicNumber = "Enter a valid 10-digit UIC number";
     }
-    if (!formData.pin) {
+    if (!cableFormData.pin) {
       newErrors.pin = "PIN is required";
-    } else if (formData.pin !== user.transaction_pin) {
+    } else if (cableFormData.pin !== user.transaction_pin) {
       newErrors.pin = "Incorrect PIN";
     }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
-  };
+  }, [cableFormData]);
 
   const generateUniqueId = (length = 16) => {
     const array = new Uint8Array(length / 2);
@@ -122,8 +120,9 @@ const CableSub = () => {
     validInputs,
     setPopupState,
     generateUniqueId,
+    setLoading,
     productType,
-    formData,
+    cableFormData,
     bypassUicNumber,
   });
 
@@ -145,124 +144,116 @@ const CableSub = () => {
   }, [selectedCableId, api]);
 
   return (
-    <div className="pt-[15vh] sm:bg-cover bg-center px-4 justify-center ss:px-[5rem] sm:px-[1rem] sm:flex gap-5 md:gap-12 lg:mx-[5rem]">
-      <GeneralLeft />
+    <div
+      className={`${
+        showStyle &&
+        "pt-[15vh] sm:bg-cover bg-center px-4 justify-center ss:px-[5rem] sm:px-[1rem] sm:flex gap-5 md:gap-12 lg:mx-[5rem]"
+      }`}
+    >
+      {showSidebars && <GeneralLeft />}
       <div className="mx-auto w-full max-w-[800px]">
-        <div>
-          <h2 className="font-bold font-heading_two text-primary dark:text-white text-[1.5rem] md:text-3xl mb-4">
-            Buy Cable Subscription
-          </h2>
-          <div className="flex items-center text-primary dark:text-gray-100 py-4 font-semibold">
-            <Link to={"/user/dashboard"}>Dashboard</Link>{" "}
-            <div className="h-1 w-1 mx-5 bg-primary dark:bg-white rounded-full"></div>
-            <span className="text-gray-500">Cable Subscription</span>
+        {showStyle && (
+          <div>
+            <h2 className="font-bold font-heading_two text-primary dark:text-white text-[1.5rem] md:text-3xl mb-4">
+              Buy Cable Subscription
+            </h2>
+            <div className="flex items-center text-primary dark:text-gray-100 py-4 font-semibold">
+              <Link to={"/user/dashboard"}>Dashboard</Link>{" "}
+              <div className="h-1 w-1 mx-5 bg-primary dark:bg-white rounded-full"></div>
+              <span className="text-gray-500">Cable Subscription</span>
+            </div>
           </div>
-        </div>
-        <div className="bg-white dark:bg-gray-800 rounded-[1.5rem] shadow-lg p-6">
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Cable Category Selection */}
-            <div>
-              {errors.selectedCableCategory && (
-                <p className="text-red-500 text-sm mb-1">
-                  {errors.selectedCableCategory}
-                </p>
-              )}
-              <select
-                name="selectedCableCategory"
-                aria-label="Cable Name"
-                className={`${selectStyle} ${
-                  errors.selectedCableCategory ? errorInputStyle : ""
-                }`}
-                value={formData.selectedCableCategory}
-                onChange={handleSelectedCableCategory}
-              >
-                <option value="" disabled>
-                  Cable Name
-                </option>
-                {cableCategories.map((item) => (
-                  <option
-                    value={item.id}
-                    key={item.id}
-                    disabled={!item.is_active}
-                  >
-                    {item.cable_name.toUpperCase()}
-                  </option>
-                ))}
-              </select>
-            </div>
+        )}
+        <div
+          className={`${
+            showStyle &&
+            "bg-white dark:bg-gray-800 rounded-[1.5rem] shadow-lg p-6"
+          }`}
+        >
+          <form
+            onSubmit={
+              showStyle
+                ? handleSubmit
+                : (e) => handleSave(e, cableFormData, validInputs)
+            }
+          >
+            {!showStyle && (
+              <FloatingLabelInput
+                type="text"
+                name="title"
+                placeholder="Shortcut Name"
+                aria-label="Title"
+                value={cableFormData.title}
+                onChange={handleInputChange}
+                className={`${inputStyle} `}
+                error={errors.title}
+              />
+            )}
 
-            {/* Cable Plan Selection */}
-            <div>
-              {errors.selectedCablePlan && (
-                <p className="text-red-500 text-sm mb-1">
-                  {errors.selectedCablePlan}
-                </p>
-              )}
-              <select
-                name="selectedCablePlan"
-                aria-label="Cable Plan"
-                className={`${selectStyle} ${
-                  errors.selectedCablePlan ? errorInputStyle : ""
-                }`}
-                value={formData.selectedCablePlan}
-                onChange={handleSelectedCablePlan}
-                disabled={!selectedCableCatId}
-              >
-                <option value="" disabled>
-                  Cable Plan
-                </option>
-                {cablePlans.map((item) => (
-                  <option value={item.plan_id} key={item.id}>
-                    {item.cable_plan}
-                  </option>
-                ))}
-              </select>
-            </div>
+            <FloatingLabelSelect
+              name="selectedCableCategory"
+              placeholder="Cable Name"
+              value={cableFormData.selectedCableCategory}
+              onChange={handleSelectedCableCategory}
+              error={errors.selectedCableCategory}
+              options={cableCategories.map((item) => ({
+                value: item.id,
+                label: item.cable_name,
+              }))}
+            />
+
+            <FloatingLabelSelect
+              name="selectedCablePlan"
+              placeholder="Cable Plan"
+              value={cableFormData.selectedCablePlan}
+              onChange={handleSelectedCablePlan}
+              error={errors.selectedCablePlan}
+              options={cablePlans.map((item) => ({
+                value: item.plan_id,
+                label: item.cable_plan,
+              }))}
+            />
 
             {/* UIC Number Input */}
             <div>
-              {errors.uicNumber && (
-                <p className="text-red-500 text-sm mb-1">{errors.uicNumber}</p>
-              )}
-              <input
+              <FloatingLabelInput
                 type="text"
                 name="uicNumber"
-                placeholder="UIC Number"
+                placeholder="IUC Number"
                 aria-label="UIC Number"
-                className={`${inputStyle} ${
-                  errors.uicNumber ? errorInputStyle : ""
-                }`}
-                value={formData.uicNumber}
+                className={`${inputStyle}`}
+                value={cableFormData.uicNumber}
                 onChange={handleInputChange}
+                error={errors.uicNumber}
               />
             </div>
 
             {/* PIN Input */}
             <div>
-              {errors.pin && (
-                <p className="text-red-500 text-sm mb-1">{errors.pin}</p>
-              )}
-              <input
+              <FloatingLabelInput
                 type="password"
                 name="pin"
                 placeholder="Pin"
                 aria-label="Password"
                 autoComplete="current-password"
                 className={`${inputStyle} ${errors.pin ? errorInputStyle : ""}`}
-                value={formData.pin}
+                value={cableFormData.pin}
+                error={errors.pin}
                 onChange={handleInputChange}
               />
             </div>
 
             {/* Price Display */}
-            {formData.price && (
+            {cableFormData.price && !showStyle && (
               <div>
-                <input
+                <FloatingLabelInput
                   type="text"
                   disabled
                   name="price"
                   placeholder="Price"
-                  value={`₦${Number(formData.price).toLocaleString("en-NG")}`}
+                  value={`₦${Number(cableFormData.price).toLocaleString(
+                    "en-NG"
+                  )}`}
                   className={inputStyle}
                 />
               </div>
@@ -271,7 +262,7 @@ const CableSub = () => {
             {/* Bypass UIC Number Toggle */}
             <div className="flex flex-wrap w-full text-white justify-between text-[1rem] py-5">
               <p className="dark:text-white text-primary opacity-80 font-semibold">
-                Bypass UIC Number
+                Bypass IUC Number
               </p>
               <div
                 className="flex items-center mr-3 cursor-pointer"
@@ -296,20 +287,27 @@ const CableSub = () => {
             {/* Submit Button */}
             <div>
               <SubmitButton
-                label={`${bypassUicNumber ? "Purchase" : "Verify IUC Number"}`}
+                label={
+                  showStyle
+                    ? bypassUicNumber
+                      ? "Purchase"
+                      : "Verify IUC Number"
+                    : "Save"
+                }
+                loading={!showStyle && loading}
               />
             </div>
           </form>
         </div>
       </div>
-      <GeneralRight />
+      {showSidebars && <GeneralRight />}
 
       {/* Confirmation Popup */}
       <ConfirmationPopup
         isOpen={popupState.isConfirmOpen}
         onConfirm={handleConfirm}
         onCancel={handleCancel}
-        message={`Are you sure you want to proceed with subscribing ${formData.planName} to ${formData.uicNumber}?`}
+        message={`Are you sure you want to proceed with subscribing ${cableFormData.planName} to ${cableFormData.uicNumber}?`}
       />
 
       {/* Error Popup */}

@@ -299,7 +299,8 @@ export const useTransactionSubmit = ({
   const handleSubmit = useCallback(
     (e) => {
       e.preventDefault();
-
+      console.log(formData);
+      
       if (validInputs()) {
         setPopupState((prev) => ({ ...prev, isConfirmOpen: true }));
       } else if (!hasSufficientBalance()) {
