@@ -19,7 +19,7 @@ const PrivacyPolicy = () => {
             <div className="text-primary text-[1.5rem] font-bold dark:text-white pb-8 text-center xs:hidden">
               Hi,{" "}
               <span className="bg-gradient-to-r uppercase from-purple-400 via-sky-500 to-red-500 text-transparent bg-clip-text">
-                {user.username}
+                {user.user.first_name}
               </span>
             </div>
           )}

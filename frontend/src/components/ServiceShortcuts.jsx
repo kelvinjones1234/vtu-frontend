@@ -8,11 +8,17 @@ import Data from "./Data";
 import Airtime from "./Airtime";
 import ElectricityBill from "./ElectricityBill";
 import CableSub from "./CableSub";
+import ErrorPopup from "./ErrorPopup";
+import SuccessPopup from "./SuccessPopup";
+import { useProduct } from "../context/ProductContext";
 
 const ServiceShortcuts = () => {
   const { walletData, loading, error } = useWallet();
   const [isBalanceHidden, setIsBalanceHidden] = useState(true);
   const [activeService, setActiveService] = useState("data");
+
+  const { popupState, setPopupState } = useProduct();
+
   const formattedBalance = useMemo(
     () =>
       walletData?.balance
@@ -97,6 +103,15 @@ const ServiceShortcuts = () => {
     { id: "startime", name: "StarTimes" },
   ];
 
+  const handleErrorClose = useCallback(
+    () => setPopupState((prev) => ({ ...prev, isErrorOpen: false })),
+    []
+  );
+  const handleSuccessClose = useCallback(
+    () => setPopupState((prev) => ({ ...prev, isSuccessOpen: false })),
+    []
+  );
+
   return (
     <div className="pt-[15vh] sm:bg-cover px-4 justify-center ss:px-[5rem] sm:px-[1rem] sm:flex gap-5 md:gap-12 lg:mx-[5rem]">
       <GeneralLeft />
@@ -131,8 +146,8 @@ const ServiceShortcuts = () => {
             </Link>
           </div>
         </div>
-        <div className="min-h-screen bg-gray-100 dark:bg-gray-900 pt-6 px-4 sm:px-6 md:px-8 rounded-[1.5rem]">
-          <div className="w-full sm:w-[300px] md:w-[500px] lg:w-[700px] max-w-4xl mx-auto">
+        <div className="h-auto bg-white dark:bg-gray-800 py-6 px-4 sm:px-6 md:px-8 rounded-2xl shadow-md">
+          <div className="w-full sm:w-[300px] md:w-[500px] lg:w-[600px] xl:w-[700px] max-w-3xl mx-auto">
             {" "}
             {/* Changed min-w-[500px] to w-full with max-width */}
             <h1 className="text-2xl font-bold text-primary dark:text-white mb-6">
@@ -179,6 +194,16 @@ const ServiceShortcuts = () => {
         </div>
       </div>
       <GeneralRight />
+      <ErrorPopup
+        isOpen={popupState.isErrorOpen}
+        message={popupState.errorPopupMessage}
+        onClose={handleErrorClose}
+      />
+      <SuccessPopup
+        isOpen={popupState.isSuccessOpen}
+        message={popupState.successMessage}
+        onClose={handleSuccessClose}
+      />
     </div>
   );
 };

@@ -34,7 +34,7 @@ const HomePageNavbar = () => {
   return (
     <>
       <div
-        className={`p-4 lg:px-0 flex justify-between py-2 lg:px-[6rem] fixed top-0 w-full transition-colors duration-200 z-50 ${
+        className={`p-4 lg:px-0 flex justify-between py-[1rem] lg:px-[6rem] fixed top-0 w-full transition-colors duration-200 z-50 ${
           isScrolled ? "bg-gray-900 bg-opacity-95" : "bg-transparent"
         }`}
       >
@@ -79,7 +79,7 @@ const HomePageNavbar = () => {
       )}
 
       <div
-        className={`harmburger-dropdown fixed top-0 left-0 h-screen p-[1rem] sm:hidden bg-opacity-95 bg-primary text-white transform transition-transform rounded-r-xl duration-200 ease-in-out z-50 ${
+        className={`harmburger-dropdown fixed top-0 left-0 h-screen p-[1.5rem] sm:hidden bg-opacity-95 bg-primary text-white transform transition-transform rounded-r-xl duration-200 ease-in-out z-50 ${
           homeMenuToggle ? "translate-x-0" : "-translate-x-full"
         }`}
         onClick={(e) => e.stopPropagation()} // Prevent click event propagation to overlay

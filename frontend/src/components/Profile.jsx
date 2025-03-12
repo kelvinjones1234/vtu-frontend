@@ -468,7 +468,7 @@ const Profile = () => {
                   : "max-h-0 opacity-0"
               }`}
             >
-              <div className="mt-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg transform transition-transform duration-500 ease-in-out">
+              <div className="h-auto bg-white dark:bg-gray-800 py-6 px-4 sm:px-6 md:px-8 rounded-2xl shadow-md">
                 <form
                   onSubmit={handleResetPasswordSubmit}
                   className="space-y-4"
@@ -529,7 +529,7 @@ const Profile = () => {
                   : "max-h-0 opacity-0"
               }`}
             >
-              <div className="mt-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg transform transition-transform duration-500 ease-in-out">
+              <div className="h-auto bg-white dark:bg-gray-800 py-6 px-4 sm:px-6 md:px-8 rounded-2xl shadow-md">
                 <form onSubmit={handleResetPinSubmit} className="space-y-4">
                   <FloatingLabelInput
                     type="password"

@@ -16,8 +16,8 @@ import TermsAndConditionsPage from "./pages/TermsAndConditionsPage";
 import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
 import NoAuthPrivacyPolicyPage from "./pages/NoAuthPrivacyPolicyPage";
 import NoAuthTermsAndConditionPage from "./pages/NoAuthTermsAndConditionPage";
-import FundWallet from "./components/FundWallet";
 import FundWalletPage from "./pages/FundWalletPage";
+import ServiceShortcutsPage from "./pages/ServiceShortcutsPage";
 // import LoadingSpinner from "./components/LoadingSpinner";
 
 const HomePage = lazy(() => import("./pages/HomePage"));
@@ -28,7 +28,8 @@ const PasswordResetPage = lazy(() => import("./pages/PasswordResetPage"));
 const AboutPage = lazy(() => import("./pages/AboutPage"));
 const NoAuthAboutPage = lazy(() => import("./pages/NoAuthAboutPage"));
 const PriceListPage = lazy(() => import("./pages/PriceListPage"));
-const ServiceShortcutsPage = lazy(() => import("./pages/ServiceShortcutsPage"));
+// const ServiceShortcutsPage = lazy(() => import("./pages/ServiceShortcutsPage"));
+const ShortcutListPage = lazy(() => import("./pages/ShortcutListPage"));
 
 const PasswordResetRequestPage = lazy(() =>
   import("./pages/PasswordResetRequestPage")
@@ -74,6 +75,11 @@ function AppContent() {
         <Route
           path="/user/dashboard/service-shortcut"
           element={<ServiceShortcutsPage />}
+        />
+
+        <Route
+          path="/user/dashboard/shortcuts"
+          element={<ShortcutListPage />}
         />
 
         <Route

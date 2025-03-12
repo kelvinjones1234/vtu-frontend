@@ -16,7 +16,7 @@ export default {
 
 
       },
-      colors: {
+      colors: { 
         primary: "#0A101D",
         secondary: "#00f6ff",
         dimWhite: "rgba(255, 255, 255, 0.7)",
@@ -52,9 +52,11 @@ export default {
     },
     screens: {
       xs: "490px",
+      xsm: "580px",
       ss: "630px",
       sm: "768px",
       md: "1050px",
+      mdm: "1150px",
       lg: "1250px",
       xl: "1700px",
     },

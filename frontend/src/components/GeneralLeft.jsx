@@ -194,6 +194,20 @@ const GeneralLeft = () => {
           </Link>
         </motion.div>
 
+        {/* Shortcut Item */}
+        <motion.div
+          className={sidebarItemClass("/user/dashboard/shortcuts")}
+          onClick={handleDropDownClose}
+          whileHover="hover"
+          whileTap="tap"
+          variants={itemVariants}
+        >
+          <FaInfoCircle className="w-4" style={{ color: "#1CCEFF" }} />
+          <Link to="/user/dashboard/shortcuts">
+            <p className="dark:text-white text-primary">Shortcuts</p>
+          </Link>
+        </motion.div>
+
         {/* About Item */}
         <motion.div
           className={sidebarItemClass("/dashboard/about")}

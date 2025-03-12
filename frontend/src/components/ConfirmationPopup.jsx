@@ -1,9 +1,21 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { motion, AnimatePresence } from "framer-motion";
-import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
+import {
+  ExclamationTriangleIcon,
+  XMarkIcon,
+} from "@heroicons/react/24/outline";
 
-const ConfirmationPopup = ({ isOpen, onConfirm, onCancel, message }) => {
+const ConfirmationPopup = ({
+  isOpen,
+  onConfirm,
+  onCancel,
+  message,
+  title = "Confirmation",
+}) => {
+  // Split message into lines if it contains newlines
+  const messageLines = message.split("\n");
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -11,28 +23,57 @@ const ConfirmationPopup = ({ isOpen, onConfirm, onCancel, message }) => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
+          transition={{ duration: 0.2 }}
+          className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-60 z-50 backdrop-blur-sm p-4"
         >
           <motion.div
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.9, opacity: 0 }}
-            className="bg-white dark:bg-gray-800 text-gray-800 dark:text-white p-8 mx-5 max-w-[500px] w-full rounded-xl shadow-2xl"
+            initial={{ y: 20, scale: 0.95, opacity: 0 }}
+            animate={{ y: 0, scale: 1, opacity: 1 }}
+            exit={{ y: 20, scale: 0.95, opacity: 0 }}
+            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+            className="bg-white dark:bg-gray-800 text-gray-800 dark:text-white p-6 mx-auto max-w-md w-full rounded-xl shadow-xl border border-gray-200 dark:border-gray-700 relative"
           >
-            <div className="flex items-center justify-center mb-6">
-              <ExclamationTriangleIcon className="h-12 w-12 text-yellow-500 mr-4" />
-              <h2 className="text-2xl font-bold">Confirmation</h2>
+            {/* Close button */}
+            {/* <button
+              className="absolute top-3 right-3 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 rounded-full"
+              onClick={onCancel}
+              aria-label="Cancel"
+            >
+              <XMarkIcon className="h-6 w-6" />
+            </button> */}
+
+            {/* Header */}
+            <div className="flex items-center space-x-4 mb-4">
+              <div className="bg-yellow-100 dark:bg-yellow-900/30 p-2 rounded-full">
+                <ExclamationTriangleIcon className="h-8 w-8 text-yellow-500 dark:text-yellow-400" />
+              </div>
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+                {title}
+              </h2>
             </div>
-            <p className="text-lg mb-8 text-center">{message}</p>
-            <div className="flex justify-end gap-4">
+
+            {/* Divider */}
+            <div className="h-px bg-gradient-to-r from-transparent via-yellow-200 dark:via-yellow-800 to-transparent my-4" />
+
+            {/* Message */}
+            <div className="my-4 text-gray-700 dark:text-gray-300">
+              {messageLines.map((line, index) => (
+                <p key={index} className="mb-2">
+                  {line}
+                </p>
+              ))}
+            </div>
+
+            {/* Action buttons */}
+            <div className="mt-6 flex justify-end space-x-3">
               <button
-                className="bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-white font-semibold py-3 px-6 rounded-lg transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-gray-400"
+                className="bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-white font-medium py-2 px-4 rounded-lg transition duration-200 text-sm focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-50"
                 onClick={onCancel}
               >
                 Cancel
               </button>
               <button
-                className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-6 rounded-lg transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 transform hover:scale-105"
+                className="bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded-lg transition duration-200 text-sm shadow-sm hover:shadow focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
                 onClick={onConfirm}
               >
                 Confirm
@@ -50,6 +91,7 @@ ConfirmationPopup.propTypes = {
   onConfirm: PropTypes.func.isRequired,
   onCancel: PropTypes.func.isRequired,
   message: PropTypes.string.isRequired,
+  title: PropTypes.string,
 };
 
 export default ConfirmationPopup;

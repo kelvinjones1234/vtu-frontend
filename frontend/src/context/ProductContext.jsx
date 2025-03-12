@@ -36,40 +36,12 @@ export const ProductProvider = ({ children }) => {
   const { api } = useGeneral();
   const { user } = useAuth();
 
-  const [dataFormData, setDataFormData] = useState({
-    selectedNetwork: "",
-    selectedPlanType: "",
-    selectedDataPlan: "",
-    phone: "",
-    pin: "",
-  });
-
-  const [airtimeFormData, setAirtimeFormData] = useState({
-    selectedNetwork: "",
-    selectedAirtimeType: "",
-    phone: "",
-    pin: "",
-    amount: "",
-    networkId: "",
-  });
-
-  const [electricityFormData, setElectricityFormData] = useState({
-    meterNumber: "",
-    pin: "",
-    amount: "",
-    selectedDisco: "",
-    charges: "50",
-    selectedMeterType: "",
-    selectedDiscoId: "", // Add selectedDiscoId to the formData state
-  });
-
-  const [cableFormData, setCableFormData] = useState({
-    selectedCableCategory: "",
-    selectedCablePlan: "",
-    uicNumber: "",
-    pin: "",
-    price: "",
-    planName: "",
+  const [popupState, setPopupState] = useState({
+    isConfirmOpen: false,
+    isErrorOpen: false,
+    isSuccessOpen: false,
+    successMessage: "",
+    errorPopupMessage: "",
   });
 
   const handleSave = async (e, formData, validInputs) => {
@@ -80,7 +52,6 @@ export const ProductProvider = ({ children }) => {
         shortcut_name: formData.title, // Extract title dynamically
         shortcut_payload: formData, // Send the dynamic form data
       };
-      console.log(cleanedFormData);
 
       try {
         const response = await api.post("shortcuts/", cleanedFormData, {
@@ -91,7 +62,12 @@ export const ProductProvider = ({ children }) => {
         });
 
         console.log("Response Data:", response.data);
-        alert("Shortcut saved successfully!");
+        // alert("Shortcut saved successfully!");
+        setPopupState((prev) => ({
+          ...prev,
+          successMessage: "Shortcut saved successfully!",
+          isSuccessOpen: true,
+        }));
       } catch (error) {
         console.error(
           "Error saving shortcut:",
@@ -278,30 +254,34 @@ export const ProductProvider = ({ children }) => {
       fetchCombinedData,
       fetchNotifications,
       handleMarkAllAsRead,
-      setDataFormData,
+      // setDataFormData,
       handleSave,
-      setAirtimeFormData,
-      setElectricityFormData,
-      setCableFormData,
-      dataFormData,
-      airtimeFormData,
-      electricityFormData,
-      cableFormData,
+      // setAirtimeFormData,
+      // setElectricityFormData,
+      // setCableFormData,
+      // dataFormData,
+      // airtimeFormData,
+      // electricityFormData,
+      // cableFormData,
+      popupState,
+      setPopupState,
     }),
     [
       state,
       fetchCombinedData,
       fetchNotifications,
       handleMarkAllAsRead,
-      setDataFormData,
+      // setDataFormData,
       handleSave,
-      setAirtimeFormData,
-      setElectricityFormData,
-      setCableFormData,
-      dataFormData,
-      airtimeFormData,
-      electricityFormData,
-      cableFormData,
+      // setAirtimeFormData,
+      // setElectricityFormData,
+      // setCableFormData,
+      // dataFormData,
+      // airtimeFormData,
+      // electricityFormData,
+      // cableFormData,
+      popupState,
+      setPopupState,
     ]
   );
 
