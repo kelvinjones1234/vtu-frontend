@@ -44,16 +44,17 @@ export const ProductProvider = ({ children }) => {
     errorPopupMessage: "",
   });
 
-  const handleSave = async (e, formData, validInputs) => {
+  const handleSave = async (e, formData, validInputs, setLoading) => {
     e.preventDefault();
+    setLoading(true);
 
-    if (validInputs()) {
-      const cleanedFormData = {
-        shortcut_name: formData.title, // Extract title dynamically
-        shortcut_payload: formData, // Send the dynamic form data
-      };
+    try {
+      if (validInputs()) {
+        const cleanedFormData = {
+          shortcut_name: formData.title, // Extract title dynamically
+          shortcut_payload: formData, // Send the dynamic form data
+        };
 
-      try {
         const response = await api.post("shortcuts/", cleanedFormData, {
           headers: {
             "Content-Type": "application/json",
@@ -62,19 +63,20 @@ export const ProductProvider = ({ children }) => {
         });
 
         console.log("Response Data:", response.data);
-        // alert("Shortcut saved successfully!");
         setPopupState((prev) => ({
           ...prev,
           successMessage: "Shortcut saved successfully!",
           isSuccessOpen: true,
         }));
-      } catch (error) {
-        console.error(
-          "Error saving shortcut:",
-          error.response ? error.response.data : error.message
-        );
-        alert("Failed to save shortcut. Please try again.");
       }
+    } catch (error) {
+      console.error(
+        "Error saving shortcut:",
+        error.response ? error.response.data : error.message
+      );
+      alert("Failed to save shortcut. Please try again.");
+    } finally {
+      setLoading(false); // This ensures loading state is reset regardless of success or failure
     }
   };
 

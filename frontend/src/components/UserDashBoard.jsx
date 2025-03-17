@@ -110,8 +110,8 @@ const UserDashBoard = () => {
         {/* Actions Card */}
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-3 xs:p-6 sm:p-9 text-primary dark:text-white">
           <p className="mb-[1.5rem]">
-            Create shortcuts for frequent activities or transfer atom credit to
-            other users with their phone number.
+            Create shortcuts for frequent activities or transfer credits to
+            other users with their username.
           </p>
           <div className="flex justify-between">
             <Link to={"/user/dashboard/service-shortcut"}>
@@ -163,4 +163,3 @@ const UserDashBoard = () => {
 };
 
 export default UserDashBoard;
- 

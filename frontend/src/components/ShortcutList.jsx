@@ -10,7 +10,6 @@ import { useGeneral } from "../context/GeneralContext";
 const ShortcutList = () => {
   const { walletData, loading, error } = useWallet();
   const [isBalanceHidden, setIsBalanceHidden] = useState(true);
-  const [activeService, setActiveService] = useState("data");
   const [currentPage, setCurrentPage] = useState(1);
   const [shortcutsPerPage] = useState(5);
   const [searchTerm, setSearchTerm] = useState("");

@@ -267,6 +267,7 @@ import {
   FaCog,
   FaHistory,
   FaInfoCircle,
+  FaSave,
   FaSignOutAlt,
   FaChevronRight,
   FaChevronDown,
@@ -470,7 +471,7 @@ const GeneralSidebar = () => {
                 onClick={handleMenuItemClick}
               >
                 <MenuItem
-                  icon={FaInfoCircle}
+                  icon={FaSave}
                   label="Shortcuts"
                   isActive={activePath === "/user/dashboard/shortcuts"}
                 />

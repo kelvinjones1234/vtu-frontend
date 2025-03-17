@@ -10,6 +10,7 @@ import {
   FaInfoCircle,
   FaChevronRight,
   FaChevronDown,
+  FaSave,
 } from "react-icons/fa";
 
 import { useAuth } from "../context/AuthenticationContext";
@@ -148,7 +149,7 @@ const GeneralLeft = () => {
               initial="hidden"
               animate="visible"
               exit="hidden"
-              variants={dropdownVariants}
+              // variants={dropdownVariants}
               transition={{ duration: 0.2 }}
             >
               <ul className="sidebar-auth-dropdown text-primary dark:text-white">
@@ -202,7 +203,7 @@ const GeneralLeft = () => {
           whileTap="tap"
           variants={itemVariants}
         >
-          <FaInfoCircle className="w-4" style={{ color: "#1CCEFF" }} />
+          <FaSave className="w-4" style={{ color: "#1CCEFF" }} />
           <Link to="/user/dashboard/shortcuts">
             <p className="dark:text-white text-primary">Shortcuts</p>
           </Link>

@@ -23,7 +23,11 @@ const inputStyle =
 const errorInputStyle = "border-red-500 dark:border-red-700";
 
 // Main Component
-const ElectricityBill = ({ showSidebars = true, showStyle = true }) => {
+const ElectricityBill = ({
+  showSidebars = true,
+  showStyle = true,
+  resetForm,
+}) => {
   const { handleSave } = useProduct();
   const { user } = useAuth();
   const { api } = useGeneral();
@@ -39,6 +43,19 @@ const ElectricityBill = ({ showSidebars = true, showStyle = true }) => {
     selectedDiscoId: "",
     title: "",
   });
+
+  useEffect(() => {
+    setElectricityFormData({
+      meterNumber: "",
+      pin: "",
+      amount: "",
+      selectedDisco: "",
+      charges: "50",
+      selectedMeterType: "",
+      selectedDiscoId: "",
+      title: "",
+    });
+  }, [resetForm]);
 
   const [errors, setErrors] = useState({});
   const [discos, setDiscos] = useState([]);
@@ -104,7 +121,7 @@ const ElectricityBill = ({ showSidebars = true, showStyle = true }) => {
           isErrorOpen: true,
         }));
       });
-  }, [api]);
+  }, [api, electricityFormData.selectedDisco]);
 
   // Get unique Disco names
   const uniqueDiscos = useMemo(() => {
@@ -145,6 +162,14 @@ const ElectricityBill = ({ showSidebars = true, showStyle = true }) => {
     return Object.keys(newErrors).length === 0;
   }, [electricityFormData, showStyle, user]);
 
+  const generateUniqueId = (length = 16) => {
+    const array = new Uint8Array(length / 2);
+    window.crypto.getRandomValues(array);
+    return Array.from(array, (byte) => byte.toString(16).padStart(2, "0")).join(
+      ""
+    );
+  };
+
   // Transaction Form Data
   const electricityTransactionFormData = useMemo(
     () => ({
@@ -159,6 +184,8 @@ const ElectricityBill = ({ showSidebars = true, showStyle = true }) => {
       userId: user?.id || "",
       url: electricityFormData?.api?.api_url || "",
       api_name: electricityFormData?.api?.api_name || "",
+      productType: "electricity",
+      requestId: `Electricity_${generateUniqueId()}`,
     }),
     [electricityFormData, user]
   );
@@ -168,6 +195,7 @@ const ElectricityBill = ({ showSidebars = true, showStyle = true }) => {
     validInputs,
     setPopupState,
     productType: "electricity",
+    generateUniqueId,
     formData: electricityTransactionFormData,
     bypassMeterNumber,
   });
@@ -311,30 +339,37 @@ const ElectricityBill = ({ showSidebars = true, showStyle = true }) => {
               />
             )}
 
-            <div className="flex flex-wrap w-full text-white justify-between text-[1rem] py-5">
-              <p className="dark:text-white text-primary opacity-80 font-semibold">
-                Bypass Meter Number
-              </p>
-              <div
-                className="flex items-center mr-3 cursor-pointer"
-                onClick={handleBypass}
-              >
+            {showStyle ? (
+              <div className="flex flex-wrap w-full text-white justify-between text-[1rem] py-5">
+                <p className="dark:text-white text-primary opacity-80 font-semibold">
+                  Bypass Meter Number
+                </p>
                 <div
-                  className={`h-5 w-10 rounded-full flex items-center relative transition-colors duration-300 ease-in-out ${
-                    bypassMeterNumber ? "bg-[#1CCEFF]" : "bg-gray-600"
-                  }`}
+                  className="flex items-center mr-3 cursor-pointer"
+                  onClick={handleBypass}
                 >
                   <div
-                    className={`h-6 w-6 bg-white border rounded-full absolute transform transition-transform duration-300 ease-in-out ${
-                      bypassMeterNumber
-                        ? "translate-x-5"
-                        : "translate-x-[-0.1rem]"
+                    className={`h-5 w-10 rounded-full flex items-center relative transition-colors duration-300 ease-in-out ${
+                      bypassMeterNumber ? "bg-[#1CCEFF]" : "bg-gray-600"
                     }`}
-                  ></div>
+                  >
+                    <div
+                      className={`h-6 w-6 bg-white border rounded-full absolute transform transition-transform duration-300 ease-in-out ${
+                        bypassMeterNumber
+                          ? "translate-x-5"
+                          : "translate-x-[-0.1rem]"
+                      }`}
+                    ></div>
+                  </div>
                 </div>
               </div>
-            </div>
-
+            ) : (
+              <p className="text-primary dark:text-white text-[.7rem] font-bold">
+                {" "}
+                NB: Create shortcuts only for validated metre numbers
+                <br /> Metre number validation is false by default
+              </p>
+            )}
             <SubmitButton
               label={bypassMeterNumber ? "Purchase" : "Verify Meter Number"}
             />

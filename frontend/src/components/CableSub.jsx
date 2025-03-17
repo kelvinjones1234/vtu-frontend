@@ -120,13 +120,13 @@
 //     return Object.keys(newErrors).length === 0;
 //   }, [cableFormData]);
 
-//   const generateUniqueId = (length = 16) => {
-//     const array = new Uint8Array(length / 2);
-//     window.crypto.getRandomValues(array);
-//     return Array.from(array, (byte) => byte.toString(16).padStart(2, "0")).join(
-//       ""
-//     );
-//   };
+// const generateUniqueId = (length = 16) => {
+//   const array = new Uint8Array(length / 2);
+//   window.crypto.getRandomValues(array);
+//   return Array.from(array, (byte) => byte.toString(16).padStart(2, "0")).join(
+//     ""
+//   );
+// };
 
 //   const transactionFormData = useMemo(
 //     () => ({
@@ -387,7 +387,7 @@ const inputStyle =
 const errorInputStyle = "border-red-500 dark:border-red-700";
 
 // Main Component
-const CableSub = ({ showSidebars = true, showStyle = true }) => {
+const CableSub = ({ showSidebars = true, showStyle = true, resetForm }) => {
   const { cableCategories, handleSave } = useProduct();
   const { user } = useAuth();
   const { api } = useGeneral();
@@ -403,6 +403,21 @@ const CableSub = ({ showSidebars = true, showStyle = true }) => {
     api: "",
     title: "",
   });
+
+
+
+  useEffect(() => {
+    setCableFormData({
+      selectedCableCategory: "",
+      selectedCablePlan: "",
+      uicNumber: "",
+      pin: "",
+      price: "",
+      planName: "",
+      api: "",
+      title: "",
+    });
+  }, [resetForm]);
 
   const [loading, setLoading] = useState(false);
   const [bypassUicNumber, setBypassUicNumber] = useState(false);
@@ -514,15 +529,25 @@ const CableSub = ({ showSidebars = true, showStyle = true }) => {
       price: cableFormData.price,
       url: cableFormData.api?.api?.api_url || "",
       api_name: cableFormData.api?.api?.api_name || "",
+      productType: "cable",
     }),
     [cableFormData, selectedCableId]
   );
+
+  const generateUniqueId = (length = 16) => {
+    const array = new Uint8Array(length / 2);
+    window.crypto.getRandomValues(array);
+    return Array.from(array, (byte) => byte.toString(16).padStart(2, "0")).join(
+      ""
+    );
+  };
 
   // Transaction Submission
   const { handleSubmit, handleConfirm } = useTransactionSubmit({
     validInputs,
     setPopupState,
     setLoading,
+    generateUniqueId,
     productType: "cable",
     formData: transactionFormData,
     bypassUicNumber,
@@ -649,29 +674,37 @@ const CableSub = ({ showSidebars = true, showStyle = true }) => {
               />
             )}
 
-            <div className="flex flex-wrap w-full text-white justify-between text-[1rem] py-5">
-              <p className="dark:text-white text-primary opacity-80 font-semibold">
-                Bypass IUC Number
-              </p>
-              <div
-                className="flex items-center mr-3 cursor-pointer"
-                onClick={handleBypass}
-              >
+            {showStyle ? (
+              <div className="flex flex-wrap w-full text-white justify-between text-[1rem] py-5">
+                <p className="dark:text-white text-primary opacity-80 font-semibold">
+                  Bypass IUC Number
+                </p>
                 <div
-                  className={`h-5 w-10 rounded-full flex items-center relative transition-colors duration-300 ease-in-out ${
-                    bypassUicNumber ? "bg-[#1CCEFF]" : "bg-gray-600"
-                  }`}
+                  className="flex items-center mr-3 cursor-pointer"
+                  onClick={handleBypass}
                 >
                   <div
-                    className={`h-6 w-6 bg-white border rounded-full absolute transform transition-transform duration-300 ease-in-out ${
-                      bypassUicNumber
-                        ? "translate-x-5"
-                        : "translate-x-[-0.1rem]"
+                    className={`h-5 w-10 rounded-full flex items-center relative transition-colors duration-300 ease-in-out ${
+                      bypassUicNumber ? "bg-[#1CCEFF]" : "bg-gray-600"
                     }`}
-                  ></div>
+                  >
+                    <div
+                      className={`h-6 w-6 bg-white border rounded-full absolute transform transition-transform duration-300 ease-in-out ${
+                        bypassUicNumber
+                          ? "translate-x-5"
+                          : "translate-x-[-0.1rem]"
+                      }`}
+                    ></div>
+                  </div>
                 </div>
               </div>
-            </div>
+            ) : (
+              <p className="text-primary dark:text-white text-[.7rem] font-bold">
+                {" "}
+                NB: Create shortcuts only for validated IUC numbers
+                <br /> IUC number validation is false by default
+              </p>
+            )}
 
             <SubmitButton
               label={

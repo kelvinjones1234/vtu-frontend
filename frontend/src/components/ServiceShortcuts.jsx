@@ -17,6 +17,13 @@ const ServiceShortcuts = () => {
   const [isBalanceHidden, setIsBalanceHidden] = useState(true);
   const [activeService, setActiveService] = useState("data");
 
+  const [resetForm, setResetForm] = useState(false);
+
+  const handleSuccessClose = useCallback(() => {
+    setPopupState((prev) => ({ ...prev, isSuccessOpen: false }));
+    setResetForm((prev) => !prev); // Toggle resetForm state to trigger reset
+  }, []);
+
   const { popupState, setPopupState } = useProduct();
 
   const formattedBalance = useMemo(
@@ -107,10 +114,10 @@ const ServiceShortcuts = () => {
     () => setPopupState((prev) => ({ ...prev, isErrorOpen: false })),
     []
   );
-  const handleSuccessClose = useCallback(
-    () => setPopupState((prev) => ({ ...prev, isSuccessOpen: false })),
-    []
-  );
+  // const handleSuccessClose = useCallback(
+  //   () => setPopupState((prev) => ({ ...prev, isSuccessOpen: false })),
+  //   []
+  // );
 
   return (
     <div className="pt-[15vh] sm:bg-cover px-4 justify-center ss:px-[5rem] sm:px-[1rem] sm:flex gap-5 md:gap-12 lg:mx-[5rem]">
@@ -175,19 +182,19 @@ const ServiceShortcuts = () => {
             {/* Form Container */}
             <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 overflow-hidden">
               {activeService === "data" && (
-                <Data showSidebars={false} showStyle={false} />
+                <Data showSidebars={false} showStyle={false} resetForm={resetForm}/>
               )}
               {/* Airtime Topup Form */}
               {activeService === "airtime" && (
-                <Airtime showSidebars={false} showStyle={false} />
+                <Airtime showSidebars={false} showStyle={false} resetForm={resetForm}/>
               )}
               {/* Electricity Bill Form */}
               {activeService === "electricity" && (
-                <ElectricityBill showSidebars={false} showStyle={false} />
+                <ElectricityBill showSidebars={false} showStyle={false} resetForm={resetForm}/>
               )}
               {/* Cable TV Form */}
               {activeService === "cable" && (
-                <CableSub showSidebars={false} showStyle={false} />
+                <CableSub showSidebars={false} showStyle={false} resetForm={resetForm}/>
               )}
             </div>
           </div>

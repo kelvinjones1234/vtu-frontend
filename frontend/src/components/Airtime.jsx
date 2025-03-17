@@ -362,8 +362,6 @@
 
 // export default Airtime;
 
-
-
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useProduct } from "../context/ProductContext";
 import { useAuth } from "../context/AuthenticationContext";
@@ -380,7 +378,7 @@ import FloatingLabelInput from "./FloatingLabelInput";
 import FloatingLabelSelect from "./FloatingLabelSelect";
 
 // Main Component
-const Airtime = ({ showSidebars = true, showStyle = true }) => {
+const Airtime = ({ showSidebars = true, showStyle = true, resetForm }) => {
   const { airtimeNetworks, handleSave } = useProduct();
   const { user } = useAuth();
   const { api, detectNetwork } = useGeneral();
@@ -396,6 +394,19 @@ const Airtime = ({ showSidebars = true, showStyle = true }) => {
     api: "",
     title: "",
   });
+
+  useEffect(() => {
+    setAirtimeFormData({
+      selectedNetwork: "",
+      selectedAirtimeType: "",
+      phone: "",
+      pin: "",
+      amount: "",
+      networkId: "",
+      api: "",
+      title: "",
+    });
+  }, [resetForm]);
 
   const [loading, setLoading] = useState(false);
   const [airtimeTypes, setAirtimeTypes] = useState([]);
@@ -415,7 +426,7 @@ const Airtime = ({ showSidebars = true, showStyle = true }) => {
   const handleInputChange = useCallback(
     (e) => {
       const { name, value } = e.target;
-      
+
       setAirtimeFormData((prev) => {
         const updatedFormData = { ...prev, [name]: value };
 
@@ -448,12 +459,15 @@ const Airtime = ({ showSidebars = true, showStyle = true }) => {
     [airtimeNetworks, detectNetwork]
   );
 
-  const handleBypass = useCallback(() => setBypassPhoneNumber(prev => !prev), []);
+  const handleBypass = useCallback(
+    () => setBypassPhoneNumber((prev) => !prev),
+    []
+  );
 
   // Fetch Airtime Types when network changes
   useEffect(() => {
     if (!airtimeFormData.selectedNetwork) return;
-    
+
     api
       .get(`airtime/airtime-type/${airtimeFormData.selectedNetwork}/`)
       .then((response) => {
@@ -480,12 +494,15 @@ const Airtime = ({ showSidebars = true, showStyle = true }) => {
   // Form Validation
   const validInputs = useCallback(() => {
     const newErrors = {};
-    
+
     // Required field validations
-    if (!airtimeFormData.selectedNetwork) newErrors.selectedNetwork = "Please select a network";
-    if (!showStyle && !airtimeFormData.title) newErrors.title = "Shortcut must be saved with a title";
-    if (!airtimeFormData.selectedAirtimeType) newErrors.selectedAirtimeType = "Please select an airtime type";
-    
+    if (!airtimeFormData.selectedNetwork)
+      newErrors.selectedNetwork = "Please select a network";
+    if (!showStyle && !airtimeFormData.title)
+      newErrors.title = "Shortcut must be saved with a title";
+    if (!airtimeFormData.selectedAirtimeType)
+      newErrors.selectedAirtimeType = "Please select an airtime type";
+
     // Phone validation
     if (!airtimeFormData.phone) {
       newErrors.phone = "A phone number is required";
@@ -494,7 +511,7 @@ const Airtime = ({ showSidebars = true, showStyle = true }) => {
     } else if (airtimeFormData.phone.length !== 11) {
       newErrors.phone = "Enter a valid 11-digit phone number";
     }
-    
+
     // Amount and PIN validations
     if (!airtimeFormData.amount) newErrors.amount = "Please enter an amount";
     if (!airtimeFormData.pin) {
@@ -506,6 +523,14 @@ const Airtime = ({ showSidebars = true, showStyle = true }) => {
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   }, [airtimeFormData, showStyle, user]);
+
+  const generateUniqueId = (length = 16) => {
+    const array = new Uint8Array(length / 2);
+    window.crypto.getRandomValues(array);
+    return Array.from(array, (byte) => byte.toString(16).padStart(2, "0")).join(
+      ""
+    );
+  };
 
   // Transaction Form Data
   const transactionFormData = useMemo(
@@ -519,6 +544,8 @@ const Airtime = ({ showSidebars = true, showStyle = true }) => {
       api_name: airtimeFormData.api?.api_name || "",
       url: airtimeFormData.api?.api_url || "",
       title: airtimeFormData.title,
+      productType: "airtime",
+      requestId: `Airtime_${generateUniqueId()}`,
     }),
     [airtimeFormData]
   );
@@ -528,6 +555,7 @@ const Airtime = ({ showSidebars = true, showStyle = true }) => {
     validInputs,
     setPopupState,
     setLoading,
+    generateUniqueId,
     productType: "airtime",
     formData: transactionFormData,
     bypassPhoneNumber,
@@ -535,27 +563,36 @@ const Airtime = ({ showSidebars = true, showStyle = true }) => {
 
   // Popup Handlers
   const closePopups = useCallback((type) => {
-    setPopupState(prev => ({
+    setPopupState((prev) => ({
       ...prev,
-      [type]: false
+      [type]: false,
     }));
   }, []);
 
   // Memoized Sidebar Components
-  const memoizedSidebars = useMemo(() => ({
-    left: <GeneralLeft />,
-    right: <GeneralRight />
-  }), []);
+  const memoizedSidebars = useMemo(
+    () => ({
+      left: <GeneralLeft />,
+      right: <GeneralRight />,
+    }),
+    []
+  );
 
   // Form submission handler
-  const onFormSubmit = showStyle 
-    ? handleSubmit 
-    : (e) => handleSave(e, transactionFormData, validInputs);
+  const onFormSubmit = showStyle
+    ? handleSubmit
+    : (e) => handleSave(e, transactionFormData, validInputs, setLoading);
 
   return (
-    <div className={`${showStyle ? "pt-[15vh] sm:bg-cover bg-center px-4 justify-center ss:px-[5rem] sm:px-[1rem] sm:flex gap-5 md:gap-12 lg:mx-[5rem]" : ""}`}>
+    <div
+      className={`${
+        showStyle
+          ? "pt-[15vh] sm:bg-cover bg-center px-4 justify-center ss:px-[5rem] sm:px-[1rem] sm:flex gap-5 md:gap-12 lg:mx-[5rem]"
+          : ""
+      }`}
+    >
       {showSidebars && memoizedSidebars.left}
-      
+
       <div className="mx-auto w-full max-w-[800px]">
         {showStyle && (
           <div>
@@ -570,7 +607,13 @@ const Airtime = ({ showSidebars = true, showStyle = true }) => {
           </div>
         )}
 
-        <div className={showStyle ? "bg-white dark:bg-gray-800 rounded-[1.5rem] shadow-lg p-6" : ""}>
+        <div
+          className={
+            showStyle
+              ? "bg-white dark:bg-gray-800 rounded-[1.5rem] shadow-lg p-6"
+              : ""
+          }
+        >
           <form onSubmit={onFormSubmit}>
             {/* Shortcut Name Input (only when not showing style) */}
             {!showStyle && (
@@ -591,7 +634,7 @@ const Airtime = ({ showSidebars = true, showStyle = true }) => {
               value={airtimeFormData.selectedNetwork}
               onChange={handleInputChange}
               error={errors.selectedNetwork}
-              options={airtimeNetworks.map(item => ({
+              options={airtimeNetworks.map((item) => ({
                 value: item.network,
                 label: item.network,
               }))}
@@ -605,7 +648,7 @@ const Airtime = ({ showSidebars = true, showStyle = true }) => {
               onChange={handleInputChange}
               error={errors.selectedAirtimeType}
               disabled={!airtimeFormData.selectedNetwork}
-              options={airtimeTypes.map(item => ({
+              options={airtimeTypes.map((item) => ({
                 value: item.airtime_type,
                 label: item.airtime_type,
               }))}
@@ -621,7 +664,7 @@ const Airtime = ({ showSidebars = true, showStyle = true }) => {
               onChange={handleInputChange}
               error={errors.phone}
             />
-            
+
             {/* Network Message */}
             {networkMessage && (
               <p
@@ -654,54 +697,70 @@ const Airtime = ({ showSidebars = true, showStyle = true }) => {
             />
 
             {/* Bypass Phone Number Toggle */}
-            <div className="flex flex-wrap w-full text-white justify-between text-[1rem] py-3">
-              <p
-                className="dark:text-white text-primary opacity-80 font-semibold cursor-pointer"
-                onClick={handleBypass}
-              >
-                Bypass Phone Number
-              </p>
-              <div className="flex items-center mr-3 cursor-pointer" onClick={handleBypass}>
+            {showStyle ? (
+              <div className="flex flex-wrap w-full text-white justify-between text-[1rem] py-3">
+                <p
+                  className="dark:text-white text-primary opacity-80 font-semibold cursor-pointer"
+                  onClick={handleBypass}
+                >
+                  Bypass Phone Number
+                </p>
                 <div
-                  className={`h-5 w-10 rounded-full flex items-center relative transition-colors duration-300 ease-in-out ${
-                    bypassPhoneNumber ? "bg-[#1CCEFF]" : "bg-gray-600"
-                  }`}
+                  className="flex items-center mr-3 cursor-pointer"
+                  onClick={handleBypass}
                 >
                   <div
-                    className={`h-6 w-6 bg-white border rounded-full absolute transform transition-transform duration-300 ease-in-out ${
-                      bypassPhoneNumber ? "translate-x-5" : "translate-x-[-0.1rem]"
+                    className={`h-5 w-10 rounded-full flex items-center relative transition-colors duration-300 ease-in-out ${
+                      bypassPhoneNumber ? "bg-[#1CCEFF]" : "bg-gray-600"
                     }`}
-                  ></div>
+                  >
+                    <div
+                      className={`h-6 w-6 bg-white border rounded-full absolute transform transition-transform duration-300 ease-in-out ${
+                        bypassPhoneNumber
+                          ? "translate-x-5"
+                          : "translate-x-[-0.1rem]"
+                      }`}
+                    ></div>
+                  </div>
                 </div>
               </div>
-            </div>
+            ) : (
+              <p className="text-primary dark:text-white text-[.7rem] font-bold">
+                {" "}
+                NB: Create shortcuts only for validated phone numbers
+                <br /> Phone number validation is false by default
+              </p>
+            )}
 
             {/* Submit Button */}
-            <SubmitButton label={showStyle ? "Purchase" : "Save"} loading={loading} />
+            <SubmitButton
+              label={showStyle ? "Purchase" : "Save"}
+              loading={loading}
+            />
           </form>
         </div>
       </div>
-      
+
       {showSidebars && memoizedSidebars.right}
 
       {/* Popups */}
       <ConfirmationPopup
         isOpen={popupState.isConfirmOpen}
         onConfirm={handleConfirm}
-        onCancel={() => closePopups('isConfirmOpen')}
+        onCancel={() => closePopups("isConfirmOpen")}
         message={`Are you sure you want to proceed with transferring ₦${airtimeFormData.amount} airtime to ${airtimeFormData.phone}?`}
       />
 
       <ErrorPopup
         isOpen={popupState.isErrorOpen}
         message={popupState.errorPopupMessage}
-        onClose={() => closePopups('isErrorOpen')}
+        onClose={() => closePopups("isErrorOpen")}
       />
 
       <SuccessPopup
         isOpen={popupState.isSuccessOpen}
         message={popupState.successMessage}
-        onClose={() => closePopups('isSuccessOpen')}
+        onClose={() => closePopups("isSuccessOpen")}
       />
     </div>
   );

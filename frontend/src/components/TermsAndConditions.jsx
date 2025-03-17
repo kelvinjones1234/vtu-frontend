@@ -14,16 +14,6 @@ const TermsConditions = () => {
       <div className="pt-[15vh] sm:bg-cover px-4 justify-center ss:px-[5rem] sm:px-[1rem] sm:flex gap-5 md:gap-12 lg:mx-[5rem]">
         {user && <GeneralLeft />}
         <div className="mx-auto w-full max-w-[800px]">
-          {/* Mobile Header */}
-          {user && (
-            <div className="text-primary text-[1.5rem] font-bold dark:text-white pb-8 text-center xs:hidden">
-              Hi,{" "}
-              <span className="bg-gradient-to-r uppercase from-purple-400 via-sky-500 to-red-500 text-transparent bg-clip-text">
-                {user.username}
-              </span>
-            </div>
-          )}
-
           {/* Terms and Conditions Content */}
           <div className="mb-8">
             <h2 className="font-bold font-heading_two text-primary dark:text-white text-3xl mb-4">

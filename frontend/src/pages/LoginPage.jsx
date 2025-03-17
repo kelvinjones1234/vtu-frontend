@@ -6,8 +6,7 @@ import FloatingLabelInput from "../components/FloatingLabelInput";
 import { useAuth } from "../context/AuthenticationContext";
 
 const LoginPage = () => {
-  const { loginUser, userError, setUserError, setRememberMe, rememberMe } =
-    useAuth();
+  const { loginUser, userError, setUserError } = useAuth();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState({});
@@ -149,23 +148,13 @@ const LoginPage = () => {
                 </div>
               </div>
 
-              <div className="flex flex-wrap justify-between text-gray-300 py-5">
-                <label className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    className="h-5 w-5 custom-checkbox cursor-pointer"
-                    checked={rememberMe}
-                    onChange={(e) => setRememberMe(e.target.checked)}
-                  />
-                  <span className="text-primary dark:text-gray-100">
-                    Remember me
-                  </span>
-                </label>
+              <div className="text-primary dark:text-white py-5">
+                Forgot password?{" "}
                 <Link
                   to="/user/get-password-reset-link"
                   className="text-link hover:text-sky-400 font-semibold"
                 >
-                  Forgot password?
+                  Reset Password
                 </Link>
               </div>
 
