@@ -14,7 +14,7 @@ const PasswordResetPage = () => {
   const [message, setMessage] = useState({ type: "", content: "" });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [setLoading, loading] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const reset = async (e) => {
     e.preventDefault();

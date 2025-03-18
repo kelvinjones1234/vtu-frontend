@@ -1,7 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { Link } from "react-router-dom";
 import SubmitButton from "../components/SubmitButton";
-import axios from "axios";
 import { useGeneral } from "../context/GeneralContext";
 import LeftSide from "../components/LeftSide";
 import FloatingLabelInput from "../components/FloatingLabelInput";
@@ -10,12 +9,21 @@ const PasswordResetRequestPage = () => {
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
-  const [setLoading, loading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const { api } = useGeneral();
+
+  const [errors, setErrors] = useState({});
+
+  const validInputs = useCallback(() => {
+    const newErrors = {};
+    if (!email) newErrors.email = "Please enter a registered email";
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  }, [email]);
 
   const reset = (e) => {
     e.preventDefault();
-    if (email) {
+    if (validInputs()) {
       setLoading(true);
       setError("");
       setMessage("");
@@ -123,6 +131,7 @@ const PasswordResetRequestPage = () => {
                     type="email"
                     placeholder="Email"
                     value={email}
+                    error={errors.email}
                     onChange={(e) => setEmail(e.target.value)}
                     aria-label="Email"
                     className="w-full text-white py-3 px-4 bg-[#18202F] text-lg rounded-xl outline-none border border-gray-700 hover:border-gray-500 focus:border-link transition duration-300 ease-in-out"
