@@ -118,7 +118,9 @@ const RegistrationPage = () => {
 
       <header
         className={`fixed top-0 w-full px-4 py-[.6rem] md:px-24 flex justify-between items-center transition-colors duration-300 ${
-          isScrolled ? "bg-gray-900 bg-opacity-95 z-[100]" : "bg-transparent"
+          isScrolled
+            ? "dark:bg-gray-900 dark:bg-opacity-95 z-[1000] bg-opacity-95 bg-gray-50 shadow"
+            : "bg-transparent"
         }`}
       >
         <div className="flex items-center">
@@ -145,7 +147,7 @@ const RegistrationPage = () => {
           <LeftSide />
           <div className="sm:w-1/2 max-w-md mx-auto sm:mx-0">
             <div className="mb-4">
-              <h1 className="font-bold text-4xl dark:text-gray-300 font-heading_two mb-2 text-primary">
+              <h1 className="font-bold text-4xl dark:text-gray-300 text-sky-400 font-heading_two mb-2 text-primary">
                 Sign up with{" "}
                 <span className="bg-gradient-to-r from-purple-400 via-sky-500 to-red-500 text-transparent bg-clip-text">
                   MaduConnect
@@ -260,7 +262,7 @@ const RegistrationPage = () => {
               </div>
             </form>
 
-            <p className="relative text-center text-gray-300 py-6 sm:hidden">
+            <p className="relative text-center text-primary dark:text-gray-300 py-6 sm:hidden">
               Already have an account?{" "}
               <Link
                 to="/authentication/login"
