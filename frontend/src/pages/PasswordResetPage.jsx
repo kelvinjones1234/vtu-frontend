@@ -8,12 +8,13 @@ import { useGeneral } from "../context/GeneralContext";
 const PasswordResetPage = () => {
   const { uidb64, token } = useParams();
   const navigate = useNavigate();
-  const { setLoading } = useGeneral();
+  const { api } = useGeneral();
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [message, setMessage] = useState({ type: "", content: "" });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [setLoading, loading] = useState(false);
 
   const reset = async (e) => {
     e.preventDefault();
@@ -41,13 +42,10 @@ const PasswordResetPage = () => {
     setLoading(true);
 
     try {
-      const response = await axios.post(
-        `http://localhost:8000/api/reset-password/${uidb64}/${token}/`,
-        {
-          password: password,
-          password_confirm: confirmPassword,
-        }
-      );
+      const response = await api.post(`reset-password/${uidb64}/${token}/`, {
+        password: password,
+        password_confirm: confirmPassword,
+      });
 
       if (response.status === 200) {
         setMessage({
@@ -76,7 +74,7 @@ const PasswordResetPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-dark-custom-gradient font-body_two">
+    <div className="min-h-screen bg-white dark:bg-dark-custom-gradient font-body_two">
       <div className="authentication bg-bg_one bg-contain md:bg-cover bg-center min-h-screen bg-no-repeat">
         <nav className="flex justify-between px-4 lg:px-24 py-[.75rem]">
           <div className="flex items-center">
@@ -105,7 +103,7 @@ const PasswordResetPage = () => {
             <LeftSide />
             <div className="sm:w-1/2 max-w-md mx-auto sm:mx-0">
               <div className="mb-8">
-                <h1 className="font-bold font-heading_two text-4xl text-gray-300 mb-2">
+                <h1 className="font-bold font-heading_two text-4xl text-primary-sky-400 dark:text-gray-300 mb-2">
                   Reset Password
                 </h1>
                 <p className="text-gray-300 text-lg">
@@ -197,9 +195,9 @@ const PasswordResetPage = () => {
                 </div>
               </div>
 
-              <SubmitButton label="Reset Password" />
+              <SubmitButton label="Reset Password" loading={loading} />
 
-              <p className="text-center text-gray-300 mt-6 sm:hidden">
+              <p className="text-center text-primary dark:text-gray-300 mt-6 sm:hidden">
                 Don't have an account?{" "}
                 <Link
                   to="/authentication/register"

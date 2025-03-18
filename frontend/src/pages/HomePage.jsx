@@ -21,7 +21,7 @@ const HomePage = () => {
 
   return (
     <>
-      <div className="min-w-[273px] bg-dark-custom-gradient w-full z-[-2] absolute top-0 left-0 min-h-screen">
+      <div className="min-w-[273px] bg-white dark:bg-dark-custom-gradient w-full z-[-2] absolute top-0 left-0 min-h-screen">
         <HomePageNavbar />
         <HomeHero />
         <AfterHero />

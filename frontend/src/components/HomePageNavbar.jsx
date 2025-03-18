@@ -35,7 +35,9 @@ const HomePageNavbar = () => {
     <>
       <div
         className={`p-4 lg:px-0 flex justify-between py-[1rem] lg:px-[6rem] fixed top-0 w-full transition-colors duration-200 z-50 ${
-          isScrolled ? "bg-gray-900 bg-opacity-95" : "bg-transparent"
+          isScrolled
+            ? "dark:bg-gray-900 dark:bg-opacity-95 bg-opacity-95 bg-gray-50 shadow"
+            : "bg-transparent"
         }`}
       >
         <div className="flex items-center">

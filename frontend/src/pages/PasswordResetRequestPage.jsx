@@ -7,10 +7,11 @@ import LeftSide from "../components/LeftSide";
 import FloatingLabelInput from "../components/FloatingLabelInput";
 
 const PasswordResetRequestPage = () => {
-  const { setLoading } = useGeneral();
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+  const [setLoading, loading] = useState(false);
+  const { api } = useGeneral();
 
   const reset = (e) => {
     e.preventDefault();
@@ -19,8 +20,8 @@ const PasswordResetRequestPage = () => {
       setError("");
       setMessage("");
 
-      axios
-        .post("http://127.0.0.1:8000/api/password-reset/", { email })
+      api
+        .post("password-reset/", { email })
         .then((response) => {
           setLoading(false);
           setMessage("Password reset link has been sent to your email.");
@@ -37,7 +38,7 @@ const PasswordResetRequestPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-dark-custom-gradient font-body_two">
+    <div className="min-h-screen bg-white dark:bg-dark-custom-gradient font-body_two">
       <div className="authentication bg-bg_one bg-contain md:bg-cover bg-center min-h-screen bg-no-repeat">
         <nav className="flex justify-between px-4 lg:px-24 py-[.75rem]">
           <div className="flex items-center">
@@ -66,10 +67,10 @@ const PasswordResetRequestPage = () => {
             <LeftSide />
             <div className="sm:w-1/2 max-w-md mx-auto sm:mx-0">
               <div className="mb-8">
-                <h1 className="font-bold font-heading_two text-4xl text-gray-300 mb-2">
+                <h1 className="font-bold font-heading_two text-4xl text-sky-400 dark:text-gray-300 mb-2">
                   Request Password Reset
                 </h1>
-                <p className="text-gray-300 text-lg">
+                <p className="dark:text-gray-300 text-primary text-lg">
                   Enter your registered email to reset your password
                 </p>
               </div>
@@ -129,9 +130,9 @@ const PasswordResetRequestPage = () => {
                 </div>
               </div>
 
-              <SubmitButton label="Get Password Reset Link" />
+              <SubmitButton label="Get Password Reset Link" loading={loading} />
 
-              <p className="text-center text-gray-300 mt-6 sm:hidden">
+              <p className="text-center text-primary dark:text-gray-300 mt-6 sm:hidden">
                 Don't have an account?{" "}
                 <Link
                   to="/authentication/register"

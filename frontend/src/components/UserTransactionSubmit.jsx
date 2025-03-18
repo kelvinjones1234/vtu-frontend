@@ -134,7 +134,7 @@ export const useTransactionSubmit = ({
 
   const handleConfirm = useCallback(async () => {
     setPopupState((prev) => ({ ...prev, isConfirmOpen: false }));
-    setLoading(true);
+    setLoading(true); 
 
     try {
       const payload = createPayload();

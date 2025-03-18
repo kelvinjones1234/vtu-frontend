@@ -68,7 +68,7 @@ const GeneralNavbar = React.memo(() => {
     handleMobileMenuToggle,
   } = useGeneral();
   const { allRead, unreadCount } = useProduct();
-
+ 
   // Memoize navbar classes
   const navbarClasses = useMemo(
     () =>
