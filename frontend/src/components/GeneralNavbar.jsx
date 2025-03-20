@@ -14,7 +14,7 @@ import { FaBell } from "react-icons/fa";
 const NotificationIcon = React.memo(({ allRead, unreadCount }) => (
   <div className="notification text-[25px] mr-9 grid relative items-center hover:bg-gray-300 grid relative justify-center items-center cursor-pointer">
     <Link to={"/user/notifications"}>
-      <FaBell className="w-6 h-6 text-blue-600" />
+      <FaBell className="w-6 h-6 text-sky-600" />
     </Link>
     {!allRead && (
       <div className="flex items-center justify-center h-3 w-3 bg-red-600 absolute rounded-full left-3 bottom-6 text-white text-[10px]">
@@ -34,7 +34,7 @@ const ThemeToggle = React.memo(({ darkMode, handleThemeSettings }) => (
       <img
         src={darkMode ? dark : light}
         alt="Theme toggle"
-        className="w-5 h-5 text-blue-600"
+        className="w-5 h-5 text-sky-600"
       />
     </div>
   </div>
@@ -151,7 +151,7 @@ const GeneralNavbar = React.memo(() => {
             <div className="hamburger">
               <div
                 onClick={handleMobileMenuToggle}
-                className="text-[25px] text-blue-600"
+                className="text-[25px] text-sky-600"
               >
                 {mobileMenuToggle ? <RiCloseLargeLine /> : <RiMenu4Line />}
               </div>
