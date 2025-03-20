@@ -148,20 +148,24 @@
 
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import { Link } from "react-router-dom";
-import notification from "../assets/notification.svg";
+// import notification from "../assets/notification.svg";
 import GeneralSidebar from "./GeneralSidebar";
 import dark from "../assets/dark.svg";
 import light from "../assets/light.svg";
 import { useAuth } from "../context/AuthenticationContext";
 import { useGeneral } from "../context/GeneralContext";
 import { useProduct } from "../context/ProductContext";
-import { RiMenu4Line, RiCloseLargeLine } from "react-icons/ri";
+import {
+  RiMenu4Line,
+  RiCloseLargeLine,
+  RiNotification2Line,
+} from "react-icons/ri";
 
 // NotificationIcon as a separate memoized component
 const NotificationIcon = React.memo(({ allRead, unreadCount }) => (
-  <div className="notification h-10 w-10 mr-9 grid relative items-center rounded-full bg-gray-200 hover:bg-gray-300 dark:bg-white dark:bg-opacity-20 grid relative justify-center items-center dark:hover:bg-opacity-10 hover:transition hover:duration-300 ease-in-out cursor-pointer">
+  <div className="notification text-[25px] mr-9 grid relative items-center hover:bg-gray-300 grid relative justify-center items-center cursor-pointer">
     <Link to={"/user/notifications"}>
-      <img src={notification} alt="" className="w-6" />
+      <RiNotification2Line />
     </Link>
     {!allRead && (
       <div className="flex items-center justify-center h-3 w-3 bg-red-600 absolute rounded-full left-3 bottom-6 text-white text-[10px]">
@@ -289,7 +293,7 @@ const GeneralNavbar = React.memo(() => {
           />
         </div>
         <div className="right mt-1">
-          <div className="small-screen flex items-center sm:hidden relative">
+          <div className="small-screen flex items-center sm:hidden relative text-indigo-700 dark:text-indigo-400">
             <NotificationIcon allRead={allRead} unreadCount={unreadCount} />
             <div className="hamburger">
               <div

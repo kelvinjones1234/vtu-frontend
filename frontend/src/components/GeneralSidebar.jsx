@@ -3,7 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import {
   FaHome,
   FaExchangeAlt,
-  FaCog,
+  FaCog, 
   FaHistory,
   FaInfoCircle,
   FaSave,
