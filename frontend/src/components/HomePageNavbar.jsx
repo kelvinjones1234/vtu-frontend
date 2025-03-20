@@ -42,7 +42,7 @@ const HomePageNavbar = () => {
       >
         <div className="flex items-center">
           <Link to={"/"}>
-            <div className="logo font-heading_one text-transparent bg-clip-text pr-2 text-[.8rem] rounded-[.5rem] font-bold bg-gradient-to-r from-purple-400 via-sky-500 to-red-500 border-white">
+            <div className="logo font-heading_one text-transparent bg-clip-text pr-2 text-[.8rem] rounded-[.5rem] font-bold bg-gradient-to-r from-purple-400 via-blue-900 to-red-500 border-white">
               MaduConnect
             </div>
           </Link>
@@ -65,7 +65,7 @@ const HomePageNavbar = () => {
           </div>
           <div className="large-screen hidden sm:flex lg:pr-[6rem]">
             <div className="button">
-              <button className="bg-sky-500 rounded-2xl py-[.3rem] hover:bg-green-600 font-bold transition-all duration-500 ease-in-out text-white mx-4 px-6">
+              <button className="bg-blue-900 rounded-2xl py-[.3rem] hover:bg-green-600 font-bold transition-all duration-500 ease-in-out text-white mx-4 px-6">
                 <Link to={"/authentication/register"}>Get Started</Link>
               </button>
             </div>
@@ -90,7 +90,7 @@ const HomePageNavbar = () => {
           <div className="flex items-center mb-9">
             {/* <img src={logo} alt="" className="h-7 mb-1" /> */}
             <Link to={"/"}>
-              <div className="logo font-heading_one text-transparent bg-clip-text pr-2 text-[.9rem] rounded-[.5rem] font-bold bg-gradient-to-r from-purple-400 via-sky-500 to-red-500">
+              <div className="logo font-heading_one text-transparent bg-clip-text pr-2 text-[.9rem] rounded-[.5rem] font-bold bg-gradient-to-r from-purple-400 via-blue-900 to-red-500">
                 MaduConnect
               </div>
             </Link>
