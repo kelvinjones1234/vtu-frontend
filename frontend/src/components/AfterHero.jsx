@@ -3,9 +3,9 @@ import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import fast from "../assets/fast.svg";
 import secured from "../assets/secured.svg";
-import available from "../assets/available.svg";
+// import available from "../assets/available.svg";
 import easy from "../assets/easy.svg";
-import services from "../assets/services.svg";
+// import services from "../assets/services.svg";
 
 // Using React.memo to prevent unnecessary re-renders of FeatureCard
 const FeatureCard = React.memo(
@@ -52,13 +52,13 @@ const features = [
       "Your security is our top priority. We use cutting-edge encryption to protect your data and transactions.",
   },
   {
-    icon: available,
+    // icon: available,
     title: "24/7 Availability",
     description:
       "Need to top up at midnight? No problem. MaduPay is available round the clock, just like your need to stay connected.",
   },
   {
-    icon: services,
+    // icon: services,
     title: "Wide Range of Services",
     description:
       "From mobile airtime to digital subscriptions, MaduPay covers all your top-up needs in one place.",
