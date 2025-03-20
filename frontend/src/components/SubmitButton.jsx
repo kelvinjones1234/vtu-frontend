@@ -2,7 +2,7 @@ import React from "react";
 
 const SubmitButton = ({ label, loading, className = "", ...props }) => {
   const baseButtonStyles =
-    "text-[1rem] my-2 w-full outline-none text-white p-1 h-[3.2rem] bg-link text-black rounded-2xl bg-opacity-[90%] font-semibold hover:bg-sky-500 transition duration-400 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed";
+    "text-[1rem] my-2 w-full outline-none text-white p-1 h-[3.2rem] bg-blue-600 text-black rounded-2xl bg-opacity-[90%] font-semibold hover:bg-sky-500 transition duration-400 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed";
 
   const loadingContainerStyles = "grid justify-center";
   const spinnerStyles = "w-5 h-5 text-gray-200 animate-spin fill-white";

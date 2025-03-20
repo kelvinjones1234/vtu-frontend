@@ -82,7 +82,7 @@ const LoginPage = () => {
             <LeftSide />
             <div className="sm:w-1/2 max-w-md mx-auto sm:mx-0">
               <div className="mb-4">
-                <h1 className="font-bold font-heading_two text-4xl text-sky-400 dark:text-gray-300 mb-2">
+                <h1 className="font-bold font-heading_two text-4xl text-blue-600 dark:text-gray-300 mb-2">
                   Sign in to{" "}
                   <span className="bg-gradient-to-r from-purple-400 via-sky-500 to-red-500 text-transparent bg-clip-text">
                     MaduConnect
