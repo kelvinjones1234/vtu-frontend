@@ -115,7 +115,7 @@ const UserDashBoard = () => {
           </p>
           <div className="flex justify-between">
             <Link to={"/user/dashboard/service-shortcut"}>
-              <button className="bg-blue-500 text-[.8rem] hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-full transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
+              <button className="bg-sky-600 text-[.8rem] hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-full transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
                 Create Shortcut
               </button>
             </Link>

@@ -137,7 +137,7 @@ const AfterHero = () => {
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="transition text-gray-800 dark:text-black duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-lg bg-link rounded-2xl hover:bg-sky-500 py-[.46rem] transition duration-500 ease-in-out mx-4 px-6 font-medium"
+            className="transition text-gray-800 dark:text-black duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-lg bg-sky-600 rounded-2xl hover:bg-sky-500 py-[.46rem] transition duration-500 ease-in-out mx-4 px-6 font-medium"
           >
             Contact Us
           </motion.button>
