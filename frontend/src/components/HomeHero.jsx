@@ -20,7 +20,7 @@ const HomeHero = () => {
               transition={{ duration: 0.8 }}
             >
               <div className="font-bold font-heading_two">
-                <h1 className="text-[2.8rem] sm:text-5xl md:text-[4rem] xl:text-[5rem] lg:text-[4rem] font-extrabold text-sky-500 dark:text-white font-heading_two leading-tight">
+                <h1 className="text-[2.8rem] sm:text-5xl md:text-[4rem] xl:text-[5rem] lg:text-[4rem] font-extrabold text-sky-600 dark:text-white font-heading_two leading-tight">
                   Welcome to{" "}
                   <span className="bg-gradient-to-r from-purple-400 via-sky-500 to-red-500 text-transparent bg-clip-text">
                     MaduConnect
@@ -42,7 +42,7 @@ const HomeHero = () => {
                     to={`${user ? "/user/dashboard" : "/authentication/login"}`}
                   >
                     <motion.button
-                      className="transition duration-300 ease-in-out text-[.9rem] sm:text-[1.2rem] md:text-[1.5rem] transform hover:-translate-y-1 hover:shadow-lg border bg-white dark:bg-[#18202F] border-link rounded-2xl py-[.4rem] text-gray-800 dark:text-white mx-4 px-6"
+                      className="transition duration-300 ease-in-out text-[.9rem] sm:text-[1.2rem] md:text-[1.5rem] transform hover:-translate-y-1 hover:shadow-lg border bg-white dark:bg-[#18202F] border-sky-600 rounded-2xl py-[.4rem] text-gray-800 dark:text-white mx-4 px-6"
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                     >
@@ -57,7 +57,7 @@ const HomeHero = () => {
                     }`}
                   >
                     <motion.button
-                      className="bg-sky-500 py-[.4rem] mr-9 px-6 text-[.9rem] sm:text-[1.2rem] md:text-[1.5rem] bg-opacity-[90%] transition duration-300 ease-in-out transform hover:-translate-y-1 text-white rounded-2xl font-bold"
+                      className="bg-sky-600 py-[.4rem] mr-9 px-6 text-[.9rem] sm:text-[1.2rem] md:text-[1.5rem] bg-opacity-[90%] transition duration-300 ease-in-out transform hover:-translate-y-1 text-white rounded-2xl font-bold"
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                     >
