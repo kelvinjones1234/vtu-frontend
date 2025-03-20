@@ -21,7 +21,7 @@ const HomeHero = () => {
             >
               <div className="font-bold font-heading_two">
                 <h1 className="text-[2.8rem] sm:text-5xl md:text-[4rem] xl:text-[5rem] lg:text-[4rem] font-extrabold text-sky-600 dark:text-white font-heading_two leading-tight">
-                  Welcome to{" "}
+                  {/* Welcome to{" "} */}
                   <span className="bg-gradient-to-r from-purple-400 via-sky-500 to-red-500 text-transparent bg-clip-text">
                     MaduConnect
                   </span>
