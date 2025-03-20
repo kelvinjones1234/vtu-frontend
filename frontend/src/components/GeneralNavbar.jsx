@@ -70,7 +70,7 @@ const GeneralNavbar = React.memo(() => {
   // Memoize navbar classes
   const navbarClasses = useMemo(
     () =>
-      `px-4 lg:px-0 flex justify-between py-[.65rem] z-[10] fixed top-0 w-full hover:transition-colors hover:duration-200 ${
+      `px-4 lg:px-0 flex justify-between py-[1rem] z-[10] fixed top-0 w-full hover:transition-colors hover:duration-200 ${
         isScrolled
           ? "dark:bg-gray-900 dark:bg-opacity-95 bg-opacity-95 bg-gray-50 shadow"
           : "bg-transparent"
