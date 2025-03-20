@@ -1,9 +1,8 @@
 import React, { useState } from "react";
-import { Copy, CheckCircle } from "lucide-react";
+import { FaCopy, FaCheckCircle } from "react-icons/fa";
 import GeneralLeft from "./GeneralLeft";
 import GeneralRight from "./GeneralRight";
 import { Link } from "react-router-dom";
-
 
 const FundWallet = ({ fundingData }) => {
   const [copiedAccount, setCopiedAccount] = useState(null);
@@ -71,9 +70,9 @@ const FundWallet = ({ fundingData }) => {
                         title="Copy Account Number"
                       >
                         {copiedAccount === account.accountNumber ? (
-                          <CheckCircle className="w-5 h-5 text-green-500" />
+                          <FaCheckCircle className="w-5 h-5 text-green-500" />
                         ) : (
-                          <Copy className="w-5 h-5" />
+                          <FaCopy className="w-5 h-5" />
                         )}
                       </button>
                     </div>

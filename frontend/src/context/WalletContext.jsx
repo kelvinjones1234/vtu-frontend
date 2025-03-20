@@ -6,7 +6,6 @@ import React, {
   useMemo,
   useCallback,
 } from "react";
-import { debounce } from "lodash";
 import { useAuth } from "./AuthenticationContext";
 import { useGeneral } from "./GeneralContext";
 
@@ -22,6 +21,22 @@ const walletReducer = (state, action) => {
   }
 };
 
+// Properly implement debounce with a cancel method
+const debounce = (func, delay) => {
+  let timerId;
+
+  const debouncedFunction = function (...args) {
+    clearTimeout(timerId);
+    timerId = setTimeout(() => func(...args), delay);
+  };
+
+  debouncedFunction.cancel = function () {
+    clearTimeout(timerId);
+  };
+
+  return debouncedFunction;
+};
+
 const WalletContext = createContext();
 
 export const WalletProvider = ({ children }) => {
@@ -32,6 +47,7 @@ export const WalletProvider = ({ children }) => {
 
   // Memoize the API reference
   const memoizedApi = useMemo(() => api, [api]);
+
   // Handle errors
   const handleError = useCallback(
     (error) => {
@@ -102,7 +118,12 @@ export const WalletProvider = ({ children }) => {
   // Clean up the debounced function when component unmounts
   useEffect(() => {
     return () => {
-      debouncedUpdateWalletBalance.cancel();
+      if (
+        debouncedUpdateWalletBalance &&
+        typeof debouncedUpdateWalletBalance.cancel === "function"
+      ) {
+        debouncedUpdateWalletBalance.cancel();
+      }
     };
   }, [debouncedUpdateWalletBalance]);
 
@@ -121,4 +142,10 @@ export const WalletProvider = ({ children }) => {
   );
 };
 
-export const useWallet = () => useContext(WalletContext);
+export const useWallet = () => {
+  const context = useContext(WalletContext);
+  if (context === undefined) {
+    throw new Error("useWallet must be used within a WalletProvider");
+  }
+  return context;
+};

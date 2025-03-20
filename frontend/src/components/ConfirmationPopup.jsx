@@ -1,11 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  ExclamationTriangleIcon,
-  XMarkIcon,
-} from "@heroicons/react/24/outline";
-
+import { FaExclamationTriangle } from "react-icons/fa";
 const ConfirmationPopup = ({
   isOpen,
   onConfirm,
@@ -45,7 +41,7 @@ const ConfirmationPopup = ({
             {/* Header */}
             <div className="flex items-center space-x-4 mb-4">
               <div className="bg-yellow-100 dark:bg-yellow-900/30 p-2 rounded-full">
-                <ExclamationTriangleIcon className="h-8 w-8 text-yellow-500 dark:text-yellow-400" />
+                <FaExclamationTriangle className="h-8 w-8 text-yellow-500 dark:text-yellow-400" />
               </div>
               <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
                 {title}

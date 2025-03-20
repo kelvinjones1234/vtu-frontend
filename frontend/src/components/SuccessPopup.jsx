@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { motion, AnimatePresence } from "framer-motion";
-import { CheckCircleIcon, XMarkIcon } from "@heroicons/react/24/solid";
+import { FaTimesCircle } from "react-icons/fa";
 
 const SuccessPopup = ({ isOpen, message, onClose, title = "Success" }) => {
   // Split message into lines if it contains newlines
@@ -36,7 +36,7 @@ const SuccessPopup = ({ isOpen, message, onClose, title = "Success" }) => {
             {/* Header */}
             <div className="flex items-center space-x-4 mb-4">
               <div className="bg-green-100 dark:bg-green-900/30 p-2 rounded-full">
-                <CheckCircleIcon className="h-8 w-8 text-green-500 dark:text-green-400" />
+                <FaTimesCircle className="h-8 w-8 text-green-500 dark:text-green-400" />
               </div>
               <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
                 {title}
