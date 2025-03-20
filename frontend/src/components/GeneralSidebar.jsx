@@ -72,9 +72,9 @@ const GeneralSidebar = () => {
         <span className="flex-grow">{label}</span>
         {hasDropdown &&
           (isDropdownOpen ? (
-            <FaChevronDown className="h-4 w-4 text-[#1CCEFF]" />
+            <FaChevronDown className="h-4 w-4 text-blue-600" />
           ) : (
-            <FaChevronRight className="h-4 w-4 text-[#1CCEFF]" />
+            <FaChevronRight className="h-4 w-4 text-blue-600" />
           ))}
       </li>
     );
@@ -112,7 +112,7 @@ const GeneralSidebar = () => {
             <img
               src={darkMode ? dark : light}
               alt="Theme toggle"
-              className="w-5 h-5"
+              className="w-5 h-5 text-blue-600"
             />
           </button>
         </div>

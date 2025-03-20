@@ -24,7 +24,7 @@ const GeneralRight = () => {
           <div className="flex gap-2 justify-around">
             <div className="notification h-10 w-10 rounded-full bg-gray-200 hover:bg-gray-300 dark:bg-white dark:bg-opacity-20 grid relative justify-center items-center dark:hover:bg-opacity-10 hover:transition hover:duration-300 ease-in-out cursor-pointer">
               <Link to={"/user/notifications"}>
-                <FaBell className="w-6 h-6" style={{ color: "#1CCEFF" }} />
+                <FaBell className="w-6 h-6 text-blue-600" />
               </Link>
               {!allRead && (
                 <div className="flex items-center justify-center h-3 w-3 bg-red-600 absolute rounded-full left-3 bottom-6 text-white text-[10px]">

@@ -82,7 +82,7 @@ const GeneralLeft = () => {
           whileTap="tap"
           variants={itemVariants}
         >
-          <FaHome className="w-4" style={{ color: "#1CCEFF" }} />
+          <FaHome className="w-4 text-blue-600" />
           <Link to="/user/dashboard">
             <p className="dark:text-white text-primary">Dashboard</p>
           </Link>
@@ -95,7 +95,7 @@ const GeneralLeft = () => {
           whileTap="tap"
           variants={itemVariants}
         >
-          <FaExchangeAlt className="w-4" style={{ color: "#1CCEFF" }} />
+          <FaExchangeAlt className="w-4 text-sky-600" />
           <p
             className="dark:text-white text-primary"
             onClick={handleTransferForm}
@@ -132,12 +132,12 @@ const GeneralLeft = () => {
           whileTap="tap"
           variants={itemVariants}
         >
-          <FaCog className="w-4" style={{ color: "#1CCEFF" }} />
+          <FaCog className="w-4 text-sky-600" />
           <p className="dark:text-white text-primary flex-grow">Services</p>
           {servicesDropDown ? (
-            <FaChevronDown style={{ color: "#1CCEFF" }} />
+            <FaChevronDown className="text-blue-600"/>
           ) : (
-            <FaChevronRight style={{ color: "#1CCEFF" }} />
+            <FaChevronRight className="text-blue-600"/>
           )}
         </motion.div>
 
@@ -189,7 +189,7 @@ const GeneralLeft = () => {
           whileTap="tap"
           variants={itemVariants}
         >
-          <FaHistory className="w-4" style={{ color: "#1CCEFF" }} />
+          <FaHistory className="w-4 text-sky-600" />
           <Link to="/user/dashboard/transactions">
             <p className="dark:text-white text-primary">Transactions</p>
           </Link>
@@ -203,7 +203,7 @@ const GeneralLeft = () => {
           whileTap="tap"
           variants={itemVariants}
         >
-          <FaSave className="w-4" style={{ color: "#1CCEFF" }} />
+          <FaSave className="w-4 text-sky-600" />
           <Link to="/user/dashboard/shortcuts">
             <p className="dark:text-white text-primary">Shortcuts</p>
           </Link>
@@ -217,7 +217,7 @@ const GeneralLeft = () => {
           whileTap="tap"
           variants={itemVariants}
         >
-          <FaInfoCircle className="w-4" style={{ color: "#1CCEFF" }} />
+          <FaInfoCircle className="w-4 text-sky-600" />
           <Link to="/dashboard/about">
             <p className="dark:text-white text-primary">About</p>
           </Link>
@@ -231,7 +231,7 @@ const GeneralLeft = () => {
           whileTap="tap"
           variants={itemVariants}
         >
-          <FaSignOutAlt className="w-4" style={{ color: "#1CCEFF" }} />
+          <FaSignOutAlt className="w-4 text-sky-600" />
           <p className="dark:text-white text-primary">Log Out</p>
         </motion.div>
       </div>
