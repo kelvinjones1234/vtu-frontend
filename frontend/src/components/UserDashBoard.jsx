@@ -76,7 +76,7 @@ const UserDashBoard = () => {
         </div>
 
         {/* Wallet Balance Card */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-3 xs:p-6 sm:p-9 text-primary dark:text-white">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-3 xs:p-6 sm:p-9 text-primary dark:text-white pb-6">
           <div className="flex justify-between items-center mb-[1.5rem] text-sm sm:text-[.7rem] md:text-[1rem]">
             <h2 className="sm:flex flex items-center space-x-2">
               <span>Available Balance</span>
