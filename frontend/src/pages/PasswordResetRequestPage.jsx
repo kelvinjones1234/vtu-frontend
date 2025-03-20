@@ -1,6 +1,5 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
-import axios from "axios";
 import SubmitButton from "../components/SubmitButton";
 import LeftSide from "../components/LeftSide";
 import FloatingLabelInput from "../components/FloatingLabelInput";
@@ -208,11 +207,11 @@ const PasswordResetPage = () => {
           >
             <LeftSide />
             <div className="sm:w-1/2 max-w-md mx-auto sm:mx-0">
-              <div className="mb-8">
-                <h1 className="font-bold font-heading_two text-4xl text-primary-sky-400 dark:text-gray-300 mb-2">
+              <div className="mb-6">
+                <h1 className="font-bold font-heading_two text-4xl text-blue-500 dark:text-gray-300 mb-2">
                   Reset Password
                 </h1>
-                <p className="text-gray-300 text-lg">
+                <p className="dark:text-gray-300 text-primary mt-[4rem] text-lg">
                   Enter a strong password and retype it for confirmation.
                 </p>
               </div>
@@ -446,7 +445,7 @@ const PasswordResetPage = () => {
                 Don't have an account?{" "}
                 <Link
                   to="/authentication/register"
-                  className="text-link font-semibold"
+                  className="dark:text-link font-semibold text-blue-500"
                 >
                   Get started
                 </Link>
