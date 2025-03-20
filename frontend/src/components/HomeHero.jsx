@@ -20,7 +20,7 @@ const HomeHero = () => {
               transition={{ duration: 0.8 }}
             >
               <div className="font-bold mb-[4vh] font-heading_two">
-                <h1 className="text-[3rem] xs:text-[3rem] sm:text-5xl md:text-[4rem] xl:text-[5rem] lg:text-[4rem] font-extrabold text-sky-400 dark:text-white  mb-6 font-heading_two leading-tight">
+                <h1 className="text-[2.8rem] sm:text-5xl md:text-[4rem] xl:text-[5rem] lg:text-[4rem] font-extrabold text-sky-400 dark:text-white  mb-6 font-heading_two leading-tight">
                   Welcome to{" "}
                   <span className="bg-gradient-to-r from-purple-400 via-sky-500 to-red-500 text-transparent bg-clip-text">
                     MaduConnect
