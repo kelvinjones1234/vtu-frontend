@@ -89,7 +89,7 @@ const UserDashBoard = () => {
             </h2>
             <Link
               to="/user/dashboard/transactions"
-              className="flex items-center text-blue-500 hover:text-blue-600 transition-colors duration-300"
+              className="flex items-center text-sky-600 hover:text-sky-700 transition-colors duration-300"
             >
               <span className="mr-2">Transaction History</span>
               <FaAngleRight className="h-4 w-4" />
@@ -115,7 +115,7 @@ const UserDashBoard = () => {
           </p>
           <div className="flex justify-between">
             <Link to={"/user/dashboard/service-shortcut"}>
-              <button className="bg-sky-600 text-[.8rem] hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-full transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
+              <button className="bg-blue-500 text-[.8rem] hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-full transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
                 Create Shortcut
               </button>
             </Link>
@@ -137,8 +137,8 @@ const UserDashBoard = () => {
               className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 flex flex-col items-center justify-center hover:transition hover:duration-300 hover:ease-in-out transform hover:scale-105 hover:shadow-xl"
             >
               <img
-                src={`https://vtubackend.vercel.app/api/${item.image}`}
-                // src={`http://127.0.0.1:8000${item.image}`}
+                // src={`https://vtubackend.vercel.app/api/${item.image}`}
+                src={`http://127.0.0.1:8000${item.image}`}
                 alt={item.category}
                 className="h-24 w-24 object-contain mb-2"
                 fetchpriority="high" // Prioritize image loading
