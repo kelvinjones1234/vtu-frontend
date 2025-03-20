@@ -8,18 +8,19 @@ const FloatingLabelInput = ({
   placeholder,
   disabled = false,
   maxLength,
+  margin,
   error,
 }) => {
   const [isFocused, setIsFocused] = useState(false);
 
   return (
-    <div className="relative mb-3">
+    <div className={`relative mb-3 ${margin}`}>
       {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
       <div
         className={`relative border ${
           error
             ? "border-red-500"
-            : isFocused 
+            : isFocused
             ? "border-[#1CCEFF]"
             : "border-[#1CCEFF] dark:border-gray-700 dark:hover:border-[#1CCEFF] dark:focus-within:border-[#1CCEFF]"
         } rounded-2xl transition-all`}

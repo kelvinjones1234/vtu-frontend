@@ -224,7 +224,8 @@ const RegistrationPage = () => {
                       placeholder={field.placeholder}
                       value={formData[field.name]}
                       onChange={handleChange}
-                      className="w-full py-3 px-4 text-lg rounded-xl outline-none dark:bg-[#18202F] bg-white hover:transition hover:duration-450 hover:ease-in-out text-primary dark:text-white border border-[#1CCEFF] dark:border-gray-700 dark:hover:border-[#1CCEFF] dark:hover:border-[#1CCEFF] dark:focus:border-[#1CCEFF]"
+                      margin={"mb-0"}
+                      className="dark:bg-[#18202F] bg-white w-full hover:transition hover:duration-450 hover:ease-in-out text-primary dark:text-white py-1 px-4 h-[3.5rem] text-[1.2rem] rounded-2xl outline-none border border-[#1CCEFF] dark:border-gray-700 dark:hover:border-[#1CCEFF] dark:hover:border-[#1CCEFF] dark:focus:border-[#1CCEFF]"
                     />
 
                     {field.toggleShow && (

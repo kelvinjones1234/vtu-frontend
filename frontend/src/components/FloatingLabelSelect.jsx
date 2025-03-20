@@ -5,6 +5,7 @@ const FloatingLabelSelect = ({
   value,
   onChange,
   placeholder,
+  margin,
   disabled = false,
   options = [],
   error,
@@ -12,7 +13,7 @@ const FloatingLabelSelect = ({
   const [isFocused, setIsFocused] = useState(false);
 
   return (
-    <div className="relative mb-3">
+    <div className={`relative mb-3 ${margin}`}>
       {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
       <div
         className={`relative border ${
