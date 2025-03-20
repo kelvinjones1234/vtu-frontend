@@ -1,6 +1,3 @@
-
-
-
 import React from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -60,7 +57,7 @@ const HomeHero = () => {
                     }`}
                   >
                     <motion.button
-                      className="bg-blue-500 py-[.4rem] mr-9 px-6 text-[.9rem] sm:text-[1.2rem] md:text-[1.5rem] bg-opacity-[90%] transition duration-300 ease-in-out transform hover:-translate-y-1 text-white rounded-2xl font-bold"
+                      className="bg-blue-600 py-[.4rem] mr-9 px-6 text-[.9rem] sm:text-[1.2rem] md:text-[1.5rem] bg-opacity-[90%] transition duration-300 ease-in-out transform hover:-translate-y-1 text-white rounded-2xl font-bold"
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                     >
