@@ -125,7 +125,7 @@ const AfterHero = () => {
         transition={{ duration: 0.8, delay: 0.5 }}
       >
         <div className="text mx-4">
-          <h3 className="text-green-500 font-heading_two py-4 text-[1.2rem] font-bold">
+          <h3 className="text-sky-600 dark:text-link font-heading_two py-4 text-[1.2rem] font-bold">
             Have Questions?
           </h3>
           <p className="max-w-[450px] mx-auto text-gray-700 dark:text-gray-200">
