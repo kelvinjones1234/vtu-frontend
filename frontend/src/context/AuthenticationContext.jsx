@@ -196,7 +196,7 @@ export const AuthProvider = ({ children }) => {
     api.post("/logout/", null, { withCredentials: true }).catch((error) => {
       console.error("Logout error:", error);
     });
-  }, [api, navigate, setUser]);
+  }, [navigate, setUser]);
 
   // Register function - memoized
   const registerUser = useCallback(
