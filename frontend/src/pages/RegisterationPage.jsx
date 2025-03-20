@@ -147,7 +147,7 @@ const RegistrationPage = () => {
           <LeftSide />
           <div className="sm:w-1/2 max-w-md mx-auto sm:mx-0">
             <div className="mb-4">
-              <h1 className="font-bold text-4xl dark:text-gray-300 text-sky-400 font-heading_two mb-2 text-primary">
+              <h1 className="font-bold text-4xl dark:text-gray-300 text-blue-500 font-heading_two mb-2">
                 Sign up with{" "}
                 <span className="bg-gradient-to-r from-purple-400 via-sky-500 to-red-500 text-transparent bg-clip-text">
                   MaduConnect
@@ -245,14 +245,14 @@ const RegistrationPage = () => {
                   By signing up, you agree to our{" "}
                   <Link
                     to="/terms-and-conditions"
-                    className="underline text-link hover:text-sky-400"
+                    className="underline dark:text-link text-blue-500 hover:text-sky-400"
                   >
                     terms
                   </Link>{" "}
                   and{" "}
                   <Link
                     to="/privacy-and-policy"
-                    className="underline text-link hover:text-sky-400"
+                    className="underline dark:text-link text-blue-500 hover:text-sky-400"
                   >
                     privacy policy
                   </Link>
@@ -266,7 +266,7 @@ const RegistrationPage = () => {
               Already have an account?{" "}
               <Link
                 to="/authentication/login"
-                className="text-link font-semibold hover:text-sky-400"
+                className="text-blue-500 dark:text-link hover:text-sky-400 font-semibold"
               >
                 Log in
               </Link>

@@ -164,7 +164,7 @@ const LoginPage = () => {
                 Don't have an account?{" "}
                 <Link
                   to="/authentication/register"
-                  className="text-link font-semibold"
+                  className="text-blue-500 dark:text-link hover:text-sky-400 font-semibold"
                 >
                   Get started
                 </Link>
