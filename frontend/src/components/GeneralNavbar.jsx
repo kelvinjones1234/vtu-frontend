@@ -151,7 +151,7 @@ const GeneralNavbar = React.memo(() => {
             <div className="hamburger">
               <div
                 onClick={handleMobileMenuToggle}
-                className="text-[25px] text-sky-600"
+                className="text-[25px] text-blue-600"
               >
                 {mobileMenuToggle ? <RiCloseLargeLine /> : <RiMenu4Line />}
               </div>
