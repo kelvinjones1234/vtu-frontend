@@ -213,7 +213,7 @@ const HomePageNavbar = () => {
             <div className="hamburger">
               <div
                 onClick={handleHomeMenuToggle}
-                className="text-[25px] text-sky-600"
+                className="text-[25px] text-blue-600"
               >
                 {homeMenuToggle ? <RiCloseLargeLine /> : <RiMenu4Line />}
               </div>

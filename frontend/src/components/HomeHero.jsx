@@ -42,7 +42,7 @@ const HomeHero = () => {
                     to={`${user ? "/user/dashboard" : "/authentication/login"}`}
                   >
                     <motion.button
-                      className="transition duration-300 ease-in-out text-[.9rem] sm:text-[1.2rem] md:text-[1.5rem] transform hover:-translate-y-1 hover:shadow-lg border bg-white dark:bg-[#18202F] border-indigo-600 rounded-2xl py-[.4rem] text-indigo-700 dark:text-indigo-400 mx-4 px-6"
+                      className="transition duration-300 ease-in-out text-[.9rem] sm:text-[1.2rem] md:text-[1.5rem] transform hover:-translate-y-1 hover:shadow-lg border bg-white dark:bg-[#18202F] border-blue-600 rounded-2xl py-[.4rem] text-blue-600 mx-4 px-6"
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                     >
