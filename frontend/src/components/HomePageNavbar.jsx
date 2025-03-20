@@ -50,7 +50,7 @@ const HomePageNavbar = () => {
         <div className="right">
           <div className={`small-screen flex items-center sm:hidden`}>
             <div className="get-started">
-              <button className="bg-green-500 py-[.4rem] mr-9 px-4 text-[.9rem] bg-opacity-[90%] text-white rounded-2xl font-bold">
+              <button className="bg-sky-500 py-[.4rem] mr-9 px-4 text-[.9rem] bg-opacity-[90%] text-white rounded-2xl font-bold">
                 <Link to={"/authentication/register"}>Get Started</Link>
               </button>
             </div>
@@ -65,7 +65,7 @@ const HomePageNavbar = () => {
           </div>
           <div className="large-screen hidden sm:flex lg:pr-[6rem]">
             <div className="button">
-              <button className="bg-green-500 rounded-2xl py-[.3rem] hover:bg-green-600 font-bold transition-all duration-500 ease-in-out text-white mx-4 px-6">
+              <button className="bg-sky-500 rounded-2xl py-[.3rem] hover:bg-green-600 font-bold transition-all duration-500 ease-in-out text-white mx-4 px-6">
                 <Link to={"/authentication/register"}>Get Started</Link>
               </button>
             </div>
