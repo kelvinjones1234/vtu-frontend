@@ -180,7 +180,7 @@ const ServiceShortcuts = () => {
               </div>
             </div>
             {/* Form Container */}
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 overflow-hidden">
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden">
               {activeService === "data" && (
                 <Data showSidebars={false} showStyle={false} resetForm={resetForm}/>
               )}
