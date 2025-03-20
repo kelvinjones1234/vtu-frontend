@@ -3,7 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import {
   FaHome,
   FaExchangeAlt,
-  FaCog, 
+  FaCog,
   FaHistory,
   FaInfoCircle,
   FaSave,
@@ -11,6 +11,7 @@ import {
   FaChevronRight,
   FaChevronDown,
 } from "react-icons/fa";
+import { RiSunLine, RiMoonLine } from "react-icons/ri";
 import Transfer from "./Transfer";
 import { useGeneral } from "../context/GeneralContext";
 import { useAuth } from "../context/AuthenticationContext";
@@ -109,11 +110,11 @@ const GeneralSidebar = () => {
             onClick={handleThemeSettings}
             className="p-2 rounded-full bg-gray-200 dark:bg-white dark:bg-opacity-20 hover:bg-gray-300 dark:hover:bg-opacity-30 transition-colors"
           >
-            <img
-              src={darkMode ? dark : light}
-              alt="Theme toggle"
-              className="w-5 h-5 text-blue-600"
-            />
+            {darkMode ? (
+              <RiSunLine className="w-5 h-5 text-yellow-600" />
+            ) : (
+              <RiMoonLine className="w-5 h-5 text-blue-600" />
+            )}
           </button>
         </div>
 

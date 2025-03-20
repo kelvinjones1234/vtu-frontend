@@ -2,8 +2,7 @@ import React, { useState, useEffect, useRef, useMemo } from "react";
 import { Link } from "react-router-dom";
 // import notification from "../assets/notification.svg";
 import GeneralSidebar from "./GeneralSidebar";
-import dark from "../assets/dark.svg";
-import light from "../assets/light.svg";
+import { RiSunLine, RiMoonLine } from "react-icons/ri";
 import { useAuth } from "../context/AuthenticationContext";
 import { useGeneral } from "../context/GeneralContext";
 import { useProduct } from "../context/ProductContext";
@@ -31,11 +30,11 @@ const ThemeToggle = React.memo(({ darkMode, handleThemeSettings }) => (
       onClick={handleThemeSettings}
       className="justify-center py-[.5rem] gap-8 rounded-full flex items-center bg-gray-200 hover:bg-gray-300 px-[.5rem] dark:bg-white dark:bg-opacity-20 dark:hover:bg-opacity-10 hover:transition hover:duration-300 ease-in-out cursor-pointer"
     >
-      <img
-        src={darkMode ? dark : light}
-        alt="Theme toggle"
-        className="w-5 h-5 text-blue-600"
-      />
+      {darkMode ? (
+        <RiSunLine className="w-5 h-5 text-yellow-600" />
+      ) : (
+        <RiMoonLine className="w-5 h-5 text-blue-600" />
+      )}
     </div>
   </div>
 ));

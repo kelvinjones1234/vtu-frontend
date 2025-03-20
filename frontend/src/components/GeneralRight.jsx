@@ -34,7 +34,7 @@ const GeneralRight = () => {
             </div>
             <div className="notification h-10 w-10 rounded-full bg-gray-200 hover:bg-gray-300 dark:bg-white dark:bg-opacity-20 justify-center flex items-center dark:hover:bg-opacity-10 hover:transition hover:duration-300 ease-in-out cursor-pointer">
               <Link to={"/user/dashboard/profile"}>
-                <FaEdit className="w-6 h-6" style={{ color: "#1CCEFF" }} />
+                <FaEdit className="w-6 h-6 text-blue-600" />
               </Link>
             </div>
             {/* <div className="notification h-10 w-10 rounded-full bg-gray-100 hover:bg-gray-300 dark:bg-white dark:bg-opacity-20"></div> */}
