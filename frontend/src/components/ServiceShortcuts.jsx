@@ -125,7 +125,7 @@ const ServiceShortcuts = () => {
       <div>
         <div className="bg-white dark:bg-gradient-to-br dark:from-slate-900 dark:to-slate-700 rounded-xl shadow-lg mb-6 p-3 xs:p-6 sm:p-9 text-primary dark:text-white">
           <div className="flex justify-between items-center mb-[1.5rem] text-sm sm:text-[.7rem] md:text-[1rem]">
-            <h2 className="sm:flex items-center space-x-2">
+            <h2 className="sm:flex flex items-center space-x-2">
               <span>Available Balance</span>
               <button
                 onClick={toggleBalanceVisibility}
@@ -182,19 +182,35 @@ const ServiceShortcuts = () => {
             {/* Form Container */}
             <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden">
               {activeService === "data" && (
-                <Data showSidebars={false} showStyle={false} resetForm={resetForm}/>
+                <Data
+                  showSidebars={false}
+                  showStyle={false}
+                  resetForm={resetForm}
+                />
               )}
               {/* Airtime Topup Form */}
               {activeService === "airtime" && (
-                <Airtime showSidebars={false} showStyle={false} resetForm={resetForm}/>
+                <Airtime
+                  showSidebars={false}
+                  showStyle={false}
+                  resetForm={resetForm}
+                />
               )}
               {/* Electricity Bill Form */}
               {activeService === "electricity" && (
-                <ElectricityBill showSidebars={false} showStyle={false} resetForm={resetForm}/>
+                <ElectricityBill
+                  showSidebars={false}
+                  showStyle={false}
+                  resetForm={resetForm}
+                />
               )}
               {/* Cable TV Form */}
               {activeService === "cable" && (
-                <CableSub showSidebars={false} showStyle={false} resetForm={resetForm}/>
+                <CableSub
+                  showSidebars={false}
+                  showStyle={false}
+                  resetForm={resetForm}
+                />
               )}
             </div>
           </div>
