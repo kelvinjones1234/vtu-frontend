@@ -89,7 +89,7 @@ const UserDashBoard = () => {
             </h2>
             <Link
               to="/user/dashboard/transactions"
-              className="flex items-center text-sky-600 hover:text-sky-700 transition-colors duration-300"
+              className="flex items-center text-indigo-700 hover:text-indigo-400 transition-colors duration-300"
             >
               <span className="mr-2">Transaction History</span>
               <FaAngleRight className="h-4 w-4" />

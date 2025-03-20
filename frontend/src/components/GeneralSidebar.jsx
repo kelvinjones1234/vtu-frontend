@@ -68,7 +68,7 @@ const GeneralSidebar = () => {
         className={`${baseClasses} ${isActive ? activeClass : hoverClass}`}
         onClick={onClick}
       >
-        <Icon className="h-5 w-5 mr-3 text-[#1CCEFF]" />
+        <Icon className="h-5 w-5 mr-3 text-sky-600" />
         <span className="flex-grow">{label}</span>
         {hasDropdown &&
           (isDropdownOpen ? (
