@@ -178,17 +178,25 @@ export const AuthProvider = ({ children }) => {
   );
 
   // Logout function - memoized
-  const logoutUser = useCallback(async () => {
-    try {
-      await api.post("/logout/", {}, { withCredentials: true });
-    } catch (error) {
+  // const logoutUser = useCallback(async () => {
+  //   try {
+  //     await api.post("/logout/", null, { withCredentials: true });
+  //   } catch (error) {
+  //     console.error("Logout error:", error);
+  //   } finally {
+  //     setUser(null);
+  //     navigate("/authentication/login", { replace: true });
+  //   }
+  // }, [api, navigate, setUser]);
+
+  const logoutUser = useCallback(() => {
+    setUser(null);
+    navigate("/authentication/login", { replace: true });
+
+    api.post("/logout/", null, { withCredentials: true }).catch((error) => {
       console.error("Logout error:", error);
-    } finally {
-      // Always clear user and redirect, even if the API fails
-      setUser(null);
-      navigate("/authentication/login", { replace: true });
-    }
-  }, [api, navigate]);
+    });
+  }, [api, navigate, setUser]);
 
   // Register function - memoized
   const registerUser = useCallback(
