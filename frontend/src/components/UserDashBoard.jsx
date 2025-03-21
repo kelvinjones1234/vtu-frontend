@@ -137,8 +137,8 @@ const UserDashBoard = () => {
               className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 flex flex-col items-center justify-center hover:transition hover:duration-300 hover:ease-in-out transform hover:scale-105 hover:shadow-xl"
             >
               <img
-                // src={`https://vtubackend.vercel.app/api/${item.image}`}
-                src={`http://127.0.0.1:8000${item.image}`}
+                src={`${item.image}`}
+                // src={`http://127.0.0.1:8000${item.image}`}
                 alt={item.category}
                 className="h-24 w-24 object-contain mb-2"
                 fetchpriority="high" // Prioritize image loading
