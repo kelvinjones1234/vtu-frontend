@@ -114,16 +114,13 @@ const ServiceShortcuts = () => {
     () => setPopupState((prev) => ({ ...prev, isErrorOpen: false })),
     []
   );
-  // const handleSuccessClose = useCallback(
-  //   () => setPopupState((prev) => ({ ...prev, isSuccessOpen: false })),
-  //   []
-  // );
+ 
 
   return (
     <div className="pt-[15vh] sm:bg-cover px-4 justify-center ss:px-[5rem] sm:px-[1rem] sm:flex gap-5 md:gap-12 lg:mx-[5rem]">
       <GeneralLeft />
-      <div>
-        <div className="bg-white dark:bg-gradient-to-br dark:from-slate-900 dark:to-slate-700 rounded-xl shadow-lg mb-6 p-3 xs:p-6 sm:p-9 text-primary dark:text-white">
+      <div className="">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-3 xs:p-6 sm:p-9 text-primary dark:text-white mb-6">
           <div className="flex justify-between items-center mb-[1.5rem] text-sm sm:text-[.7rem] md:text-[1rem]">
             <h2 className="sm:flex flex items-center space-x-2">
               <span>Available Balance</span>
@@ -154,7 +151,7 @@ const ServiceShortcuts = () => {
           </div>
         </div>
         <div className="h-auto bg-white dark:bg-gray-800 py-6 px-4 sm:px-6 md:px-8 rounded-2xl shadow-md">
-          <div className="w-full sm:w-[300px] md:w-[500px] lg:w-[600px] xl:w-[700px] max-w-3xl mx-auto">
+          <div className="w-full sm:w-[350px] md:w-[500px] lg:w-[600px] xl:w-[700px] max-w-3xl mx-auto">
             {" "}
             {/* Changed min-w-[500px] to w-full with max-width */}
             <h1 className="text-2xl font-bold text-primary dark:text-white mb-6">

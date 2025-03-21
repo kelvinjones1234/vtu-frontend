@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import { Link } from "react-router-dom";
-// import notification from "../assets/notification.svg";
 import GeneralSidebar from "./GeneralSidebar";
 import { RiSunLine, RiMoonLine } from "react-icons/ri";
 import { useAuth } from "../context/AuthenticationContext";
@@ -150,7 +149,7 @@ const GeneralNavbar = React.memo(() => {
             <div className="hamburger">
               <div
                 onClick={handleMobileMenuToggle}
-                className="text-[25px] text-blue-600"
+                className="text-[25px] text-blue-600 cursor-pointer"
               >
                 {mobileMenuToggle ? <RiCloseLargeLine /> : <RiMenu4Line />}
               </div>

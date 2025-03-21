@@ -18,7 +18,7 @@ const GeneralRight = () => {
           <FaUserCircle className="h-[6rem] w-[6rem] text-gray-400" />
         </div>
         <div className="grid justify-center text-center">
-          <p className="pt-3 pb-5 text-link dark:text-link font-bold">
+          <p className="pt-3 pb-5 text-sky-600 font-bold">
             {user.user.first_name} {user.user.last_name}
           </p>
           <div className="flex gap-2 justify-around">

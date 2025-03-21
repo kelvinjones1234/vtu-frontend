@@ -172,7 +172,7 @@ const ShortcutList = () => {
       <GeneralLeft />
       <div className="w-full max-w-3xl">
         {/* Balance Card */}
-        <div className="bg-white dark:bg-gradient-to-br dark:from-slate-900 dark:to-slate-700 rounded-xl shadow-lg mb-6 p-3 xs:p-6 sm:p-9 text-primary dark:text-white">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-3 xs:p-6 sm:p-9 text-primary dark:text-white mb-6">
           <div className="flex justify-between items-center mb-[1.5rem] text-sm sm:text-[.7rem] md:text-[1rem]">
             <h2 className="sm:flex items-center space-x-2">
               <span>Available Balance</span>
@@ -209,7 +209,7 @@ const ShortcutList = () => {
             {/* Header with search */}
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
               <h1 className="text-2xl font-bold text-primary dark:text-white mb-4 sm:mb-0">
-                Your Shortcuts
+                Shortcuts
               </h1>
               <div className="relative w-full sm:w-64">
                 <input

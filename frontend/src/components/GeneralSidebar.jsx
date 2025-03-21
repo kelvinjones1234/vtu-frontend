@@ -16,8 +16,7 @@ import Transfer from "./Transfer";
 import { useGeneral } from "../context/GeneralContext";
 import { useAuth } from "../context/AuthenticationContext";
 import { useProduct } from "../context/ProductContext";
-import dark from "../assets/dark.svg";
-import light from "../assets/light.svg";
+
 
 const GeneralSidebar = () => {
   const location = useLocation();
