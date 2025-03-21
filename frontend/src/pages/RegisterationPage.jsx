@@ -117,7 +117,7 @@ const RegistrationPage = () => {
       <div className="fixed inset-0 bg-bg_one bg-contain md:bg-cover bg-center bg-no-repeat"></div>
 
       <header
-        className={`fixed top-0 w-full px-4 py-[.6rem] md:px-24 flex justify-between items-center transition-colors duration-300 ${
+        className={`fixed top-0 w-full px-4 py-[1rem] md:px-24 flex justify-between items-center transition-colors duration-300 ${
           isScrolled
             ? "dark:bg-gray-900 dark:bg-opacity-95 z-[1000] bg-opacity-95 bg-gray-50 shadow"
             : "bg-transparent"
