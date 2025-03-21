@@ -17,22 +17,22 @@ const Footer = () => {
     <div className="text-center relative sm:text-start mt-[10rem] sm:mt-[5rem] border-t border-link bg-white dark:bg-primary w-full mx-auto font-body_two px-4">
       <div className="sm:flex sm:justify-between max-w-[1000px] mx-auto">
         <div className="legals sm:mt-16 sm:mx-3 ">
-          <h3 className="text-link font-heading_two pt-4 text-2xl font-bold">
+          <h3 className="text-blue-600 font-heading_two pt-4 text-2xl font-bold">
             Legals
           </h3>
           <Link to={"/terms-and-conditions"}>
-            <p className="underline hover:text-link duration-400 transition-all ease-in-out text-gray-800 dark:text-white">
+            <p className="underline hover:text-blue-600 duration-400 transition-all ease-in-out text-gray-800 dark:text-white">
               Terms and Condition
             </p>
           </Link>
           <Link to={"/privacy-and-policy"}>
-            <p className="underline hover:text-link duration-400 transition-all ease-in-out text-gray-800 dark:text-white">
+            <p className="underline hover:text-blue-600 duration-400 transition-all ease-in-out text-gray-800 dark:text-white">
               Privacy Policy
             </p>
           </Link>
         </div>
         <div className="contact mt-16 text-center">
-          <h3 className="text-link font-heading_two pt-4 text-2xl font-bold">
+          <h3 className="text-blue-600 font-heading_two pt-4 text-2xl font-bold">
             Contact
           </h3>
           <p className="text-gray-800 dark:text-white">
@@ -41,7 +41,7 @@ const Footer = () => {
           <p className="text-gray-800 dark:text-white">+234 814 177 1672</p>
         </div>
         <div className="socials my-16">
-          <h3 className="text-link font-heading_two pt-4 text-2xl font-bold">
+          <h3 className="text-blue-600 font-heading_two pt-4 text-2xl font-bold">
             Socials
           </h3>
           <div className="icons flex justify-center mt-2">
