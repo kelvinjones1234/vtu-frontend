@@ -11,10 +11,10 @@ const RegistrationPage = () => {
   const [errorMessage, setErrorMessage] = useState({});
   const [showPassword, setShowPassword] = useState(false);
   const { registerUser, setRegisterErrors, registerErrors } = useAuth();
-  const { setLoading } = useGeneral();
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    return () => setRegisterErrors({});
+    return () => setRegisterErrors({}); 
   }, []);
 
   const [formData, setFormData] = useState({
@@ -259,7 +259,7 @@ const RegistrationPage = () => {
                   </Link>
                 </p>
 
-                <SubmitButton label="Create Account" />
+                <SubmitButton label="Create Account" loading={loading}/>
               </div>
             </form>
 
