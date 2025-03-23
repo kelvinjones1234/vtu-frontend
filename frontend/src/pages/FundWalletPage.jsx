@@ -33,15 +33,12 @@ const FundWalletPage = () => {
           setShowBvn(false);
         } else {
           // Fetch data from API if not in local storage
-          const response = await axios.get(
-            `http://127.0.0.1:8000/api/funding-details/`,
-            {
-              headers: {
-                "Content-Type": "application/json",
-              },
-              withCredentials: true,
-            }
-          );
+          const response = await api.get(`/funding-details`, {
+            headers: {
+              "Content-Type": "application/json",
+            },
+            withCredentials: true,
+          });
 
           // Check if the response data is empty or null
           if (!response.data || response.data.length === 0) {

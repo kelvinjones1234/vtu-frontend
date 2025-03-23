@@ -38,7 +38,7 @@ const UserDashBoard = () => {
             maximumFractionDigits: 2,
           })
         : "0.00",
-    [walletData]
+    [user, walletData]
   );
 
   // Memoize toggle function to prevent unnecessary re-renders
