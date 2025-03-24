@@ -14,7 +14,7 @@ const RegistrationPage = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    return () => setRegisterErrors({}); 
+    return () => setRegisterErrors({});
   }, []);
 
   const [formData, setFormData] = useState({
@@ -23,6 +23,7 @@ const RegistrationPage = () => {
     username: "",
     transaction_pin: "",
     password: "",
+    email: "",
   });
 
   useEffect(() => {
@@ -200,6 +201,11 @@ const RegistrationPage = () => {
                     placeholder: "Username",
                   },
                   {
+                    name: "email",
+                    placeholder: "Email",
+                  },
+
+                  {
                     name: "transaction_pin",
                     placeholder: "4-Digit Transaction PIN",
                   },
@@ -209,7 +215,6 @@ const RegistrationPage = () => {
                     type: showPassword ? "text" : "password",
                     toggleShow: () => setShowPassword(!showPassword),
                     show: showPassword,
-                    colSpan: 2, // Add a colSpan property for the password field
                   },
                 ].map((field) => (
                   <div
@@ -259,7 +264,7 @@ const RegistrationPage = () => {
                   </Link>
                 </p>
 
-                <SubmitButton label="Create Account" loading={loading}/>
+                <SubmitButton label="Create Account" loading={loading} />
               </div>
             </form>
 

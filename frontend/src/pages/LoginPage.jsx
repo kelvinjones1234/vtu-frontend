@@ -6,7 +6,7 @@ import FloatingLabelInput from "../components/FloatingLabelInput";
 import { useAuth } from "../context/AuthenticationContext";
 
 const LoginPage = () => {
-  const { loginUser, userError, setUserError } = useAuth();
+  const { loginUser, userError, setUserError } = useAuth(); 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState({});
