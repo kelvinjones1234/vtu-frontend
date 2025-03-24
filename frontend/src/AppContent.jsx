@@ -17,9 +17,9 @@ import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
 import NoAuthPrivacyPolicyPage from "./pages/NoAuthPrivacyPolicyPage";
 import NoAuthTermsAndConditionPage from "./pages/NoAuthTermsAndConditionPage";
 import FundWalletPage from "./pages/FundWalletPage";
-import ServiceShortcutsPage from "./pages/ServiceShortcutsPage";
-import ShortcutListPage from "./pages/ShortcutListPage";
-import AboutPage from "./pages/AboutPage"
+// import ServiceShortcutsPage from "./pages/ServiceShortcutsPage";
+// import ShortcutListPage from "./pages/ShortcutListPage";
+// import AboutPage from "./pages/AboutPage"
 // import NoAuthAboutPage from "./pages/NoAuthAboutPage";
 // import LoadingSpinner from "./components/LoadingSpinner";
 
@@ -28,11 +28,11 @@ const PageNotFoundPage = lazy(() => import("./pages/PageNotFoundPage"));
 const LoginPage = lazy(() => import("./pages/LoginPage"));
 const RegisterationPage = lazy(() => import("./pages/RegisterationPage"));
 const PasswordResetPage = lazy(() => import("./pages/PasswordResetPage"));
-// const AboutPage = lazy(() => import("./pages/AboutPage"));
+const AboutPage = lazy(() => import("./pages/AboutPage"));
 const NoAuthAboutPage = lazy(() => import("./pages/NoAuthAboutPage"));
-const PriceListPage = lazy(() => import("./pages/PriceListPage"));
-// const ServiceShortcutsPage = lazy(() => import("./pages/ServiceShortcutsPage"));
-// const ShortcutListPage = lazy(() => import("./pages/ShortcutListPage"));
+// const PriceListPage = lazy(() => import("./pages/PriceListPage"));
+const ServiceShortcutsPage = lazy(() => import("./pages/ServiceShortcutsPage"));
+const ShortcutListPage = lazy(() => import("./pages/ShortcutListPage"));
 
 const PasswordResetRequestPage = lazy(() =>
   import("./pages/PasswordResetRequestPage")
