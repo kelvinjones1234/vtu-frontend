@@ -52,7 +52,7 @@ const LoadingSpinner = () => {
           animate={{ rotate: 360 }}
           transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
         >
-          <img src={logo} alt="MaduConnect Logo" className="w-40 h-40" />
+          <img src={logo} alt="" className="w-40 h-40" />
         </motion.div>
       </div>
     </div>
