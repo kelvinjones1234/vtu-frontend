@@ -120,7 +120,7 @@ const LoginPage = () => {
               )}
               <div className="space-y-4">
                 <FloatingLabelInput
-                  type="text"
+                  type="text" 
                   value={username}
                   placeholder="Username"
                   aria-label="Username"
@@ -141,7 +141,7 @@ const LoginPage = () => {
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-white focus:outline-none"
+                    className="absolute inset-y-0 right-3 flex items-center dark:text-gray-500 text-primary hover:text-white focus:outline-none"
                   >
                     {showPassword ? "Hide" : "Show"}
                   </button>
