@@ -134,8 +134,8 @@ const FundWallet = ({ fundingData }) => {
           </h2>
           <div className="flex items-center text-primary dark:text-gray-100 py-4 font-semibold">
             <Link to={"/user/dashboard"}>Dashboard</Link>{" "}
-            <div className="h-1 w-1 mx-5 bg-white rounded-full"></div>
-            <span className="text-gray-500">Fund Wallet</span>
+            <div className="h-1 w-1 mx-5 bg-primary dark:bg-white rounded-full"></div>
+            <span className="text-gray-500">Data</span>
           </div>
         </div>
 
