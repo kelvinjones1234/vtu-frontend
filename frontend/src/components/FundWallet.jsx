@@ -127,7 +127,7 @@ const FundWallet = ({ fundingData }) => {
     <div className="mt-16 px-4 ss:px-8 sm:px-6 sm:flex gap-5 md:gap-12 lg:mx-16 max-w-screen-2xl mx-auto">
       <GeneralLeft />
 
-      <div className="flex-grow max-w-3xl">
+      <div className="flex-grow max-w-3xl mt-[15vh]">
         <div className="mb-6">
           <h2 className="font-bold font-heading_two text-primary dark:text-white text-2xl md:text-3xl">
             Fund Wallet
