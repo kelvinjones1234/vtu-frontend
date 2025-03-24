@@ -128,18 +128,13 @@ const FundWallet = ({ fundingData }) => {
       <GeneralLeft />
 
       <div className="flex-grow max-w-3xl mt-[15vh]">
-        <div className="mb-6">
-          <h2 className="font-bold font-heading_two text-primary dark:text-white text-2xl md:text-3xl">
+        <div>
+          <h2 className="font-bold font-heading_two text-primary dark:text-white text-[1.5rem]">
             Fund Wallet
           </h2>
-          <div className="flex items-center text-sm text-primary dark:text-gray-100 py-3 font-medium">
-            <Link
-              to="/user/dashboard"
-              className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
-            >
-              Dashboard
-            </Link>
-            <FaArrowRight className="mx-3 h-3 w-3 text-gray-400" />
+          <div className="flex items-center text-primary dark:text-gray-100 py-4 font-semibold">
+            <Link to={"/user/dashboard"}>Dashboard</Link>{" "}
+            <div className="h-1 w-1 mx-5 bg-white rounded-full"></div>
             <span className="text-gray-500">Fund Wallet</span>
           </div>
         </div>
