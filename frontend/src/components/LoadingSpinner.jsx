@@ -54,7 +54,6 @@ const LoadingSpinner = () => {
         >
           <img src={logo} alt="MaduConnect Logo" className="w-40 h-40" />
         </motion.div>
-        <div className="mt-8 text-primary text-5xl font-bold">Maduconnect</div>
       </div>
     </div>
   );
