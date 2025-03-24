@@ -237,7 +237,7 @@ const TransactionHistory = () => {
       <div className="mx-auto max-w-[607px] sm:max-w-[341px] md:max-w-[500px] min-[1500px]:max-w-[700px] xl:max-w-[1000px]">
         {/* <div className="mx-auto w-full max-w-[800px]"> */}
         <div className="mb-8">
-          <h2 className="font-bold font-heading_two text-primary dark:text-white text-3xl mb-4">
+          <h2 className="font-bold font-heading_two text-primary dark:text-white text-[1.5rem] md:text-3xl mb-4">
             Transaction History
           </h2>
           <div className="flex items-center text-primary dark:text-gray-100 py-4 font-semibold">
